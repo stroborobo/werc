@@ -1,0 +1,44 @@
+#!/usr/local/plan9/bin/rc
+
+path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
+ifs='/' { args = `{ echo -n $REQUEST_URI | sed -e 's/[^a-zA-Z_\-\/]//g' -e 's/\?.*//' } } 
+args=`{echo $args | tr -d '
+'} 
+cd ..
+
+
+# config
+body=index
+title=Title
+template=default
+sidebar=sidebar
+
+. etc/initrc
+
+if (! ~ $#args 0 && ! ~ $args '') {
+    title=$args($#args)
+    body=`{ echo -n $"args |sed 's, ,/,g' }
+}
+
+l=tpl
+for ( i in $args ) {
+    l = $l'/'$i
+    if ( test -f $l/_config ) {
+        . $l/_config
+    }
+} 
+
+template=tpl/$template.tpl
+if (! ~ $sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
+if (test -d tpl/$body) {
+    body=$body/index
+}
+body=`{echo tpl/^$"body^.md | sed 's, ,/,' }
+
+
+template.awk $template | rc 
+
+echo '<pre>'
+#echo $"args
+#env
+
