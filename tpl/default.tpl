@@ -8,11 +8,10 @@ Content-Type: text/html
 
 <meta name="verify-v1" content="6zEoK0WMlnLmIS/w7Pnh6+srZECHsvnMGN0kQmowSGk=" />
 
-% echo    '<title>'$title'</title>'
+% echo    '<title>'$"title' - '$"siteTitle'</title>'
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="copyright" content="&copy; 2007 by k" />
-    <meta name="author" content="uriel" />
+    <meta name="author" content="k" />
 
     <link rel="stylesheet" href="/style/style.css" type="text/css" media="screen" title="default" />
     <link rel="stylesheet alternative" type="text/css" href="/style/style_old.css" media="screen" title="Old Style" />
@@ -37,7 +36,7 @@ Content-Type: text/html
     </div>
 
     <div class="midHeader">
-        <h1 class="headerTitle">cat-v <span id="headerSubTitle">Considered harmful</span></h1>
+%echo         '<h1 class="headerTitle"><a href="/">'$"siteTitle' <span id="headerSubTitle">'$"siteSubTitle'</span></a></h1>'
     </div>
     
     <div class="subHeader">
@@ -47,9 +46,8 @@ Content-Type: text/html
 
 %if (! ~ $#sidebar 0) {
 <div id="side-bar">
-% #  template.awk $sidebar | rc
 <div>
-%  cat $sidebar | rc
+%  gensidebar
 </div>
 
     <div class="spam" style="padding: 1em 0;">
@@ -127,11 +125,8 @@ Content-Type: text/html
 
 <div id="footer">
 <!--
-%#echo $body
 <br class="doNotDisplay doNotPrint" />
 <div class="right">
-Author: <a href="http://cat-v.org/who/uriel/">uriel</a>
-<br />
 Hosted at: <a href="http://cat-v.org">cat-v.org</a>
 </div>
 -->

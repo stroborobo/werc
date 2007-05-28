@@ -15,3 +15,4 @@ dollars. But there is one quality that cannot be purchased in this way -and
 that is reliability. The price of reliability is the pursuit of the utmost
 simplicity. It is a price which the very rich find most hard to pay.*" -- C.A.R. Hoare
 
+"*It's a curious thing about our industry: not only do we not learn from our mistakes, we also don't learn from our successes.*"  -- Keith Braithwaite

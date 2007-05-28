@@ -83,6 +83,10 @@ acronym, .titleTip {
   font-style: italic;
 }
 
+.headerTitle a {
+    color: black;
+    text-decoration: none;
+}
 
 .subHeader {
 display: none;

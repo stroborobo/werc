@@ -4,7 +4,7 @@ XML Sucks
 "*The essence of XML is this: the problem it solves is not hard, and it does not solve the problem well."* -- Phil Wadler, POPL 2003
 
 
-For now see [xmlsucks.org](http://www.xmlsucks.org).
+For now see [xmlsucks](http://www.xmlsucks.com).
 
 Alternatives
 ------------
@@ -30,3 +30,6 @@ Alexander Viro on linux-kernel mailing list:
 	They won't be thrown.  They will be slowly driven under the nails, so that
 	victim could experience the joy equal to that of dealing with XML.
 
+"*Some part of me desperately wants to believe that XML-RPC is some kind of elaborate joke, like a cross between Discordianism and IP Over Avian Carriers.*" -- Ex-Cyber on #plan9
+
+"*XML is simply lisp done wrong.*" -- Alan Cox
