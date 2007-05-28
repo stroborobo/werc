@@ -233,13 +233,18 @@ li ul {
   text-decoration: none;
 }
 
-#main-copy h1 {
+#main-copy h1, #main-copy h2 {
   color: rgb(0,102,204);
   background-color: transparent;
   font-size: 145.5%;
   font-weight: bold;
   margin: 2em 0 0 0;
   padding: 0.5ex 0 0.5ex 0.6ex;
+  border-bottom: 2px solid rgb(0,102,204);
+}
+
+#main-copy h2 {
+  font-size: 115.5%;
   border-bottom: 1px solid rgb(0,102,204);
 }
 
