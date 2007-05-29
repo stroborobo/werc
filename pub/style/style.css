@@ -11,7 +11,7 @@ body {
 }
 
 html > body {
-  font-size: 8.5pt;
+  font-size: 9pt;
 }
 
 acronym, .titleTip {
@@ -67,8 +67,9 @@ acronym, .titleTip {
 .midHeader {
   color: rgb(39,78,144);
   background-color: rgb(140,170,230);
+  background-color: #ff6d06;
   border: solid 0 black;
-  border-width: 0.3em 0;
+  border-width: 3px 0;
 }
 
 .headerTitle {
