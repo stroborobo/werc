@@ -7,7 +7,10 @@ args=`{echo $args | tr -d '
 cd ..
 
 
-# config
+# default config
+site=$SERVER_NAME
+sitedir=sites/$site
+headers=inc/headers.tpl
 body=index
 siteTitle=''
 siteSubTitle=''
@@ -23,31 +26,37 @@ if (! ~ $#args 0 && ! ~ $args '') {
     body=`{ echo -n $"args |sed 's, ,/,g' }
 }
 
-l=tpl
-for ( i in $args ) {
+l=$sitedir
+for ( i in / $args ) {
     l = $l'/'$i
     if ( test -f $l/_config ) {
         . $l/_config
     }
 } 
 
-template=tpl/$template.tpl
-if (! ~ $sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
-if (test -d tpl/$body) {
+template=$sitedir/$template.tpl
+if (! ~ $#sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
+if (test -d $sitedir/$body) {
     body=$body/index
 }
-body=`{echo tpl/^$"body^.md | sed 's, ,/,' }
+body=`{echo $sitedir/^$"body^.md | sed 's, ,/,' }
 
+
+# Title
+fn gentitle {
+echo         '<h1 class="headerTitle"><a href="/">'$"siteTitle' <span id="headerSubTitle">'$"siteSubTitle'</span></a></h1>'
+}
 
 # Sidebar 
 fn menu {
-    ls -F $1 | sed -e 's,^./,,' -e 's,\.md$,,' | grep -v '^_'| awk '
+    ls -F $1 | grep -v '/_[^/]*' | sed -e 's,^./,,' -e 's,\.md$,,' |  awk '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
     /^([a-zA-Z0-9_\-]+[\/*]?)+$/ && ! /index$/ {
         isdir = match($0, "/$")
         sub("[*/]$", "") # The '*' makes no sense to me
         
+        d = ""
         if(isdir)
             d = "/"
         bname = $0
@@ -58,7 +67,7 @@ fn menu {
 
         if(index(ENVIRON["REQUEST_URI"], "/" $0) == 1) {
             if(isdir) {
-                print "<li><a href=\"/" $0 d "\">&raquo;<i> " bname "</i></a>"
+                print "<li><a href=\"/" $0 d "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
                 system("rc -c ''menu " $0 "''")
             } else {
                 print "<li><a href=\"/" $0 d "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
@@ -73,15 +82,41 @@ fn menu {
 }
 
 fn gensidebar {
-    echo '<p class="sideBarTitle">Considered harmful:</p>'
-    cd tpl
+    d=`{pwd}
+    cd $sitedir
     menu .
-    cd ..
+    cd $d
 }
 
 
 # Body
+fn genbody {
+    if ( test -f $body ) { cat $body | markdown.pl } 
+    if not { 
 
+        if ( ~ $body */index.md ) {
+            echo '<h1>' `{basename `{basename -d $body}}'</h1>'
+            echo '<ul>'
+            ls -F `{ basename -d $body } | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
+            echo '</ul>'
+        }
+        if not { template.awk inc/404.tpl | rc }
+    }
+    
+    ld = `{basename -d $body }^/_log/
+    if ( test -d $ld ) { 
+        for ( i in `{ ls $ld/ | grep '.*\.md$'| sort -n } ) {
+            t=`{basename $i|sed -e 's/[0-9\-]*_//' -e 's,\.md$,,' -e 's/_/ /' }
+            d=`{ls -l $i |awk '{print $7 " " $8 " " $9}'}
+            u=`{ls -l $i |awk '{print $4 }'}
+            echo '<h2>' $"t '<small style="font-size: 70%">by '$"u' - '$"d'</small></h2>'
+           cat $i | markdown.pl 
+            echo '<hr />'
+        } 
+    } 
+}
+
+template.awk $headers | rc 
 template.awk $template | rc 
 
 
