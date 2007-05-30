@@ -109,7 +109,8 @@ fn genbody {
     if ( ~ $blog 'yes' && ~ $body */index.md ) {
         if ( ! ~ $#blogTitle 0 )
             echo '<h1>'$"blogTitle'</h1>'
-        for ( i in `{ ls $blogDirs | grep '[0-9]+.*\.md$'| sort -r -t. +1  } ) {
+        # the /./ is added so we can sort -t. and order only the file name
+        for ( i in `{ ls $blogDirs^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1  } ) {
             t=`{basename $i|sed -e 's/^[0-9\-]*_//' -e 's,\.md$,,' -e 's/_/ /g' }
             du=`{ls -l $i }
             #echo '<h2>' $"t '<small style="font-size: 70%">by '$"$du(4)' (Last mod: '$du(7) $du(8) $du(9)')</small></h2>'
