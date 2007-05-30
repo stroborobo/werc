@@ -1,7 +1,7 @@
 #!/usr/local/plan9/bin/rc
 
 path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
-ifs='/' { args = `{ echo -n $REQUEST_URI | sed -e 's/[^a-zA-Z0-9_\-\/]//g' -e 's/\?.*//' } } 
+ifs='/' { args = `{ echo -n $REQUEST_URI | sed -e 's/[^a-zA-Z0-9_+\-\/]//g' -e 's/\?.*//' } } 
 args=`{echo $args | tr -d '
 '} 
 cd ..
@@ -52,7 +52,7 @@ fn menu {
     ls -F $1 | grep -v '/_[^/]*' | sed -e 's,^./,,' -e 's,\.md$,,' |  awk '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
-    /^([a-zA-Z0-9_\-]+[\/*]?)+$/ && ! /index$/ {
+    /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && ! /index$/ {
         isdir = match($0, "/$")
         sub("[*/]$", "") # The '*' makes no sense to me
         
@@ -91,29 +91,33 @@ fn gensidebar {
 
 # Body
 fn genbody {
-    if ( test -f $body ) { cat $body | markdown.pl } 
+    if ( test -f $body ) { 
+        cat $body | markdown.pl 
+    } 
     if not { 
-
-        if ( ~ $body */index.md ) {
-            echo '<h1>' `{basename `{basename -d $body}}'</h1>'
-            echo '<ul>'
-            ls -F `{ basename -d $body } | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
-            echo '</ul>'
+        if ( ! ~ $blog 'yes' ) {
+            if ( ~ $body */index.md ) {
+                echo '<h1>' `{basename `{basename -d $body}}'</h1>'
+                echo '<ul>'
+                ls -F `{ basename -d $body } |grep -v '(^.|/_[^/]*$)' | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
+                echo '</ul>'
+            }
+            if not { template.awk inc/404.tpl | rc }
         }
-        if not { template.awk inc/404.tpl | rc }
     }
     
-    ld = `{basename -d $body }^/_log/
-    if ( test -d $ld ) { 
-        for ( i in `{ ls $ld/ | grep '.*\.md$'| sort -n } ) {
-            t=`{basename $i|sed -e 's/[0-9\-]*_//' -e 's,\.md$,,' -e 's/_/ /' }
-            d=`{ls -l $i |awk '{print $7 " " $8 " " $9}'}
-            u=`{ls -l $i |awk '{print $4 }'}
-            echo '<h2>' $"t '<small style="font-size: 70%">by '$"u' - '$"d'</small></h2>'
-           cat $i | markdown.pl 
-            echo '<hr />'
-        } 
-    } 
+    if ( ~ $blog 'yes' && ~ $body */index.md ) {
+        if ( ! ~ $#blogTitle 0 )
+            echo '<h1>'$"blogTitle'</h1>'
+        for ( i in `{ ls $blogDirs | grep '[0-9]+.*\.md$'| sort -r -t. +1  } ) {
+            t=`{basename $i|sed -e 's/^[0-9\-]*_//' -e 's,\.md$,,' -e 's/_/ /g' }
+            du=`{ls -l $i }
+            #echo '<h2>' $"t '<small style="font-size: 70%">by '$"$du(4)' (Last mod: '$du(7) $du(8) $du(9)')</small></h2>'
+            echo '## ' $"t '*(By '$du(4)' Last mod: ' ( $du(7 8 9) ) ')*'
+            cat $i 
+            echo 
+        } | markdown.pl 
+    }
 }
 
 template.awk $headers | rc 
