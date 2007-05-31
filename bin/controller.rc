@@ -14,7 +14,7 @@ headers=inc/headers.tpl
 body=index
 siteTitle=''
 siteSubTitle=''
-title=Title
+title=''
 template=default
 sidebar=sidebar
 
@@ -22,7 +22,7 @@ sidebar=sidebar
 
 if (! ~ $#args 0 && ! ~ $args '') {
     title=$args($#args)
-    title=`{echo $title | sed 's/_/ /' }
+    title=`{echo $title | sed 's/_/ /g' }
     body=`{ echo -n $"args |sed 's, ,/,g' }
 }
 
