@@ -8,7 +8,7 @@ Content-Type: text/html
 
 <meta name="verify-v1" content="6zEoK0WMlnLmIS/w7Pnh6+srZECHsvnMGN0kQmowSGk=" />
 
-% echo    '<title>'$"title' - '$"siteTitle'</title>'
+% echo    '<title>'$"title' - '$"site' -</title>'
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="author" content="k" />
