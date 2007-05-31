@@ -290,6 +290,8 @@ dd {
   margin: 0;
   padding: 1em 2.5mm 2.5ex 2.5mm;
   clear: both;
+  border: solid 0 black;
+  border-width: 3px 0;
 }
 
 #footer .left {
