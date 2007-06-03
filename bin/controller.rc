@@ -15,31 +15,8 @@ body=index
 siteTitle=''
 siteSubTitle=''
 title=''
-template=default
+template=_default
 sidebar=sidebar
-
-. etc/initrc
-
-if (! ~ $#args 0 && ! ~ $args '') {
-    title=$args($#args)
-    title=`{echo $title | sed 's/_/ /g' }
-    body=`{ echo -n $"args |sed 's, ,/,g' }
-}
-
-l=$sitedir
-for ( i in / $args ) {
-    l = $l'/'$i
-    if ( test -f $l/_config ) {
-        . $l/_config
-    }
-} 
-
-template=$sitedir/$template.tpl
-if (! ~ $#sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
-if (test -d $sitedir/$body) {
-    body=$body/index
-}
-body=`{echo $sitedir/^$"body^.md | sed 's, ,/,' }
 
 
 # Title
@@ -88,15 +65,20 @@ fn gensidebar {
     cd $d
 }
 
+fn sortedBlogPostList {
+    ls $*^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1
+}
 
 # Body
 fn genbody {
-    if ( test -f $body ) { 
-        cat $body | markdown.pl 
+    if ( test -f $"body^'.md' ) { 
+        cat $"body^'.md' | markdown.pl 
     } 
+    if not if ( test -f $"body^'.tpl' )
+        template.awk $"body^'.tpl' | rc 
     if not { 
-        if ( ! ~ $blog 'yes' ) {
-            if ( ~ $body */index.md ) {
+        if ( ~ $#blogDirs 0 ) {
+            if ( ~ $body */index ) {
                 echo '<h1>' `{basename `{basename -d $body}}'</h1>'
                 echo '<ul>'
                 ls -F `{ basename -d $body } |grep -v '(^\.|/_[^/]*$)' | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
@@ -106,12 +88,12 @@ fn genbody {
         }
     }
     
-    if ( ~ $blog 'yes' && ~ $body */index.md ) {
+    if (! ~ $#blogDirs 0 && ~ $body */index ) {
         if ( ! ~ $#blogTitle 0 )
             echo '<h1>'$"blogTitle'</h1>'
         # the /./ is added so we can sort -t. and order only the file name
-        for ( i in `{ ls $blogDirs^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1  } ) {
-            t=`{basename $i|sed -e 's/^[0-9\-]*_//' -e 's,\.md$,,' -e 's/_/ /g' }
+        for ( i in `{ sortedBlogPostList $blogDirs } ) {
+            t=`{basename $i|sed -e 's/^[0-9\-]*_(.*)\.md$/\1/' -e 's/_/ /g' }
             du=`{ls -l $i }
             #echo '<h2>' $"t '<small style="font-size: 70%">by '$"$du(4)' (Last mod: '$du(7) $du(8) $du(9)')</small></h2>'
             echo '## ' $"t '*(By '$du(4)' Last mod: ' ( $du(7 8 9) ) ')*'
@@ -120,6 +102,32 @@ fn genbody {
         } | markdown.pl 
     }
 }
+
+
+. etc/initrc
+
+if (! ~ $#args 0 && ! ~ $args '') {
+    title=$args($#args)
+    title=`{echo $title | sed 's/_/ /g' }
+    body=`{ echo -n $"args |sed 's, ,/,g' }
+}
+
+l=$sitedir
+for ( i in / $args ) {
+    l = $l'/'$i
+    if ( test -f $l/_config ) {
+        . $l/_config
+    }
+} 
+
+template=$sitedir/$template.tpl
+if (! ~ $#sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
+if (test -d $sitedir/$body) {
+    body=$body/index
+}
+body=`{echo $sitedir/^$"body | sed 's, ,/,' }
+
+
 
 template.awk $headers | rc 
 template.awk $template | rc 
