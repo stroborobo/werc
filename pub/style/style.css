@@ -207,13 +207,13 @@ li ul {
 /* ##### Main Copy ##### */
 
 #main-copy {
-  max-width: 80em;
+  max-width: 70em;
   color: black;
   background-color: transparent;
   text-align: justify;
   line-height: 1.5em;
   margin: 0em 0 0 15em;
-  padding: 0.5mm 5mm 5mm 5mm;
+  padding: 0.5mm 5mm 5mm 10mm;
   border-left: 1px solid rgb(153,153,153);
 }
 
@@ -331,6 +331,7 @@ table {
 th {
     background-color: #abc;
     border: solid 1px black;
+    text-align: center;
 }
 td {
     background-color: #def;
