@@ -81,7 +81,7 @@ fn genbody {
             if ( ~ $body */index ) {
                 echo '<h1>' `{basename `{basename -d $body}}'</h1>'
                 echo '<ul>'
-                ls -F `{ basename -d $body } |grep -v '(^\.|/_[^/]*$)' | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
+                ls -F `{ basename -d $body } |grep -v '/[_.][^/]*$' | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
                 echo '</ul>'
             }
             if not { template.awk inc/404.tpl | rc }
