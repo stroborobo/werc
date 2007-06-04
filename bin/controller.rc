@@ -36,7 +36,7 @@ fn menu {
         isdir = match($0, "/$")
         sub("[*/]$", "")
 
-        bname = $0
+        path = bname = $0
         sub("^(.*/)?([0-9]+_)?", "", bname)
         gsub("_", " ", bname)
 
@@ -83,7 +83,7 @@ fn genbody {
             ls -F `{ basename -d $body } | sed $dirfilter' s,^'$sitedir'/(.*),<li><a href="\1">\1</a></li>,'
             echo '</ul>'
     }
-    if not
+    if not if(~ $#blogDirs 0)
         template.awk inc/404.tpl | rc
 
     # Technically wrong. Will spit out blog entries after 404 for /blog/foo, for instance.
@@ -166,6 +166,8 @@ uri=$baseuri$"uri
 
 # Should be in a separate file.
 cat <<'!' | template
+Content-Type: text/xml; charset=utf-8
+
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 	<channel>
