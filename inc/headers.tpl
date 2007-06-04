@@ -8,13 +8,14 @@ Content-Type: text/html
 
 <meta name="verify-v1" content="6zEoK0WMlnLmIS/w7Pnh6+srZECHsvnMGN0kQmowSGk=" />
 
-% echo    '<title>'$"title' - '$"site' -</title>'
+    <title>%($title - $site -%)</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="author" content="k" />
 
     <link rel="stylesheet" href="/pub/style/style.css" type="text/css" media="screen" title="default" />
     <link rel="stylesheet alternative" type="text/css" href="/pub/style/style_old.css" media="screen" title="Old Style" />
+    %($extraHeaders%)
 </head>
 <body>
 

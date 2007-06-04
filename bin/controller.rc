@@ -133,8 +133,6 @@ if(! ~ $#blogDirs 0)
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'">
 '
 
-echo hesd: $extraHeaders
-
 # RSS
 fn statpost {
 	f = $1
