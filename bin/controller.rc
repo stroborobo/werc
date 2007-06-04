@@ -25,7 +25,7 @@ fn gentitle {
     echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ '<span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
 
-dirfilter = '/\/\./d; /\/_[^\/]*$/d; s,^\./,,; s,\.md$,,;'
+dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,;'
 
 # Sidebar 
 fn menu {
@@ -130,7 +130,7 @@ fn statpost {
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
 	stat=`{stat -c '%Y %U' $f}
 	date=`{/bin/date -Rd @$stat(1)}
-	uri=$baseuri^`{cleanname $uri}
+	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
 	by=$stat(2)
 	ifs=() {
 		summary=`{awk -v max'='1024 '{
@@ -186,7 +186,7 @@ Content-Type: text/xml; charset=utf-8
 			<link>%($uri%)</link>
                         <guid isPermaLink="true">%($uri%)</guid>
 			<pubDate>%($date%)</pubDate>
-			<description><![CDATA[%($summary%)]]></description>
+			<description><![CDATA[<pre>%($summary%)</pre>]]></description>
 		</item>
 %		}
 	</channel>
