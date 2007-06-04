@@ -12,13 +12,12 @@ site=$SERVER_NAME
 sitedir=sites/$site
 headers=inc/headers.tpl
 body=index
-siteTitle=''
-siteSubTitle=''
-title=''
 template=_default
 sidebar=sidebar
 basedir=/gsoc/www
 baseuri=http://$site
+for(i in siteTitle siteSubTitle title extraHeaders)
+    $i = ''
 
 # Title
 fn gentitle {
@@ -117,11 +116,24 @@ for ( i in '' $args ) {
 }
 
 template=$sitedir/$template.tpl
-body=$sitedir/$body
 if (! ~ $#sidebar 0)
     sidebar=tpl/_inc/$sidebar.tpl
-if (test -d $body)
+
+body=$sitedir/$body
+rssuri=$uri
+if (test -d $body) {
     body=$body/index
+    rssuri=$rssuri/
+}
+rssuri=`{cleanname `{basename -d $uri}^/index.rss}
+rssuri=$baseuri$rssuri
+
+if(! ~ $#blogDirs 0)
+    extraHeaders=$"extraHeaders ^ \
+    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'">
+'
+
+echo hesd: $extraHeaders
 
 # RSS
 fn statpost {
