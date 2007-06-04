@@ -75,7 +75,7 @@ fn genbody {
     if ( test -f $body.md )
         markdown.pl < $body.md
     if not if ( test -f $body.tpl )
-        template.awk $body.tpl | rc 
+        template.awk $body.tpl | rc $rcargs
     if not if ( ~ $body */blog/index */blog//index && ~ $#blogDirs 0 )
         blogDirs = `{basename -d $body}
     if not if(~ $body */index && ~ $#blogDirs 0) {
@@ -85,7 +85,7 @@ fn genbody {
             echo '</ul>'
     }
     if not if(~ $#blogDirs 0)
-        template.awk inc/404.tpl | rc
+        template.awk inc/404.tpl | rc $rcargs
 
     # Technically wrong. Will spit out blog entries after 404 for /blog/foo, for instance.
     if(! ~ $#blogDirs 0) {
@@ -159,7 +159,7 @@ fn statpost {
 }
 
 fn template {
-    template.awk | rc |
+    template.awk | rc $rcargs |
     awk '{
         buf = buf $0"\n"
         if(length(buf) > 8192) {
