@@ -25,7 +25,7 @@ fn gentitle {
     echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ '<span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
 
-dirfilter = '/\/./d; /\/_[^\/]*$/d; s,^\./,,; s,\.md$,,;'
+dirfilter = '/\/\./d; /\/_[^\/]*$/d; s,^\./,,; s,\.md$,,;'
 
 # Sidebar 
 fn menu {
@@ -34,7 +34,6 @@ fn menu {
     END { print "</ul>" }
     /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && $NF != "index" {
         isdir = match($0, "/$")
-
         sub("[*/]$", "")
 
         bname = $0
@@ -124,18 +123,6 @@ if (! ~ $#sidebar 0)
 if (test -d $body)
     body=$body/index
 
-fn template {
-    template.awk | rc |
-    awk '{
-        buf = buf $0"\n"
-        if(length(buf) > 8192) {
-            printf "%s", buf
-            buf = ""
-        }
-    }
-    END{ printf "%s", buf }'
-}
-
 # RSS
 fn statpost {
 	f = $1
@@ -155,6 +142,18 @@ fn statpost {
 			print
 		}' $f | sed 's/\]\]>/Fucking goddamn XML garbage/g'}
 	}
+}
+
+fn template {
+    template.awk | rc |
+    awk '{
+        buf = buf $0"\n"
+        if(length(buf) > 8192) {
+            printf "%s", buf
+            buf = ""
+        }
+    }
+    END{ printf "%s", buf }'
 }
 
 if(! ~ $REQUEST_URI */index.rss) {
