@@ -1,10 +1,11 @@
 #!/usr/local/plan9/bin/rc
 path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
-ifs='/' { args = `{ echo -n $REQUEST_URI | sed -e 's/\?.*//' -e 's/[^a-zA-Z0-9_+\-\/]//g' } } 
-args=`{echo $args | tr -d '
-'} 
-cd ..
 
+uri = `{echo -n $REQUEST_URI | sed 's/\?.*//; s/[^a-zA-Z0-9_+\-\/]//g'}
+ifs='/' {
+	args = `{echo -n $uri}
+}
+cd ..
 
 # default config
 site=$SERVER_NAME
@@ -16,87 +17,86 @@ siteSubTitle=''
 title=''
 template=_default
 sidebar=sidebar
-
+basedir=/gsoc/www
+baseuri=http://$site
 
 # Title
 fn gentitle {
-echo         '<h1 class="headerTitle"><a href="/">'$"siteTitle' <span id="headerSubTitle">'$"siteSubTitle'</span></a></h1>'
+    echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ '<span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
+
+dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,;'
 
 # Sidebar 
 fn menu {
-    ls -F $1 | grep -v '/_[^/]*' | sed -e 's,^./,,' -e 's,\.md$,,' |  awk '
+    ls -F $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
-    /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && ! /index$/ {
+    /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && $NF != "index" {
         isdir = match($0, "/$")
-        sub("[*/]$", "") # The '*' makes no sense to me
-        
-        d = ""
-        if(isdir)
-            d = "/"
-        bname = $0
+        sub("[*/]$", "")
+
+        path = bname = $0
         sub("^(.*/)?([0-9]+_)?", "", bname)
         gsub("_", " ", bname)
 
-        bname = bname d
+        if(isdir) {
+            bname = bname "/"
+            path = $0 "/"
+        }
 
-        if(index(ENVIRON["REQUEST_URI"], "/" $0) == 1) {
+        if(index(ENVIRON["REQUEST_URI"], "/" path) == 1) {
             if(isdir) {
-                print "<li><a href=\"/" $0 d "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
-                system("rc -c ''menu " $0 "''")
+                print "<li><a href=\"/" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
+                system("rc -c ''menu " path "''")
             } else {
-                print "<li><a href=\"/" $0 d "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
+                print "<li><a href=\"/" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
             }
         } else 
-            print "<li><a href=\"/" $0 d "\">&rsaquo; " bname "</a>"
+            print "<li><a href=\"/" path "\">&rsaquo; " bname "</a>"
 
         print "</li>"
-
     }'
-
 }
 
 fn gensidebar {
-    d=`{pwd}
-    cd $sitedir
-    menu .
-    cd $d
+    @{
+        cd $sitedir
+        menu .
+    }
 }
 
 fn sortedBlogPostList {
+    # the /./ is added so we can sort -t. and order only the file name
     ls $*^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1
 }
 
 # Body
 fn genbody {
-    if ( test -f $"body^'.md' ) { 
-        cat $"body^'.md' | markdown.pl 
-    } 
-    if not if ( test -f $"body^'.tpl' )
-        template.awk $"body^'.tpl' | rc 
-    if not { 
-        if ( ~ $#blogDirs 0 ) {
-            if ( ~ $body */index ) {
-                echo '<h1>' `{basename `{basename -d $body}}'</h1>'
-                echo '<ul>'
-                ls -F `{ basename -d $body } |grep -v '/[_.][^/]*$' | sed -e 's,^./,,' -e 's,\.md$,,' -e 's,^'$sitedir'/([^/]*[/]?)+,<li><a href="\1">\1</a></li>,'
-                echo '</ul>'
-            }
-            if not { template.awk inc/404.tpl | rc }
-        }
+    if ( test -f $body.md )
+        markdown.pl < $body.md
+    if not if ( test -f $body.tpl )
+        template.awk $body.tpl | rc 
+    if not if ( ~ $body */blog/index */blog//index && ~ $#blogDirs 0 )
+        blogDirs = `{basename -d $body}
+    if not if(~ $body */index && ~ $#blogDirs 0) {
+            echo '<h1>' `{basename `{basename -d $body}}'</h1>'
+            echo '<ul>'
+            ls -F `{ basename -d $body } | sed $dirfilter' s,^'$sitedir'/(.*),<li><a href="\1">\1</a></li>,'
+            echo '</ul>'
     }
-    
-    if (! ~ $#blogDirs 0 && ~ $body */index ) {
-        if ( ! ~ $#blogTitle 0 )
+    if not if(~ $#blogDirs 0)
+        template.awk inc/404.tpl | rc
+
+    # Technically wrong. Will spit out blog entries after 404 for /blog/foo, for instance.
+    if(! ~ $#blogDirs 0) {
+        if ( ! ~ $blogTitle '' )
             echo '<h1>'$"blogTitle'</h1>'
-        # the /./ is added so we can sort -t. and order only the file name
-        for ( i in `{ sortedBlogPostList $blogDirs } ) {
-            t=`{basename $i|sed -e 's/^[0-9\-]*_(.*)\.md$/\1/' -e 's/_/ /g' }
-            du=`{ls -l $i }
-            #echo '<h2>' $"t '<small style="font-size: 70%">by '$"$du(4)' (Last mod: '$du(7) $du(8) $du(9)')</small></h2>'
-            echo '## ' $"t '*(By '$du(4)' Last mod: ' ( $du(7 8 9) ) ')*'
-            cat $i 
+        for ( f in `{ sortedBlogPostList $blogDirs } ) {
+            title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+            du=`{ls -l $f}
+            echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+            cat $f 
             echo 
         } | markdown.pl 
     }
@@ -105,33 +105,93 @@ fn genbody {
 
 . etc/initrc
 
-if (! ~ $#args 0 && ! ~ $args '') {
+if (! ~ $args '') {
     title=$args($#args)
     title=`{echo $title | sed 's/_/ /g' }
-    body=`{ echo -n $"args |sed 's, ,/,g' }
+    body=$uri
 }
 
-l=$sitedir
-for ( i in / $args ) {
-    l = $l'/'$i
-    if ( test -f $l/_config ) {
-        . $l/_config
-    }
-} 
+fpath=$sitedir
+for ( i in '' $args ) {
+    fpath = $fpath/$i
+    if ( test -f $fpath/_config )
+        . $fpath/_config
+}
 
 template=$sitedir/$template.tpl
-if (! ~ $#sidebar 0) { sidebar=tpl/_inc/$sidebar.tpl }
-if (test -d $sitedir/$body) {
+body=$sitedir/$body
+if (! ~ $#sidebar 0)
+    sidebar=tpl/_inc/$sidebar.tpl
+if (test -d $body)
     body=$body/index
+
+# RSS
+fn statpost {
+	f = $1
+	uri = `{echo $f | sed 's,^'$basedir',,'}
+	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	stat=`{stat -c '%Y %U' $f}
+	date=`{/bin/date -Rd @$stat(1)}
+	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
+	by=$stat(2)
+	ifs=() {
+		summary=`{awk -v max'='1024 '{
+			nc += 1 + length;
+			if(nc > max) {
+				print substr($0, 1, nc - max) "..."
+				exit
+			}
+			print
+		}' $f | sed 's/\]\]>/Fucking goddamn XML garbage/g'}
+	}
 }
-body=`{echo $sitedir/^$"body | sed 's, ,/,' }
 
+fn template {
+    template.awk | rc |
+    awk '{
+        buf = buf $0"\n"
+        if(length(buf) > 8192) {
+            printf "%s", buf
+            buf = ""
+        }
+    }
+    END{ printf "%s", buf }'
+}
 
+if(! ~ $REQUEST_URI */index.rss) {
+	cat $headers $template | template
+	exit
+}
 
-template.awk $headers | rc 
-template.awk $template | rc 
+uri = `{echo $uri | sed 's/indexrss$//'}
+uri=$baseuri$"uri
 
+# Should be in a separate file.
+cat <<'!' | template
+Content-Type: text/xml; charset=utf-8
 
-# Debug junk
-#echo '<pre>'
-#env
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+	<channel>
+		<title>%($siteTitle%)</title>
+		<link>%($uri%)</link>
+		<description>%($blogDesc%)</description>
+		<language>en-us</language>
+		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
+		<webMaster>Uriel Mangado &lt;uriel99@gmail.com&gt;</webMaster>
+%{
+		for(f in `{sortedBlogPostList $blogDirs}) {
+			statpost $f
+%}		<item>
+			<title>%($title%)</title>
+			<author>%($by%)@noreply.cat-v.org</author>
+			<link>%($uri%)</link>
+                        <guid isPermaLink="true">%($uri%)</guid>
+			<pubDate>%($date%)</pubDate>
+			<description><![CDATA[<pre>%($summary%)</pre>]]></description>
+		</item>
+%		}
+	</channel>
+</rss>
+!
+
