@@ -124,6 +124,18 @@ if (! ~ $#sidebar 0)
 if (test -d $body)
     body=$body/index
 
+fn template {
+    template.awk | rc |
+    awk '{
+        buf = buf $0"\n"
+        if(length(buf) > 8192) {
+            printf "%s", buf
+            buf = ""
+        }
+    }
+    END{ printf "%s", buf }'
+}
+
 # RSS
 fn statpost {
 	f = $1
@@ -146,7 +158,7 @@ fn statpost {
 }
 
 if(! ~ $REQUEST_URI */index.rss) {
-	cat $headers $template | template.awk | rc
+	cat $headers $template | template
 	exit
 }
 
@@ -154,7 +166,7 @@ uri = `{echo $uri | sed 's/indexrss$//'}
 uri=$baseuri$"uri
 
 # Should be in a separate file.
-cat <<'!' | template.awk | rc
+cat <<'!' | template
 <?xml version="1.0"?>
 <rss version="2.0">
 	<channel>
