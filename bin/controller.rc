@@ -167,24 +167,25 @@ uri=$baseuri$"uri
 
 # Should be in a separate file.
 cat <<'!' | template
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 	<channel>
-		<title>%($blogTitle%)</title>
+		<title>%($siteTitle%)</title>
 		<link>%($uri%)</link>
 		<description>%($blogDesc%)</description>
 		<language>en-us</language>
 		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
-		<webMaster>Uriel %lt;uriel99@gmail.com&gt;</webMaster>
+		<webMaster>Uriel Mangado &lt;uriel99@gmail.com&gt;</webMaster>
 %{
 		for(f in `{sortedBlogPostList $blogDirs}) {
 			statpost $f
 %}		<item>
 			<title>%($title%)</title>
-			<author>%($by%)</author>
+			<author>%($by%)@noreply.cat-v.org</author>
 			<link>%($uri%)</link>
+                        <guid isPermaLink="true">%($uri%)</guid>
 			<pubDate>%($date%)</pubDate>
-			<description><![CDATA[%($summary%)]]</description>
+			<description><![CDATA[%($summary%)]]></description>
 		</item>
 %		}
 	</channel>
