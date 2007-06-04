@@ -92,6 +92,7 @@ fn genbody {
     if(! ~ $#blogDirs 0) {
         if ( ! ~ $blogTitle '' )
             echo '<h1>'$"blogTitle'</h1>'
+        echo '<div align="right">(<a href="index.rss">rss feed</a>)</div>'
         for ( f in `{ sortedBlogPostList $blogDirs } ) {
             title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
             du=`{ls -l $f}
