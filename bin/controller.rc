@@ -188,5 +188,6 @@ cat <<'!' | template
 		</item>
 %		}
 	</channel>
+</rss>
 !
 
