@@ -125,13 +125,14 @@ if (test -d $body) {
     body=$body/index
     rssuri=$rssuri/
 }
-rssuri=`{cleanname `{basename -d $uri}^/index.rss}
-rssuri=$baseuri$rssuri
 
-if(! ~ $#blogDirs 0)
+if(! ~ $#blogDirs 0) {
+    rssuri=`{basename -d $uri}
+    rssuri=$baseuri`{cleanname $"rssuri^/index.rss}
     extraHeaders=$"extraHeaders ^ \
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'">
 '
+}
 
 # RSS
 fn statpost {
