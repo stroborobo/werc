@@ -7,7 +7,6 @@ ifs='/' {
 }
 cd ..
 
-
 # default config
 site=$SERVER_NAME
 sitedir=sites/$site
@@ -18,7 +17,8 @@ siteSubTitle=''
 title=''
 template=_default
 sidebar=sidebar
-
+basedir=/gsoc/www
+baseuri=http://$site
 
 # Title
 fn gentitle {
@@ -118,13 +118,63 @@ for ( i in '' $args ) {
 }
 
 template=$sitedir/$template.tpl
-echo body: $body; echo body: $sitedir/$body; ls $sitedir/$body
 body=$sitedir/$body
 if (! ~ $#sidebar 0)
     sidebar=tpl/_inc/$sidebar.tpl
 if (test -d $body)
     body=$body/index
 
+# RSS
+fn statpost {
+	f = $1
+	uri = `{echo $f | sed 's,^'$basedir',,'}
+	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	stat=`{stat -c '%Y %U' $f}
+	date=`{/bin/date -Rd @$stat(1)}
+	uri=$baseuri^`{cleanname $uri}
+	by=$stat(2)
+	ifs=() {
+		summary=`{awk -v max'='1024 '{
+			nc += 1 + length;
+			if(nc > max) {
+				print substr($0, 1, nc - max) "..."
+				exit
+			}
+			print
+		}' $f | sed 's/\]\]>/Fucking goddamn XML garbage/g'}
+	}
+}
 
-cat $headers $template | template.awk | rc
+if(! ~ $REQUEST_URI */index.rss) {
+	cat $headers $template | template.awk | rc
+	exit
+}
+
+uri = `{echo $uri | sed 's/indexrss$//'}
+uri=$baseuri$"uri
+
+# Should be in a separate file.
+cat <<'!' | template.awk | rc
+<?xml version="1.0"?>
+<rss version="2.0">
+	<channel>
+		<title>%($blogTitle%)</title>
+		<link>%($uri%)</link>
+		<description>%($blogDesc%)</description>
+		<language>en-us</language>
+		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
+		<webMaster>Uriel %lt;uriel99@gmail.com&gt;</webMaster>
+%{
+		for(f in `{sortedBlogPostList $blogDirs}) {
+			statpost $f
+%}		<item>
+			<title>%($title%)</title>
+			<author>%($by%)</author>
+			<link>%($uri%)</link>
+			<pubDate>%($date%)</pubDate>
+			<description><![CDATA[%($summary%)]]</description>
+		</item>
+%		}
+	</channel>
+!
 
