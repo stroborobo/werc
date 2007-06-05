@@ -67,7 +67,8 @@ fn gensidebar {
 
 fn sortedBlogPostList {
     # the /./ is added so we can sort -t. and order only the file name
-    ls $*^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1
+    if (! ~ $#* 0)
+        ls $*^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1
 }
 
 # Body
