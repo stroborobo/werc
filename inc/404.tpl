@@ -13,7 +13,7 @@ Try searching in cat-v.org:
 <td nowrap="nowrap">
 <input type="hidden" name="domains" value="harmful.cat-v.org;cat-v.org"></input>
 <label for="sbi" style="display: none">Enter your search terms</label>
-% echo '<input type="text" name="q" size="32" maxlength="255" value="'$title'" id="sbi"></input>'
+% echo '<input type="text" name="q" size="32" maxlength="255" value="'$"title'" id="sbi"></input>'
 <label for="sbb" style="display: none">Submit search form</label>
 <input type="submit" name="sa" value="Google Search" id="sbb"></input>
 </td></tr>
