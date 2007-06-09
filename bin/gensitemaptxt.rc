@@ -1,0 +1,6 @@
+#!/bin/rc
+for ( d in sites/*/ ) {
+
+du -a $d | awk '/\.(md|html)$/ { print $2 }; {}' | 9 sed -e 's/\.(md|html)$//' -e 's,/index$,/,' -e 's,^sites/,http://,' > $d/sitemap.txt
+
+}
