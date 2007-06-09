@@ -21,10 +21,10 @@ for(i in siteTitle siteSubTitle title extraHeaders)
 
 # Title
 fn gentitle {
-    echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ '<span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
+    echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ ' <span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
 
-dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,;'
+dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,;'
 
 # Sidebar 
 fn menu {
@@ -77,7 +77,11 @@ fn genbody {
         markdown.pl < $body.md
     if not if ( test -f $body.tpl )
         template.awk $body.tpl | rc $rcargs
-    if not if ( ~ $body */blog/index */blog//index && ~ $#blogDirs 0 )
+    if not if ( test -f $body.html )
+        cat $body.html | /bin/sed '0,/<body>/d; /<\/body>/,$d' 
+    if not if (~ $body *.html && test -f $body )
+        sed '0,/<body>/d;/<\/body>/,$d' < $body
+    if not if ( ~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0 )
         blogDirs = `{basename -d $body}
     if not if(~ $body */index && ~ $#blogDirs 0) {
             echo '<h1>' `{basename `{basename -d $body}}'</h1>'
