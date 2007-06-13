@@ -80,7 +80,7 @@ fn genbody {
     if not if ( test -f $body.html )
         cat $body.html | /bin/sed '0,/<body>/d; /<\/body>/,$d' 
     if not if (~ $body *.html && test -f $body )
-        sed '0,/<body>/d;/<\/body>/,$d' < $body
+        cat $body | /bin/sed -i '0,/<body[^>]*>/d;/<\/body>/,$d' 
     if not if ( ~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0 )
         blogDirs = `{basename -d $body}
     if not if(~ $body */index && ~ $#blogDirs 0) {
@@ -119,6 +119,7 @@ if (! ~ $args '') {
 fpath=$sitedir
 for ( i in '' $args ) {
     fpath = $fpath/$i
+    blogDirs = () # We don't want blog settings to cascade into posts
     if ( test -f $fpath/_config )
         . $fpath/_config
 }
