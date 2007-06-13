@@ -71,10 +71,19 @@ fn sortedBlogPostList {
         ls $*^'/./' | grep '[0-9]+.*\.md$'| sort -r -t. +1
 }
 
+fn blogTitle {
+    title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+    du=`{ls -l $1}
+    echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+}
+
 # Body
 fn genbody {
-    if ( test -f $body.md )
+    if ( test -f $body.md ) {
+        if ( ! ~ $#inBlog 0 )
+            blogTitle $body.md | markdown.pl
         markdown.pl < $body.md
+    }
     if not if ( test -f $body.tpl )
         template.awk $body.tpl | rc $rcargs
     if not if ( test -f $body.html )
@@ -97,9 +106,10 @@ fn genbody {
             echo '<h1>'$"blogTitle'</h1>'
 	echo '<div align="right">(<a href="index.rss">rss feed</a>)</div>'
         for ( f in `{ sortedBlogPostList $blogDirs } ) {
-            title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-            du=`{ls -l $f}
-            echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+            #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+            #du=`{ls -l $f}
+            #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+            blogTitle $f
             cat $f 
             echo 
         } | markdown.pl 
@@ -118,7 +128,11 @@ if (! ~ $args '') {
 fpath=$sitedir
 for ( i in '' $args ) {
     fpath = $fpath/$i
-    blogDirs = () # We don't want blog settings to cascade into posts
+    # We don't want blog settings to cascade into posts, note that we are inBlog instead
+    if ( ! ~ $#blogDirs 0 ) {
+        inBlog = $blogDirs
+        blogDirs = () 
+    }
     if ( test -f $fpath/_config )
         . $fpath/_config
 }
