@@ -92,7 +92,6 @@ fn genbody {
     if not if(~ $#blogDirs 0)
         template.awk inc/404.tpl | rc $rcargs
 
-    # Technically wrong. Will spit out blog entries after 404 for /blog/foo, for instance.
     if(! ~ $#blogDirs 0) {
         if ( ! ~ $blogTitle '' )
             echo '<h1>'$"blogTitle'</h1>'
