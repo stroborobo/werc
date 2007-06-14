@@ -131,7 +131,7 @@ display: none;
 
 .sideBarTitle {
   font-weight: bold;
-  margin: 0 0 0.5em 2.5mm;
+  margin: 0 0 0.5em 2mm;
   padding: 1em 0 0 0;
 }
 
@@ -143,7 +143,7 @@ display: none;
 }
 
 li ul {
-    padding-left: 1.2em !important;
+    padding-left: 1.0em !important;
 }
 
 #side-bar li {
@@ -156,7 +156,7 @@ li ul {
   background-color: transparent;
   text-decoration: none;
   margin: 0;
-  padding: 0.35em 1ex 0.35em 5mm;
+  padding: 0.35em 1ex 0.35em 2mm;
   display: block;
   text-transform: capitalize;
   font-weight: bold;
