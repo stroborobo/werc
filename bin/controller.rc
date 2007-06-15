@@ -87,7 +87,7 @@ fn genbody {
     if not if ( test -f $body.tpl )
         template.awk $body.tpl | rc $rcargs
     if not if ( test -f $body.html )
-        cat $body.html | /bin/sed '0,/<body>/d; /<\/body>/,$d' 
+        cat $body.html | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
     if not if (~ $body *.html && test -f $body )
         cat $body | /bin/sed -i '0,/<body[^>]*>/d;/<\/body>/,$d' 
     if not if ( ~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0 )
