@@ -134,6 +134,10 @@ for ( i in '' $args ) {
         inBlog = $blogDirs
         blogDirs = () 
     }
+
+    if ( ~ $#inBlog 0 && ~ $i [Bb]log )
+        inBlog = 'yes'
+
     if ( test -f $fpath/_config )
         . $fpath/_config
 }
