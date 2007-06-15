@@ -24,6 +24,7 @@ fn gentitle {
     echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ ' <span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
 
+# Don't change var name or trailing ';', some dirs change the filter!
 dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,;'
 
 # Sidebar 
