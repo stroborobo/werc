@@ -135,11 +135,11 @@ for ( i in '' $args ) {
         blogDirs = () 
     }
 
-    if ( ~ $#inBlog 0 && ~ $i [Bb]log )
-        inBlog = 'yes'
-
     if ( test -f $fpath/_config )
         . $fpath/_config
+
+    if ( ~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log )
+        inBlog = 'yes'
 }
 
 template=$sitedir/$template.tpl
