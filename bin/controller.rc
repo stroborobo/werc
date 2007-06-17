@@ -93,6 +93,8 @@ fn genbody {
         cat $body | /bin/sed -i '0,/<body[^>]*>/d;/<\/body>/,$d' 
     if not if ( ~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0 )
         blogDirs = `{basename -d $body}
+    if not if ( test -f pub/^$reqpath^.tpl )
+        template.awk pub/^$reqpath^.tpl | rc $rcargs
     if not if(~ $body */index && ~ $#blogDirs 0) {
             echo '<h1>' `{basename `{basename -d $body}}'</h1>'
             echo '<ul>'
@@ -146,6 +148,7 @@ template=$sitedir/$template.tpl
 if (! ~ $#sidebar 0)
     sidebar=tpl/_inc/$sidebar.tpl
 
+reqpath=$body
 body=$sitedir/$body
 rssuri=$uri
 if (test -d $body) {
