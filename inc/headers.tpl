@@ -15,6 +15,9 @@ Content-Type: text/html
 
     <link rel="stylesheet" href="/pub/style/style.css" type="text/css" media="screen" title="default" />
     <link rel="stylesheet alternative" type="text/css" href="/pub/style/style_old.css" media="screen" title="Old Style" />
+% if (test -f $sitedir/_style.css) {
+    <link rel="stylesheet" href="/_style.css" type="text/css" media="screen" title="default" />
+% }
     %($extraHeaders%)
 </head>
 <body>
