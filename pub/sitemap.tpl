@@ -30,7 +30,7 @@ fn listDir {
             # H1 is not reliable because htmlroff doesn't use it :(
             #desc = `{ cat $i.html |sed 32q | grep '<[Hh]1>' |sed 's/<[Hh]1>(.*)(<\/[Hh]1>|$)/\1/;s/<[^>]*>//g;1q'  } 
             # Pick the first line of body  instead
-            desc = `{ cat $i.html |/bin/sed '0,/<[Bb][Oo][Dd][Yy]/d;s/<[^>]*>//g;/^$/d'|sed 1q }
+            desc = `{ /bin/sed -e '0,/<[Bb][Oo][Dd][Yy]/d;s/<[^>]*>//g;/^$/d' < $i.html >[2]/dev/null | sed 1q }
         }
         if (! ~ $desc '')
             desc = ' - '$"desc
