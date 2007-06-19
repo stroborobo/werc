@@ -15,7 +15,7 @@ body=index
 template=_default
 sidebar=sidebar
 basedir=/gsoc/www
-baseuri=http://$site
+baseuri=http://$site/
 for(i in siteTitle siteSubTitle title extraHeaders)
     $i = ''
 
@@ -132,7 +132,7 @@ fpath=$sitedir
 for ( i in '' $args ) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if ( ! ~ $#blogDirs 0 ) {
+    if ( ! ~ $#blogDirs 0 && ! ~ $body */indexrss ) {
         inBlog = $blogDirs
         blogDirs = () 
     }
@@ -201,6 +201,10 @@ if(! ~ $REQUEST_URI */index.rss) {
 	cat $headers $template | template
 	exit
 }
+
+if ( ~ $body */[bB]log/indexrss */[bB]log//indexrss && ~ $#blogDirs 0 )
+    blogDirs = `{basename -d $body}
+
 
 uri = `{echo $uri | sed 's/indexrss$//'}
 uri=$baseuri$"uri
