@@ -132,7 +132,7 @@ fpath=$sitedir
 for ( i in '' $args ) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if ( ! ~ $#blogDirs 0 && ! ~ $body */indexrss ) {
+    if ( ! ~ $#blogDirs 0 && ! ~ $body */indexrss */[bB]log */[bB]log/ ) {
         inBlog = $blogDirs
         blogDirs = () 
     }
