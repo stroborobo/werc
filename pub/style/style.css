@@ -353,3 +353,8 @@ pre {
 }
 
 
+/* Quotes */
+blockquote {
+    border-left: 1px solid blue;
+    font-style: italic;
+}
