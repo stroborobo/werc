@@ -7,6 +7,10 @@ cpath = ''
 rpath = `{pwd}
 rpath = $rpath^'/'^$sitedir
 
+fn getMdDesc {
+    sed 's/^(.......................................................................................................[^ ]*).*$/\1/g; 1q' < $1 
+}
+
 fn listDir {
     cd $1
     dirfilter = $saveddf
@@ -14,17 +18,17 @@ fn listDir {
         . _config
 
     echo '<ul>'
-    for ( i in `{ls -d */ *.md *.html >[2] /dev/null |sed $dirfilter^'/index$/d;' } ) {
+    for ( i in `{ ls -d */ *.md *.html >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
         cpath = `{ pwd | sed 's,^'^$"rpath/?^',,; s,//*,/,;' }
         if( ~ $#cpath 0 )
             cpath = ''
 
         desc = ''
         if (test -f $i.md) {
-            desc = `{ sed 1q < $i.md }
+            desc = `{ getMdDesc $i.md }
         }
         if (test -f $i/index.md) {
-            desc = `{ sed 1q < $i/index.md }
+            desc = `{ getMdDesc $i/index.md }
         }
         if (test -f $i.html) {
             # H1 is not reliable because htmlroff doesn't use it :(
