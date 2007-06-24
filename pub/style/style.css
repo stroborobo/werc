@@ -119,7 +119,7 @@ display: none;
 /* ##### Side Boxes ##### */
 
 #side-bar {
-  width: 15em;
+  width: 16em;
   float: left;
   clear: left;
   border-right: 1px solid rgb(153,153,153);
@@ -212,7 +212,7 @@ li ul {
   background-color: transparent;
   text-align: justify;
   line-height: 1.5em;
-  margin: 0em 0 0 15em;
+  margin: 0em 0 0 16em;
   padding: 0.5mm 5mm 5mm 10mm;
   border-left: 1px solid rgb(153,153,153);
 }
