@@ -75,7 +75,7 @@ fn sortedBlogPostList {
 fn blogTitle {
     title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
     du=`{ls -l $1}
-    echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+    echo '##<a href="' `{echo $1 | sed 's,^sites/[^/]*/*/,/,; s/\.md$//' } '">' $"title^'</a> *('By $du(4) Last mod: $du(7 8 9) ')*'
 }
 
 # Body
