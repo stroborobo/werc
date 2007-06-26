@@ -14,10 +14,16 @@ fn getMdDesc {
 fn listDir {
     cd $1
     dirfilter = $saveddf
+    blogDirs = ()
     if (test -f _config)
         . _config
 
     echo '<ul>'
+
+    if (! ~ $#blogDirs 0 || ~ $1 blog Blog )
+        echo '' 
+    if not {
+
     for ( i in `{ ls -d */ *.md *.html >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
         cpath = `{ pwd | sed 's,^'^$"rpath/?^',,; s,//*,/,;' }
         if( ~ $#cpath 0 )
@@ -42,6 +48,7 @@ fn listDir {
         echo '<li><a style="text-transform: capitalize" href="'$cpath/$i'">'^$"tit^'</a>' $desc '</li>' 
         if (test -d  $i)
             listDir $i
+    }
     }
     echo '</ul>'
     cd ..
