@@ -1,0 +1,17 @@
+#!/bin/rc
+. 9.rc
+
+cachedir=/tmp/md_cache
+mkdir -p $cachedir >[2]/dev/null
+
+tmpfile=$cachedir/mdtmp.$pid
+score=`{{tee $tmpfile || exit 1} | sha1sum}
+cachefile=$cachedir/$score
+
+if(test -f $cachefile)
+    cat $cachefile
+if not {
+    markdown.pl < $tmpfile | tee $cachefile.$pid
+    mv $cachefile.$pid $cachefile
+}
+rm $tmpfile >[2]/dev/null

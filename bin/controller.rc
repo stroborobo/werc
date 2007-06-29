@@ -8,6 +8,8 @@ ifs='/' {
 cd ..
 
 # default config
+formater=markdown.pl
+formater=md_cache # markdown cacher
 site=$SERVER_NAME
 sitedir=sites/$site
 headers=inc/headers.tpl
@@ -83,8 +85,8 @@ fn blogTitle {
 fn genbody {
     if ( test -f $body.md ) {
         if ( ! ~ $#inBlog 0 )
-            blogTitle $body.md | markdown.pl
-        markdown.pl < $body.md
+            blogTitle $body.md | $formater
+        $formater < $body.md
     }
     if not if ( test -f $body.tpl )
         template.awk $body.tpl | rc $rcargs
@@ -116,7 +118,7 @@ fn genbody {
             blogTitle $f
             cat $f 
             echo 
-        } | markdown.pl 
+        } | $formater
     }
 }
 
