@@ -16,7 +16,6 @@ headers=inc/headers.tpl
 body=index
 template=_default
 sidebar=sidebar
-basedir=/gsoc/www
 baseuri=http://$site/
 for(i in siteTitle siteSubTitle title extraHeaders)
     $i = ''
@@ -170,7 +169,7 @@ if(! ~ $#blogDirs 0) {
 # RSS
 fn statpost {
 	f = $1
-	uri = `{echo $f | sed 's,^'$basedir',,'}
+	uri = `{echo $f | sed 's,^'$sitedir',,'}
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
 	stat=`{stat -c '%Y %U' $f}
 	date=`{/bin/date -Rd @$stat(1)}
