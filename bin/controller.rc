@@ -1,7 +1,7 @@
 #!/usr/local/plan9/bin/rc
 path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
 
-uri = `{echo -n $REQUEST_URI | sed 's/\?.*//; s/[^a-zA-Z0-9_+\-\/]//g'}
+uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/]//g' -e '1q'}
 ifs='/' {
 	args = `{echo -n $uri}
 }
@@ -125,8 +125,9 @@ fn genbody {
 . etc/initrc
 
 if (! ~ $args '') {
-    title=$args($#args)
-    title=`{echo $title | sed 's/_/ /g' }
+    #title=$args($#args)
+    title=$args
+    title=`{echo $title | sed -e 's/ / - /g' -e 's/_/ /g' }
     body=$uri
 }
 
