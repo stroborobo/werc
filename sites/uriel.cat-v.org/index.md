@@ -1,3 +1,17 @@
+"*Each friend represents a world in us, a world possibly not born until they
+arrive, and it is only by this meeting that a new world is born.*"
+
+                                             -- Anäis Nin
+
+"*Friendship is unnecessary, like philosophy, like art.... It has no survival
+value; rather it is one of those things that give value to survival.*"
+
+                                             -- C.S. Lewis
+
+"*Him that I love, I wish to be free -- even from me.*"
+
+                                              -- Anne Morrow Lindbergh
+
 "*The Great Man ... is colder, harder, less hesitating, and without respect and
 without the fear of "opinion"; he lacks the virtues that accompany respect and
 "respectability", and altogether everything that is the "virtue of the herd".

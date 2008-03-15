@@ -18,7 +18,7 @@ Content-Type: text/html
 % if (! ~ $#meta_keywords 0)
 %   echo '    <meta name="keywords" content="'$"meta_keywords'" />'
 
-    <link rel="stylesheet" href="/pub/style/style.css" type="text/css" media="screen" title="default" />
+    <link rel="stylesheet" href="/pub/style/style.css" type="text/css" media="screen, handheld" title="default" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
 %#    <link rel="stylesheet alternative" type="text/css" href="/pub/style/style_old.css" media="screen" title="Old Style" />
 % if (test -f $sitedir/_style.css) {
