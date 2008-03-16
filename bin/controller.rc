@@ -98,9 +98,9 @@ fn genbody {
     if not if ( test -f pub/^$reqpath^.tpl )
         template.awk pub/^$reqpath^.tpl | rc $rcargs
     if not if(~ $body */index && ~ $#blogDirs 0) {
-            echo '<h1>' `{basename `{basename -d $body}}'</h1>'
-            echo '<ul>'
-            ls -F `{ basename -d $body } | sed $dirfilter' s,^'$sitedir'/(.*),<li><a href="\1">\1</a></li>,'
+            echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
+            echo '<ul style="text-transform: capitalize;">'
+            ls -F `{ basename -d $body } | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
             echo '</ul>'
     }
     if not if(~ $#blogDirs 0)
