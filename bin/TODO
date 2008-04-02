@@ -1,0 +1,8 @@
+* In the sitemap index pages should be used for description of directories
+* Too wide margins for .html (troffied) in low screen resolutions
+* Fixed width of left sidebar
+* Broken links in blog titles in post listing, eg: http://repo.cat-v.org/libixp/news/
+
+02:50 < devn> <META name="description" content="This is the Google Summer of Code blog for Plan9 and Inferno projects.">
+02:50 < devn> <META name="keywords" content="google, summer of code, inferno, plan9, programming">
+
