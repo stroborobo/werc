@@ -30,7 +30,11 @@ dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,;'
 
 # Sidebar 
 fn menu {
-    ls -F $1 | sed $dirfilter | awk -F/ '
+    lsArgs = ( '-F' )
+    if (! ~ $#blogDirs 0) {
+    	lsArgs = ($lsArgs -r)
+    }
+    ls $lsArgs $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
     /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && $NF != "index" {
