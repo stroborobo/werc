@@ -11,7 +11,8 @@ body {
 }
 
 html > body {
-  font-size: 9pt;
+  /* font-size: 9pt; */
+  font-size: 0.7em;
 }
 
 acronym, .titleTip {
@@ -224,7 +225,7 @@ li ul {
 
 
 #main-copy p {
-  margin: 1em 1ex 2em 1ex;
+  margin: 1em 1ex 1em 1ex;
   padding: 0;
 }
 
