@@ -175,7 +175,34 @@ if(! ~ $#blogDirs 0) {
 '
 }
 
+
+
+fn template {
+    template.awk | rc $rcargs |
+    awk '{
+        buf = buf $0"\n"
+        if(length(buf) > 8192) {
+            printf "%s", buf
+            buf = ""
+        }
+    }
+    END{ printf "%s", buf }'
+}
+
+if(! ~ $REQUEST_URI */index.rss) {
+	cat $headers $template | template
+	echo '</body></html>'
+	exit
+}
+
 # RSS
+if ( ~ $body */[bB]log/indexrss */[bB]log//indexrss && ~ $#blogDirs 0 )
+    blogDirs = `{basename -d $body}
+
+
+uri = `{echo $uri | sed 's/indexrss$//'}
+uri=$baseuri$"uri
+
 fn statpost {
 	f = $1
 	uri = `{echo $f | sed 's,^'$sitedir',,'}
@@ -195,30 +222,6 @@ fn statpost {
 		}' $f | sed 's/\]\]>/Fucking goddamn XML garbage/g'}
 	}
 }
-
-fn template {
-    template.awk | rc $rcargs |
-    awk '{
-        buf = buf $0"\n"
-        if(length(buf) > 8192) {
-            printf "%s", buf
-            buf = ""
-        }
-    }
-    END{ printf "%s", buf }'
-}
-
-if(! ~ $REQUEST_URI */index.rss) {
-	cat $headers $template | template
-	exit
-}
-
-if ( ~ $body */[bB]log/indexrss */[bB]log//indexrss && ~ $#blogDirs 0 )
-    blogDirs = `{basename -d $body}
-
-
-uri = `{echo $uri | sed 's/indexrss$//'}
-uri=$baseuri$"uri
 
 # Should be in a separate file.
 cat <<'!' | template
