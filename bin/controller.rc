@@ -219,7 +219,7 @@ fn statpost {
 				exit
 			}
 			print
-		}' $f | sed 's/\]\]>/Fucking goddamn XML garbage/g'}
+		}' $f |fmt -j| sed 's/\]\]>/Fucking goddamn XML garbage/g'}
 	}
 }
 
