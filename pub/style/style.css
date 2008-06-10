@@ -225,7 +225,7 @@ li ul {
 
 
 #main-copy p {
-  margin: 1em 1ex 1em 1ex;
+  margin: 1em 1ex 1em 1ex !important; /* Need !important so troff-generated pages don't look totally squezed */
   padding: 0;
 }
 
