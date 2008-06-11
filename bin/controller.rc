@@ -207,8 +207,9 @@ fn statpost {
 	f = $1
 	uri = `{echo $f | sed 's,^'$sitedir',,'}
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
 	stat=`{stat -c '%Y %U' $f}
-	date=`{/bin/date -Rd @$stat(1)}
+	mdate=`{/bin/date -Rd @$stat(1)}
 	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
 	by=$stat(2)
 	ifs=() {
@@ -246,6 +247,7 @@ Content-Type: text/xml; charset=utf-8
 			<link>%($uri%)</link>
                         <guid isPermaLink="true">%($uri%)</guid>
 			<pubDate>%($date%)</pubDate>
+			<lastBuildDate>%($mdate%)</lastBuildDate>
 			<description><![CDATA[<pre>%($summary%)</pre>]]></description>
 		</item>
 %		}
