@@ -32,7 +32,7 @@ dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,;'
 fn menu {
     lsArgs = ( '-F' )
     # XXX will not work properly for $#blogDirs > 1 and matching is hackish
-    if ( (!~ $#inBlog 0) || ! ~ $#blogDirs 0 && (~ $blogDirs^/ *$1 *$1/) ) { # Work in progress XXX
+    if ( (! ~ $#inBlog 0) || ! ~ $#blogDirs 0 && (~ $blogDirs^/ *$1 *$1/) ) { # Work in progress XXX
     	lsArgs = ($lsArgs -r)
     }
 
