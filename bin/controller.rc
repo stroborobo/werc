@@ -97,7 +97,9 @@ fn genbody {
         template.awk $body.tpl | rc $rcargs
     if not if ( test -f $body.txt ) {
         echo '<pre>'
-        cat $body.txt |fmt -l 82 -j | sed 's/</\&gt;/g; s/>/\&lt;/g'
+	# XXX Insering a blank line between lines in input is good for fortunes.txt, but probably not for other .txt files
+	# XXX Words are not broken, even if they are way beyond 82 chars long
+        cat $body.txt |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
         echo '</pre>'
     }
     if not if ( test -f $body.html )
