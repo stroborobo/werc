@@ -162,6 +162,17 @@ for ( i in ('' $args) ) {
         inBlog = 'yes'
 }
 
+
+# Redirections and other preprocessing
+if (~ $#redirectPermanent 1) {
+	echo 'Status: 301 Moved Permanantly
+Location: '^$"redirectPermanent^'
+
+'
+}
+
+
+# Template/body selection
 template=$sitedir/$template.tpl
 if (! ~ $#sidebar 0)
     sidebar=tpl/_inc/$sidebar.tpl
