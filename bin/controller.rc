@@ -39,6 +39,7 @@ fn menu {
     ls $lsArgs $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
+    # Should add \. to the list of allowed chars in file names, but need to find a way to filter out .txt and so on
     /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && $NF != "index" {
         isdir = match($0, "/$")
         sub("[*/]$", "")
