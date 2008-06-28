@@ -1,7 +1,7 @@
 #!/usr/local/plan9/bin/rc
 path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
 
-uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.*/./g;' -e '1q'}
+uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.\.*/./g;' -e '1q'}
 ifs='/' {
 	args = `{echo -n $uri}
 }
