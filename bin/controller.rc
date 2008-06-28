@@ -1,7 +1,7 @@
 #!/usr/local/plan9/bin/rc
 path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
 
-uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/]//g' -e '1q'}
+uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.*/./g;' -e '1q'}
 ifs='/' {
 	args = `{echo -n $uri}
 }
@@ -150,7 +150,7 @@ fpath=$sitedir
 for ( i in ('' $args) ) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if ( ! ~ $#blogDirs 0 && ! ~ $body */indexrss */[bB]log */[bB]log/ ) {
+    if ( ! ~ $#blogDirs 0 && ! ~ $body */index.rss */[bB]log */[bB]log/ ) {
         inBlog = $blogDirs
         blogDirs = () 
     }
@@ -214,11 +214,11 @@ if(! ~ $REQUEST_URI */index.rss) {
 }
 
 # RSS
-if ( ~ $body */[bB]log/indexrss */[bB]log//indexrss && ~ $#blogDirs 0 )
+if ( ~ $body */[bB]log/index.rss */[bB]log//index.rss && ~ $#blogDirs 0 )
     blogDirs = `{basename -d $body}
 
 
-uri = `{echo $uri | sed 's/indexrss$//'}
+uri = `{echo $uri | sed 's/index.rss$//'}
 uri=$baseuri$"uri
 
 fn statpost {
