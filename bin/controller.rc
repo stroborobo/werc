@@ -30,7 +30,7 @@ dirfilter = '/\/[._]/d; s,^\.\.*/,.,; s,\.md$,,; s,\.html,,;'
 
 # Sidebar 
 fn menu {
-    lsArgs = ( '-F' )
+    lsArgs = ('-F')
     # XXX will not work properly for $#blogDirs > 1 and matching is hackish
     if ( (! ~ $#inBlog 0) || ! ~ $#blogDirs 0 && (~ $blogDirs^/ *$1 *$1/) ) { # Work in progress XXX
     	lsArgs = ($lsArgs -r)
@@ -88,27 +88,27 @@ fn blogTitle {
 
 # Body
 fn genbody {
-    if ( test -f $body.md ) {
-        if ( ! ~ $#inBlog 0 )
+    if (test -f $body.md) {
+        if (! ~ $#inBlog 0)
             blogTitle $body.md | $formatter
         $formatter < $body.md
     }
-    if not if ( test -f $body.tpl )
+    if not if (test -f $body.tpl)
         template.awk $body.tpl | rc $rcargs
-    if not if ( test -f $body.txt ) {
+    if not if (test -f $body.txt) {
         echo '<pre>'
 	# XXX Insering a blank line between lines in input is good for fortunes.txt, but probably not for other .txt files
 	# XXX Words are not broken, even if they are way beyond 82 chars long
         cat $body.txt |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
         echo '</pre>'
     }
-    if not if ( test -f $body.html )
+    if not if (test -f $body.html)
         cat $body.html | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
-    if not if (~ $body *.html && test -f $body )
+    if not if (~ $body *.html && test -f $body)
         cat $body | /bin/sed -i '0,/<body[^>]*>/d;/<\/body>/,$d'  # This branch is never taken?
-    if not if ( ~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0 )
+    if not if (~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0)
         blogDirs = `{basename -d $body}
-    if not if ( test -f pub/^$reqpath^.tpl )
+    if not if (test -f pub/^$reqpath^.tpl)
         template.awk pub/^$reqpath^.tpl | rc $rcargs
     if not if(~ $body */index && ~ $#blogDirs 0) {
             echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
@@ -122,10 +122,10 @@ fn genbody {
     }
 
     if(! ~ $#blogDirs 0) {
-        if ( ! ~ $blogTitle '' )
+        if (! ~ $blogTitle '')
             echo '<h1>'$"blogTitle'</h1>'
 	echo '<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>'
-        for ( f in `{ sortedBlogPostList $blogDirs } ) {
+        for (f in `{ sortedBlogPostList $blogDirs }) {
             #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
             #du=`{ls -l $f}
             #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
@@ -147,18 +147,18 @@ if (! ~ $args '') {
 }
 
 fpath=$sitedir
-for ( i in ('' $args) ) {
+for (i in ('' $args)) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if ( ! ~ $#blogDirs 0 && ! ~ $body */index.rss */[bB]log */[bB]log/ ) {
+    if (! ~ $#blogDirs 0 && ! ~ $body */index.rss */[bB]log */[bB]log/) {
         inBlog = $blogDirs
         blogDirs = () 
     }
 
-    if ( test -f $fpath/_config )
+    if (test -f $fpath/_config)
         . $fpath/_config
 
-    if ( ~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log )
+    if (~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
         inBlog = 'yes'
 }
 
@@ -214,7 +214,7 @@ if(! ~ $REQUEST_URI */index.rss) {
 }
 
 # RSS
-if ( ~ $body */[bB]log/index.rss */[bB]log//index.rss && ~ $#blogDirs 0 )
+if (~ $body */[bB]log/index.rss */[bB]log//index.rss && ~ $#blogDirs 0)
     blogDirs = `{basename -d $body}
 
 
