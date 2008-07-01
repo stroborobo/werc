@@ -1,6 +1,5 @@
 #!/usr/bin/env rc
 
-echo foo
 for ( d in sites/*/ ) {
 echo $d
 9 du -a $d | awk '/\.(md|html)$/ { print $2 }; {}' | 9 sed -e 's/\.(md|html)$//' -e 's,/index$,/,' -e 's,^sites/,http://,' > $d/sitemap.txt
