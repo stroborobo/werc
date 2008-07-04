@@ -53,7 +53,7 @@ fn menu {
             path = $0 "/"
         }
 
-        if(index(ENVIRON["REQUEST_URI"], "/" path) == 1) {
+        if(index(ENVIRON["REQUEST_URI"] "/", "/" path) == 1) {
             if(isdir) {
                 print "<li><a href=\"/" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
                 system("rc -c ''menu " path "''")
