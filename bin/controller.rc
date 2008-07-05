@@ -169,11 +169,21 @@ for (i in ('' $args)) {
         inBlog = 'yes'
 }
 
-
+echo $body $redirectPermanent>> /tmp/foo
 # Redirections and other preprocessing
 if (~ $#redirectPermanent 1) {
-	echo 'Status: 301 Moved Permanantly
+    echo 'Status: 301 Moved Permanantly
 Location: '^$"redirectPermanent^'
+
+'
+}
+if not if (~ $#redirectPermanent 2) {
+    # Experimental regexp sub-based redirect, probably should find a nicer interface
+    # For now only used at sites/harmful.cat-v.org/software/OO_programming/_config
+    to=`{echo $REQUEST_URI|sed 's|'^$redirectPermanent(1)^'|'^$redirectPermanent(2)^'|'}
+    if(! ~ $to $REQUEST_URI)
+        echo 'Status: 301 Moved Permanantly
+Location: '^$to^'
 
 '
 }
