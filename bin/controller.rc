@@ -192,7 +192,7 @@ if (test -d $body) {
     rssuri=$rssuri/
 }
 
-if(! ~ $#blogDirs 0) {
+if(! ~ $#blogDirs 0 || ! ~ $#inBlog 0) {
     rssuri=`{basename -d $uri}
     rssuri=$baseuri`{cleanname $"rssuri^/index.rss}
     extraHeaders=$"extraHeaders ^ \
