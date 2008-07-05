@@ -102,13 +102,6 @@ fn genbody {
     }
     if not if (test -f $body.tpl)
         template.awk $body.tpl | rc $rcargs
-    if not if (test -f $body.txt) {
-        echo '<pre>'
-	# XXX Insering a blank line between lines in input is good for fortunes.txt, but probably not for other .txt files
-	# XXX Words are not broken, even if they are way beyond 82 chars long
-        cat $body.txt |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
-        echo '</pre>'
-    }
     if not if (test -f $body.html)
         cat $body.html | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
     if not if (~ $body *.html && test -f $body)
@@ -117,6 +110,13 @@ fn genbody {
         blogDirs = `{basename -d $body}
     if not if (test -f pub/^$reqpath^.tpl)
         template.awk pub/^$reqpath^.tpl | rc $rcargs
+    if not if (test -f $body.txt) {
+        echo '<pre>'
+	# XXX Insering a blank line between lines in input is good for fortunes.txt, but probably not for other .txt files
+	# XXX Words are not broken, even if they are way beyond 82 chars long
+        cat $body.txt |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
+        echo '</pre>'
+    }
     if not if(~ $body */index && ~ $#blogDirs 0) {
             echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
             echo '<ul style="text-transform: capitalize;">'
