@@ -167,8 +167,10 @@ li ul {
   color: black!important;
   background-color: white;
   padding-left: 5mm;
-  XXXborder-top: 1px solid rgb(153,153,153);
-  XXXborder-bottom: 1px solid rgb(153,153,153);
+  /*
+  border-top: 1px solid rgb(153,153,153);
+  border-bottom: 1px solid rgb(153,153,153);
+  */
   font-weight: 600;
 }
 
