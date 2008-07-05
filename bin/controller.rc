@@ -26,7 +26,13 @@ fn gentitle {
 }
 
 # Don't change var name or trailing ';', some dirs change the filter!
-dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,;'
+dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,; '
+
+fn hide_paths {
+    for(i in $*) {
+	dirfilter = $dirfilter^'/^'$i'$/d; '
+    }
+}
 
 # Sidebar 
 fn menu {
