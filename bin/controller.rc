@@ -38,10 +38,9 @@ fn hide_paths {
 fn menu {
     lsArgs = ('-F')
     # XXX will not work properly for $#blogDirs > 1 and matching is hackish
-    if ( (! ~ $#inBlog 0) || ! ~ $#blogDirs 0 && (~ $blogDirs^/ *$1 *$1/) ) { # Work in progress XXX
+    if ( ! ~ $#inBlog 0 || ! ~ $#blogDirs 0 && ~ $blogDirs^/ *$1 *$1/ ) { # Work in progress XXX
     	lsArgs = ($lsArgs -r)
     }
-
     ls $lsArgs $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
@@ -146,6 +145,14 @@ fn genbody {
 
 . etc/initrc
 
+fn dprint {
+	echo $* >[1=2]
+}
+
+if(! ~ $#debug 0) {
+	echo $SERVER_NAME - $REQUEST_URI - >[1=2]
+}
+
 if (! ~ $args '') {
     #title=$args($#args)
     title=$args
@@ -169,7 +176,6 @@ for (i in ('' $args)) {
         inBlog = 'yes'
 }
 
-echo $body $redirectPermanent>> /tmp/foo
 # Redirections and other preprocessing
 if (~ $#redirectPermanent 1) {
     echo 'Status: 301 Moved Permanantly
@@ -209,7 +215,6 @@ if(! ~ $#blogDirs 0 || ! ~ $#inBlog 0) {
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
 '
 }
-
 
 
 fn template {
