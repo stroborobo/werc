@@ -125,6 +125,7 @@ fn genbody {
     if not if(~ $#blogDirs 0) {
         #echo 'Status: 404 Not Found\n\n' # should go before starting to print body
         template.awk inc/404.tpl | rc $rcargs
+	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER
     }
 
     if(! ~ $#blogDirs 0) {
@@ -150,7 +151,7 @@ fn dprint {
 }
 
 if(! ~ $#debug 0) {
-	echo $SERVER_NAME - $REQUEST_URI - >[1=2]
+	echo $SERVER_NAME^'/'^$REQUEST_URI - >[1=2]
 }
 
 if (! ~ $args '') {
@@ -176,22 +177,23 @@ for (i in ('' $args)) {
         inBlog = 'yes'
 }
 
-# Redirections and other preprocessing
-if (~ $#redirectPermanent 1) {
-    echo 'Status: 301 Moved Permanantly
-Location: '^$"redirectPermanent^'
+fn perm_redirect {
+        echo 'Status: 301 Moved Permanantly
+Location: '^$1^'
 
 '
 }
+
+# Redirections and other preprocessing
+if (~ $#redirectPermanent 1)
+	perm_redirect $"redirectPermanent
+
 if not if (~ $#redirectPermanent 2) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
     # For now only used at sites/harmful.cat-v.org/software/OO_programming/_config
     to=`{echo $REQUEST_URI|sed 's|'^$redirectPermanent(1)^'|'^$redirectPermanent(2)^'|'}
     if(! ~ $to $REQUEST_URI)
-        echo 'Status: 301 Moved Permanantly
-Location: '^$to^'
-
-'
+	perm_redirect $to
 }
 
 
@@ -204,6 +206,8 @@ reqpath=$body
 body=$sitedir/$body
 rssuri=$uri
 if (test -d $body) {
+    if(! ~ $body */)
+    	perm_redirect $REQUEST_URI^'/'
     body=$body/index
     rssuri=$rssuri/
 }
