@@ -125,7 +125,7 @@ fn genbody {
     if not if(~ $#blogDirs 0) {
         #echo 'Status: 404 Not Found\n\n' # should go before starting to print body
         template.awk inc/404.tpl | rc $rcargs
-	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER
+	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$HTTP_USER_AGENT
     }
 
     if(! ~ $#blogDirs 0) {
@@ -147,11 +147,11 @@ fn genbody {
 . etc/initrc
 
 fn dprint {
-	echo $* >[1=2]
+    echo $* >[1=2]
 }
 
 if(! ~ $#debug 0) {
-	echo $SERVER_NAME^'/'^$REQUEST_URI - >[1=2]
+    echo $SERVER_NAME^'/'^$REQUEST_URI - >[1=2]
 }
 
 if (! ~ $args '') {
@@ -178,15 +178,16 @@ for (i in ('' $args)) {
 }
 
 fn perm_redirect {
-        echo 'Status: 301 Moved Permanantly
+    echo 'Status: 301 Moved Permanantly
 Location: '^$1^'
 
 '
+    exit
 }
 
 # Redirections and other preprocessing
 if (~ $#redirectPermanent 1)
-	perm_redirect $"redirectPermanent
+    perm_redirect $"redirectPermanent
 
 if not if (~ $#redirectPermanent 2) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
