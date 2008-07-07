@@ -4,4 +4,10 @@ for ( d in sites/*/ ) {
 echo $d
 9 du -a $d | awk '/\.(md|html)$/ { print $2 }; {}' | 9 sed -e 's/\.(md|html)$//' -e 's,/index$,/,' -e 's,^sites/,http://,' > $d/sitemap.txt
 
+if(! test -f $d/robots.txt) {
+	echo generating missing robots.txt for $d
+	echo $d|sed 's,sites/,Sitemap: http://,; s/$/sitemap.txt/;' > $d/robots.txt
+	cat $d/robots.txt
+}
+
 }
