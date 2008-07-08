@@ -125,7 +125,7 @@ fn genbody {
     if not if(~ $#blogDirs 0) {
         #echo 'Status: 404 Not Found\n\n' # should go before starting to print body
         template.awk inc/404.tpl | rc $rcargs
-	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$HTTP_USER_AGENT
+	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
     }
 
     if(! ~ $#blogDirs 0) {
@@ -150,9 +150,9 @@ fn dprint {
     echo $* >[1=2]
 }
 
-if(! ~ $#debug 0) {
-    echo $SERVER_NAME^'/'^$REQUEST_URI - >[1=2]
-}
+if(! ~ $#debug 0)
+    dprint $SERVER_NAME^'/'^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
+
 
 if (! ~ $args '') {
     #title=$args($#args)
