@@ -38,9 +38,10 @@ fn hide_paths {
 fn menu {
     lsArgs = ('-F')
     # XXX will not work properly for $#blogDirs > 1 and matching is hackish
-    if ( ! ~ $#inBlog 0 || { ! ~ $#blogDirs 0 && ~ $blogDirs^/ *$1 *$1/ } ) { # Work in progress XXX
-    	lsArgs = ($lsArgs -r)
-    }
+    # XXX Work in progress, doesn't work well enough to be usable: too inconsistent, doesn't handle corner cases well at all
+    #if ( ! ~ $#blogDirs 0 && ~ $blogDirs^/ *$1 *$1/ ) { 
+    #	lsArgs = ($lsArgs -r)
+    #}
     ls $lsArgs $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"sidebar\">" }
     END { print "</ul>" }
