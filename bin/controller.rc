@@ -152,7 +152,7 @@ fn dprint {
 }
 
 if(! ~ $#debug 0)
-    dprint $SERVER_NAME^'/'^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
+    dprint $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
 
 
 if (! ~ $args '') {
@@ -190,10 +190,10 @@ Location: '^$1^'
 if (~ $#redirectPermanent 1)
     perm_redirect $"redirectPermanent
 
-if not if (~ $#redirectPermanent 2) {
+if not if (~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $redirectPermanent(1) }) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
     # For now only used at sites/harmful.cat-v.org/software/OO_programming/_config
-    to=`{echo $REQUEST_URI|sed 's|'^$redirectPermanent(1)^'|'^$redirectPermanent(2)^'|'}
+    to=`{echo $SERVER_NAME^$REQUEST_URI|sed 's|'^$redirectPermanent(1)^'|'^$redirectPermanent(2)^'|'}
     if(! ~ $to $REQUEST_URI)
 	perm_redirect $to
 }
