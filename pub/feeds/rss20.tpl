@@ -13,15 +13,21 @@ Content-Type: text/xml; charset=utf-8
 %{
 		for(f in `{sortedBlogPostList $blogDirs}) {
 			statpost $f
-%}		<item>
+			# Hack to aproximate the last build date (use the mdate from last posted item)
+			if(~ $#last_build_date 0) {
+				last_build_date='<lastBuildDate>'^$"mdate'</lastBuildDate>'
+				echo $last_build_date
+			}
+%}
+		<item>
 			<title>%($title%)</title>
 			<author>%($by%)@noreply.cat-v.org (%($by%))</author>
 			<link>%($uri%)</link>
                         <guid isPermaLink="true">%($uri%)</guid>
 			<pubDate>%($date%)</pubDate>
-			<lastBuildDate>%($mdate%)</lastBuildDate>
 			<description><![CDATA[<pre>%($summary%)</pre>]]></description>
 		</item>
 %		}
+
 	</channel>
 </rss>
