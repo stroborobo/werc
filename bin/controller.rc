@@ -17,8 +17,13 @@ body=index
 template=_default
 sidebar=sidebar
 baseuri=http://$site/
+reqpath=$body # Maybe this is not needed anymore now that the handlers are selected before anybody can mess with $body
 for(i in siteTitle siteSubTitle title extraHeaders)
     $i = ''
+
+fn dprint {
+    echo $* >[1=2]
+}
 
 # Title
 fn gentitle {
@@ -92,63 +97,137 @@ fn blogTitle {
     echo '##<a href="' $"permlink '">' $"title^'</a> *('By $du(4) Last mod: $du(7 8 9) ')*'
 }
 
-# Body
-fn genbody {
+
+
+
+# Handlers
+fn set_handler {
+    dprint XXX $*
+    handler = $1
+    shift
+    handler_args = $*
+}
+
+fn md_handler {
+    cat $* | $formatter
+}
+
+fn tpl_handler {
+    template.awk $1 | rc $rcargs
+}
+
+fn html_handler {
+    cat $1 | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
+}
+
+fn txt_handler {
+    echo '<pre>'
+    # XXX Insering a blank line between lines in input is good for fortunes.txt, but maybe not for other .txt files
+    # XXX Words are not broken, even if they are way beyond 82 chars long
+    cat $1 |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
+    echo '</pre>'
+}
+
+fn dir_listing_handler {
+    body = $1
+    echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
+    echo '<ul style="text-transform: capitalize;">'
+    ls -F `{ basename -d $body } | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
+    echo '</ul>'
+}
+
+fn 404_handler {
+    template.awk inc/404.tpl | rc $rcargs
+}
+
+fn blog_dir_handler {
+    blogDirs = $*
+
+    if (! ~ $blogTitle '')
+        echo '<h1>'$"blogTitle'</h1>' #" stupid vim syntax highlighting ;P
+
+    echo '<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>'
+
+    for (f in `{ sortedBlogPostList $blogDirs }) {
+        #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+        #du=`{ls -l $f}
+        #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
+        blogTitle $f
+        cat $f 
+        echo 
+    } | $formatter
+}
+
+fn blog_post_handler {
+
+    blogTitle $1 | $formatter
+    $formatter < $1
+}
+
+fn quote_html {
+    sed 's/</\&lt;/g; s/>/\&gt;/g'
+}
+fn debug_handler {
+    echo '<pre>'
+    env |quote_html
+    echo '</pre>'
+}
+
+
+fn select_handler {
     if (test -f $body.md) {
         if (! ~ $#inBlog 0)
-            blogTitle $body.md | $formatter
-        $formatter < $body.md
+            set_handler blog_post_handler $body.md
+        if not
+            set_handler md_handler $body.md
     }
+    if not if (~ $body */_debug)
+        set_handler debug_handler 
     if not if (test -f $body.tpl)
-        template.awk $body.tpl | rc $rcargs
+        set_handler tpl_handler $body.tpl
+
     if not if (test -f $body.html)
-        cat $body.html | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
+        set_handler html_handler $body.html
+
+    # Handle eplicit .html urls, this should not happen (the web server will usually handle this anyway)
+    # XXX We probably should setup a permanent redirect to $body|sed 's/.html$//' here
     if not if (~ $body *.html && test -f $body)
-        cat $body | /bin/sed -i '0,/<body[^>]*>/d;/<\/body>/,$d'  # This branch is never taken?
+        set_handler html_handler $body
+
+    # This should probably be merged with the blog_dir_handler
     if not if (~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0)
         blogDirs = `{basename -d $body}
+
+    # Global tpl (eg sitemap.tpl)
     if not if (test -f pub/^$reqpath^.tpl)
-        template.awk pub/^$reqpath^.tpl | rc $rcargs
-    if not if (test -f $body.txt) {
-        echo '<pre>'
-	# XXX Insering a blank line between lines in input is good for fortunes.txt, but probably not for other .txt files
-	# XXX Words are not broken, even if they are way beyond 82 chars long
-        cat $body.txt |sed 's/$/\n/g; s/</\&gt;/g; s/>/\&lt;/g' |fmt -l 82 -j
-        echo '</pre>'
-    }
-    if not if(~ $body */index && ~ $#blogDirs 0) {
-            echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
-            echo '<ul style="text-transform: capitalize;">'
-            ls -F `{ basename -d $body } | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
-            echo '</ul>'
-    }
+        set_handler tpl_handler pub/^$reqpath^.tpl
+
+    if not if (test -f $body.txt)
+        set_handler txt_handler $body.txt
+
+    # Dir listing
+    if not if(~ $body */index && ~ $#blogDirs 0)
+        set_handler dir_listing_handler $body
+
+    # File not found
     if not if(~ $#blogDirs 0) {
-        #echo 'Status: 404 Not Found\n\n' # should go before starting to print body
-        template.awk inc/404.tpl | rc $rcargs
-	dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
+        set_handler 404_handler $body
+        dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
+        echo 'Status: 404 Not Found\n\n'
     }
 
-    if(! ~ $#blogDirs 0) {
-        if (! ~ $blogTitle '')
-            echo '<h1>'$"blogTitle'</h1>'
-	echo '<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>'
-        for (f in `{ sortedBlogPostList $blogDirs }) {
-            #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-            #du=`{ls -l $f}
-            #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
-            blogTitle $f
-            cat $f 
-            echo 
-        } | $formatter
-    }
+    if(! ~ $#blogDirs 0)
+        set_handler blog_dir_handler $blogDirs
 }
 
 
+
+fn genbody {
+    # Actually execute request
+    $handler $handler_args
+}
 . etc/initrc
 
-fn dprint {
-    echo $* >[1=2]
-}
 
 if(! ~ $#debug 0)
     dprint $SERVER_NAME^'/'^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
@@ -203,7 +282,6 @@ template=$sitedir/$template.tpl
 if (! ~ $#sidebar 0)
     sidebar=tpl/_inc/$sidebar.tpl
 
-reqpath=$body
 body=$sitedir/$body
 rssuri=$uri
 if (test -d $body) {
@@ -221,6 +299,8 @@ if(! ~ $#blogDirs 0 || ! ~ $#inBlog 0) {
 '
 }
 
+
+select_handler
 
 fn template {
     template.awk | rc $rcargs |
