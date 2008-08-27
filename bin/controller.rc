@@ -230,7 +230,7 @@ fn genbody {
 
 
 if(! ~ $#debug 0)
-    dprint $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
+    dprint '  ' $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
 
 
 if (! ~ $args '') {
@@ -284,6 +284,10 @@ if (! ~ $#sidebar 0)
 
 body=$sitedir/$body
 rssuri=$uri
+
+#if(~ $body */index)
+    #perm_redirect `{ echo $REQUEST_URI | sed 's,/index$,/,' }
+
 if (test -d $body) {
     if(! ~ $body */)
     	perm_redirect $REQUEST_URI^'/'
@@ -334,7 +338,7 @@ fn statpost {
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
 	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
 	stat=`{stat -c '%Y %U' $f}
-	mdate=`{/bin/date -Rd @$stat(1)}
+	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
 	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
 	by=$stat(2)
 	ifs=() {

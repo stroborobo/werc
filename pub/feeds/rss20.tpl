@@ -13,11 +13,13 @@ Content-Type: text/xml; charset=utf-8
 %{
 		for(f in `{sortedBlogPostList $blogDirs}) {
 			statpost $f
-			# Hack to aproximate the last build date (use the mdate from last posted item)
-			if(~ $#last_build_date 0) {
-				last_build_date='<lastBuildDate>'^$"mdate'</lastBuildDate>'
-				echo $last_build_date
-			}
+			# Hack to aproximate the last build date 
+			#(use the mdate from last posted item)
+			# Commented out for now because maybe a wrong value is worse than no value
+			#if(~ $#last_build_date 0) {
+				#last_build_date='<lastBuildDate>'^$"mdate'</lastBuildDate>'
+				#echo $last_build_date
+			#}
 %}
 		<item>
 			<title>%($title%)</title>
