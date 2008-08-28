@@ -185,6 +185,7 @@ fn debug_handler {
 
 
 fn select_handler {
+dprint $body
     if (test -f $body.md) {
         if (! ~ $#inBlog 0)
             set_handler blog_post_handler $body.md
@@ -209,8 +210,8 @@ fn select_handler {
         blogDirs = `{basename -d $body}
 
     # Global tpl (eg sitemap.tpl)
-    if not if (test -f pub/^$body^.tpl)
-        set_handler tpl_handler pub/^$body^.tpl
+    if not if (test -f pub/^$uri^.tpl)
+        set_handler tpl_handler pub/^$uri^.tpl
 
     if not if (test -f $body.txt)
         set_handler txt_handler $body.txt
