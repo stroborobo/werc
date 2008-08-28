@@ -105,7 +105,7 @@ fn blogTitle {
     title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
     permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
     du=`{ls -l $1}
-    echo '##<a href="' $"permlink '">' $"title^'</a> *('By $du(4) Last mod: $du(7 8 9) ')*'
+    echo '##<a href="'^$"permlink^'">' $"title^'</a> *('By $du(4) Last mod: $du(7 8 9) ')*'
 }
 
 
