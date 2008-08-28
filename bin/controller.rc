@@ -13,17 +13,26 @@ formatter=md_cache # markdown cacher
 site=$SERVER_NAME
 sitedir=sites/$site
 headers=inc/headers.tpl
-body=index
 template=_default
 sidebar=sidebar
 baseuri=http://$site/
-reqpath=$body # Maybe this is not needed anymore now that the handlers are selected before anybody can mess with $body
 for(i in siteTitle siteSubTitle title extraHeaders)
     $i = ''
 
+
+# Useful functions
 fn dprint {
     echo $* >[1=2]
 }
+
+fn perm_redirect {
+    echo 'Status: 301 Moved Permanantly
+Location: '^$1^'
+
+'
+    exit
+}
+
 
 # Title
 fn gentitle {
@@ -33,6 +42,7 @@ fn gentitle {
 # Don't change var name or trailing ';', some dirs change the filter!
 dirfilter = '/\/[._]/d; s,^\./,,; s,\.md$,,; s,\.html,,; '
 
+# To be used from _config files
 fn hide_paths {
     for(i in $*) {
 	dirfilter = $dirfilter^'/^'$i'$/d; '
@@ -199,8 +209,8 @@ fn select_handler {
         blogDirs = `{basename -d $body}
 
     # Global tpl (eg sitemap.tpl)
-    if not if (test -f pub/^$reqpath^.tpl)
-        set_handler tpl_handler pub/^$reqpath^.tpl
+    if not if (test -f pub/^$body^.tpl)
+        set_handler tpl_handler pub/^$body^.tpl
 
     if not if (test -f $body.txt)
         set_handler txt_handler $body.txt
@@ -232,12 +242,17 @@ fn genbody {
 if(! ~ $#debug 0)
     dprint '  ' $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
 
-
 if (! ~ $args '') {
+    if (~ $args($#args) 'index')
+        perm_redirect `{ echo $REQUEST_URI | sed 's,/index$,/,' }
+        
     #title=$args($#args)
     title=$args
     title=`{echo $title | sed -e 's/ / - /g' -e 's/_/ /g' }
     body=$uri
+}
+if not {
+    body='/'
 }
 
 fpath=$sitedir
@@ -254,14 +269,6 @@ for (i in ('' $args)) {
 
     if (~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
         inBlog = 'yes'
-}
-
-fn perm_redirect {
-    echo 'Status: 301 Moved Permanantly
-Location: '^$1^'
-
-'
-    exit
 }
 
 # Redirections and other preprocessing
@@ -285,8 +292,6 @@ if (! ~ $#sidebar 0)
 body=$sitedir/$body
 rssuri=$uri
 
-#if(~ $body */index)
-    #perm_redirect `{ echo $REQUEST_URI | sed 's,/index$,/,' }
 
 if (test -d $body) {
     if(! ~ $body */)
