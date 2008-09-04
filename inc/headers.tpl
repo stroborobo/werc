@@ -25,9 +25,12 @@ Content-Type: text/html
     <link rel="stylesheet" href="/_style.css" type="text/css" media="screen" title="default" />
 % }
 
+% h = `{ get_inc_file headers.inc}
+% if(! ~ $#h 0)
+%   cat $h
+
     %($extraHeaders%)
 
-	<meta name="verify-v1" content="6zEoK0WMlnLmIS/w7Pnh6+srZECHsvnMGN0kQmowSGk=" />
 </head>
 <body>
 
