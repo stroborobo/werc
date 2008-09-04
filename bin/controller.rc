@@ -33,6 +33,16 @@ Location: '^$1^'
     exit
 }
 
+fn get_inc_file {
+    wantedfile = $1
+    if (test -f $sitedir/_inc/$wantedfile)
+    	echo -n $sitedir/_inc/$wantedfile
+    if not if(test -f sites/$masterSite/_inc/$wantedfile)
+    	echo -n       sites/$masterSite/_inc/$wantedfile
+    if not if (test -f inc/$wantedfile)
+    	echo -n        inc/$wantedfile
+}
+
 
 # Title
 fn gentitle {
@@ -147,7 +157,7 @@ fn dir_listing_handler {
 }
 
 fn 404_handler {
-    template.awk inc/404.tpl | rc $rcargs
+    template.awk `{get_inc_file 404.tpl } | rc $rcargs
 }
 
 fn blog_dir_handler {
@@ -287,8 +297,6 @@ if not if (~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $r
 
 # Template/body selection
 template=$sitedir/$template.tpl
-if (! ~ $#sidebar 0)
-    sidebar=tpl/_inc/$sidebar.tpl
 
 body=$sitedir/$body
 rssuri=$uri
