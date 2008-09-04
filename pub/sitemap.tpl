@@ -3,20 +3,17 @@
 %{
 
 saveddf = $dirfilter
-cpath = ''
-rpath = `{pwd}
-rpath = $rpath^'/'^$sitedir
 
 fn getMdDesc {
     sed 's/^(.......................................................................................................[^ ]*).*$/\1/g; 1q' < $1 
 }
 
 fn listDir {
-    cd $1
+    d=$1
     dirfilter = $saveddf
     blogDirs = ()
-    if (test -f _config)
-        . _config
+    if (test -f $d/_config)
+        . $d/_config
 
     echo '<ul>'
 
@@ -24,11 +21,7 @@ fn listDir {
         echo '' 
     if not {
 
-    for ( i in `{ ls -d */ *.md *.html >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
-        cpath = `{ pwd | sed 's,^'^$"rpath/?^',,; s,//*,/,;' }
-        if( ~ $#cpath 0 )
-            cpath = ''
-
+    for ( i in `{ ls -d $d/*/ $d/*.md $d/*.html >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
         desc = ''
         if (test -f $i.md) {
             desc = `{ getMdDesc $i.md }
@@ -44,15 +37,15 @@ fn listDir {
         }
         if (! ~ $desc '')
             desc = ' - '$"desc
-        tit = `{echo $i|sed 's/_/ /g'}
-        echo '<li><a style="text-transform: capitalize" href="'$cpath/$i'">'^$"tit^'</a>' $desc '</li>' 
-        if (test -d  $i)
-            listDir $i
+        tit = `{basename $i|sed 's/_/ /g'}
+        echo '<li><a style="text-transform: capitalize" href="'$i'">'^$"tit^'</a>' $desc '</li>' 
+        if (test -d $i)
+            @{ listDir $i }
     }
     }
     echo '</ul>'
-    cd ..
 }
+
 cd $sitedir
 listDir .
 
