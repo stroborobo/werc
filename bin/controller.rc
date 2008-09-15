@@ -50,7 +50,7 @@ fn gentitle {
 }
 
 # Don't change var name or trailing ';', some dirs change the filter!
-dirfilter = '/\/[._]/d; /sitemap\.txt/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
+dirfilter = '/\/[._]/d; /\/robots.\txt$/d; /\/sitemap\.txt$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
 
 # To be used from _config files
 fn hide_paths {
