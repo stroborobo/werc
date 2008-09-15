@@ -1,5 +1,4 @@
 #!/usr/bin/env rc
-#!/bin/rc
 . 9.rc
 
 cachedir=/tmp/md_cache
