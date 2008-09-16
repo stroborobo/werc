@@ -234,7 +234,7 @@ dprint $body
     if not if(~ $#blogDirs 0) {
         set_handler 404_handler $body
         dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
-        echo 'Status: 404 Not Found\n\n'
+        echo 'Status: 404 Not Found'
     }
 
     if(! ~ $#blogDirs 0)
