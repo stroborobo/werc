@@ -11,7 +11,7 @@
 plan9port=$PLAN9
 
 # Path, make sure the plan9port /bin directory is included before /bin and /usr/bin
-path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin)
+path=(. $plan9port/bin ./bin/ /bin/ /usr/bin)
 
 # Directory where your site(s) live ($site here is your domain name, eg., example.com)
 sitedir=sites/$site
