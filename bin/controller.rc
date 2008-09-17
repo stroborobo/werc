@@ -1,23 +1,5 @@
 #!/usr/local/plan9/bin/rc
-path=(. ./bin $PLAN9/bin /bin/ /usr/bin)
-
-uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.\.*/./g;' -e '1q'}
-ifs='/' {
-	args = `{echo -n $uri}
-}
 cd ..
-
-# default config
-formatter=markdown.pl
-formatter=md_cache # markdown cacher
-site=$SERVER_NAME
-sitedir=sites/$site
-headers=inc/headers.tpl
-template=_default
-sidebar=sidebar
-baseuri=http://$site/
-for(i in siteTitle siteSubTitle title extraHeaders)
-    $i = ''
 
 
 # Useful functions
@@ -242,12 +224,34 @@ dprint $body
 }
 
 
-
 fn genbody {
     # Actually execute request
     $handler $handler_args
 }
+
+
+# Careful, the proper p9p path might not be set until initrc.local is sourced
+path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 
+
+site=$SERVER_NAME
+headers=inc/headers.tpl
+template=_default
+sidebar=sidebar
+baseuri=http://$site/
+for(i in siteTitle siteSubTitle title extraHeaders)
+    $i = ''
+
 . etc/initrc
+
+if(test -f etc/initrc.local)
+    . etc/initrc.local
+
+
+# Parse request URL
+uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.\.*/./g;' -e '1q'}
+ifs='/' {
+	args = `{echo -n $uri}
+}
 
 
 if(! ~ $#debug 0)

@@ -1,4 +1,29 @@
+# This file contains the default werc settings.
+# To change any of this settings globally, copy them to etc/initrc.local
+# and customize them there.
+#
+# Some settings can also be set for a specific site in their respective _config
+# or their master-site _config file.
+
+# General options
+
+# Location of your Plan 9 from User Space installation (usually /usr/local/plan9)
+plan9port=$PLAN9
+
+# Path, make sure the plan9port /bin directory is included before /bin and /usr/bin
+path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin)
+
+# Directory where your site(s) live ($site here is your domain name, eg., example.com)
+sitedir=sites/$site
+
+# Set this to your favorite markdown formatter, eg., markdown.pl
+# (md_cache is a wrapper around markdown.pl that caches output)
+formatter=md_cache 
+
+# Enable debugging, to disable set to ()
+debug=true
+
+# Default site variables (Should be set on the _config file of each site or master site)
 masterSite=cat-v.org
 siteTitle='cat-v'
 siteSubTitle='Considered harmful'
-debug=true
