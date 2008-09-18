@@ -1,9 +1,11 @@
 * If a request for /foo.html file is 'not found' should automatically redirect to /foo
 * In the sitemap index pages should be used for description of directories
 * Fixed width of left sidebar
-* Broken links in blog titles in post listing, eg: http://repo.cat-v.org/libixp/news/
-* A way to specify redirects for a certain subtree (_redirect?) 301 moved
 
 02:50 < devn> <META name="description" content="This is the Google Summer of Code blog for Plan9 and Inferno projects.">
 02:50 < devn> <META name="keywords" content="google, summer of code, inferno, plan9, programming">
+
+Should add werc to certain wikipedia lists:
+* http://en.wikipedia.org/wiki/List_of_content_management_systems
+* http://en.wikipedia.org/wiki/Comparison_of_wiki_software
 
