@@ -93,7 +93,7 @@ fn sortedBlogPostList {
         ls $*^'/./' | grep '/[0-9]+.*\.md$'| sort -r -t. +1
 }
 
-fn blogTitle {
+fn gen_blog_post_title {
     title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
     permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
     du=`{ls -l $1}
@@ -154,7 +154,7 @@ fn blog_dir_handler {
         #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
         #du=`{ls -l $f}
         #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
-        blogTitle $f
+        gen_blog_post_title $f
         cat $f 
         echo 
     } | $formatter
@@ -162,7 +162,7 @@ fn blog_dir_handler {
 
 fn blog_post_handler {
 
-    blogTitle $1 | $formatter
+    gen_blog_post_title $1 | $formatter
     $formatter < $1
 }
 
@@ -238,7 +238,7 @@ headers=inc/headers.tpl
 template=_default
 sidebar=sidebar
 baseuri=http://$site/
-for(i in siteTitle siteSubTitle title extraHeaders)
+for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
 
 . etc/initrc
@@ -257,13 +257,12 @@ ifs='/' {
 if(! ~ $#debug 0)
     dprint '  ' $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
 
+
 if (! ~ $args '') {
     if (~ $args($#args) 'index')
         perm_redirect `{ echo $REQUEST_URI | sed 's,/index$,/,' }
         
-    #title=$args($#args)
-    title=$args
-    title=`{echo $title | sed -e 's/ / - /g' -e 's/_/ /g' }
+    pageTitle=`{echo $args | sed -e 's/ / - /g' -e 's/_/ /g'}
     body=$uri
 }
 if not {
@@ -298,6 +297,11 @@ if not if (~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $r
 	perm_redirect $to
 }
 
+# Set Page title
+if(~ $pageTitle '')
+	pageTitle=$siteTitle^' '^$siteSubTitle
+if not
+	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 # Template/body selection
 template=$sitedir/$template.tpl
