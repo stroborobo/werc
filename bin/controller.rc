@@ -15,14 +15,34 @@ Location: '^$1^'
     exit
 }
 
-fn get_inc_file {
+fn get_lib_file {
     wantedfile = $1
-    if (test -f $sitedir/_inc/$wantedfile)
+    if (test -f $sitedir/_werc/lib/$wantedfile)
+    	echo -n $sitedir/_werc/lib/$wantedfile
+    if not if(! ~ $masterSite 0 && test -f sites/$masterSite/_werc/lib/$wantedfile)
+    	echo -n       sites/$masterSite/_werc/lib/$wantedfile
+    if not if (test -f lib/$wantedfile)
+    	echo -n        lib/$wantedfile
+
+    # DEPRECATED
+    if (test -f $sitedir/_inc/$wantedfile) {
     	echo -n $sitedir/_inc/$wantedfile
-    if not if(test -f sites/$masterSite/_inc/$wantedfile)
+        dprint DEPRECATION WARNING: Using file in depracted path: $sitedir/_inc/$wantedfile XXX
+    }
+    if not if(! ~ $masterSite 0 && test -f sites/$masterSite/_inc/$wantedfile) {
     	echo -n       sites/$masterSite/_inc/$wantedfile
-    if not if (test -f inc/$wantedfile)
+        dprint DEPRECATION WARNING: Using file in depracted path: sites/$masterSite/_inc/$wantedfile XXX
+    }
+    if not if (test -f inc/$wantedfile) {
     	echo -n        inc/$wantedfile
+        dprint DEPRECATION WARNING: Using file in depracted path: inc/$wantedfile XXX
+    }
+}
+
+# DEPRECATED
+fn get_inc_file {
+    get_lib_file $*
+    dprint DEPRECATION WARNING: Called get_inc_file, should call get_lib_file
 }
 
 
@@ -34,7 +54,7 @@ fn gentitle {
 # Don't change var name or trailing ';', some dirs change the filter!
 dirfilter = '/\/[._]/d; /\/robots.\txt$/d; /\/sitemap\.txt$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
 
-# To be used from _config files
+# To be used from config files
 fn hide_paths {
     for(i in $*) {
 	dirfilter = $dirfilter^'/^'$i'$/d; '
@@ -139,7 +159,7 @@ fn dir_listing_handler {
 }
 
 fn 404_handler {
-    template.awk `{get_inc_file 404.tpl } | rc $rcargs
+    template.awk `{get_lib_file 404.tpl } | rc $rcargs
 }
 
 fn blog_dir_handler {
@@ -202,8 +222,8 @@ dprint $body
         blogDirs = `{basename -d $body}
 
     # Global tpl (eg sitemap.tpl)
-    if not if (test -f pub/^$uri^.tpl)
-        set_handler tpl_handler pub/^$uri^.tpl
+    if not if (test -f lib/^$uri^.tpl)
+        set_handler tpl_handler lib/^$uri^.tpl
 
     if not if (test -f $body.txt)
         set_handler txt_handler $body.txt
@@ -234,8 +254,8 @@ fn genbody {
 path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 
 
 site=$SERVER_NAME
-headers=inc/headers.tpl
-template=_default
+headers=lib/headers.tpl
+master_template=default_master.tpl
 sidebar=sidebar
 baseuri=http://$site/
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
@@ -280,6 +300,8 @@ for (i in ('' $args)) {
 
     if (test -f $fpath/_config)
         . $fpath/_config
+    if (test -f $fpath/_werc/config)
+        . $fpath/_werc/config
 
     if (~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
         inBlog = 'yes'
@@ -304,7 +326,12 @@ if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 # Template/body selection
-template=$sitedir/$template.tpl
+master_template= `{get_lib_file $master_template }
+
+# DEPRECATED
+if(~ $master_template 0)
+    master_template=$sitedir/_default.tpl
+
 
 body=$sitedir/$body
 rssuri=$uri
@@ -341,7 +368,7 @@ fn template {
 }
 
 if(! ~ $REQUEST_URI */index.rss) {
-	cat $headers $template | template
+	cat $headers $master_template | template
 	echo '</body></html>'
 	exit
 }
@@ -376,4 +403,4 @@ fn statpost {
 	}
 }
 
-cat pub/feeds/rss20.tpl | template
+cat lib/feeds/rss20.tpl | template
