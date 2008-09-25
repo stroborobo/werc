@@ -23,6 +23,9 @@ formatter=md_cache
 # Enable debugging, to disable set to ()
 debug=true
 
+# Disable deprecated interfaces
+disableDeprecated=true
+
 # Default site variables, must be set in initrc.local or _werc/config, only siteTitle is required.
 #masterSite=cat-v.org # Not required!
 #siteTitle='cat-v'

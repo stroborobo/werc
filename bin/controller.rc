@@ -25,16 +25,16 @@ fn get_lib_file {
     	echo -n        lib/$wantedfile
 
     # DEPRECATED
-    if (test -f $sitedir/_inc/$wantedfile) {
+    if not if (~ $#disableDeprecated 0 && test -f $sitedir/_inc/$wantedfile) {
     	echo -n $sitedir/_inc/$wantedfile
         dprint DEPRECATION WARNING: Using file in depracted path: $sitedir/_inc/$wantedfile XXX
     }
-    if not if(! ~ $masterSite 0 && test -f sites/$masterSite/_inc/$wantedfile) {
-    	echo -n       sites/$masterSite/_inc/$wantedfile
+    if not if(~ $#disableDeprecated 0 && ! ~ $masterSite 0 && test -f sites/$masterSite/_inc/$wantedfile) {
+    	echo -n sites/$masterSite/_inc/$wantedfile
         dprint DEPRECATION WARNING: Using file in depracted path: sites/$masterSite/_inc/$wantedfile XXX
     }
-    if not if (test -f inc/$wantedfile) {
-    	echo -n        inc/$wantedfile
+    if not if (~ $#disableDeprecated 0 && test -f inc/$wantedfile) {
+    	echo -n inc/$wantedfile
         dprint DEPRECATION WARNING: Using file in depracted path: inc/$wantedfile XXX
     }
 }
