@@ -2,6 +2,9 @@
 cd ..
 
 
+forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
+response_format=html
+
 # Useful functions
 fn dprint {
     echo $* >[1=2]
@@ -52,7 +55,7 @@ fn gentitle {
 }
 
 # Don't change var name or trailing ';', some dirs change the filter!
-dirfilter = '/\/[._]/d; /\/robots.\txt$/d; /\/sitemap\.txt$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
+dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/robots.\txt$/d; /\/sitemap\.txt$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
 
 # To be used from config files
 fn hide_paths {
@@ -197,7 +200,7 @@ fn debug_handler {
 
 
 fn select_handler {
-dprint $body
+
     if (test -f $body.md) {
         if (! ~ $#inBlog 0)
             set_handler blog_post_handler $body.md
@@ -212,14 +215,34 @@ dprint $body
     if not if (test -f $body.html)
         set_handler html_handler $body.html
 
-    # Handle eplicit .html urls, this should not happen (the web server will usually handle this anyway)
+    # Handle explicit .html urls, this should not happen (the web server will usually handle this anyway)
     # XXX We probably should setup a permanent redirect to $body|sed 's/.html$//' here
     if not if (~ $body *.html && test -f $body)
         set_handler html_handler $body
 
-    # This should probably be merged with the blog_dir_handler
-    if not if (~ $body */[bB]log/index */[bB]log//index && ~ $#blogDirs 0)
-        blogDirs = `{basename -d $body}
+    # Blog handler
+    if not if (~ $body */[bB]log/index */[bB]log//index || ! ~ $#blogDirs 0) {
+        if (~ $#blogDirs 0)
+            blogDirs = `{basename -d $body}
+
+        rssuri=`{basename -d $uri}
+        rssuri=$baseuri`{cleanname $"rssuri^/index.rss}
+        extraHeaders=$"extraHeaders ^ \
+    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
+'
+
+        set_handler blog_dir_handler $blogDirs
+    }
+
+    # Rss feeds. TODO: we should check that the request is for a real blog dir
+    if not if (~ $REQUEST_URI */index.rss) {
+        uri = `{echo $uri | sed 's/index.rss$//'}
+        if(~ $blogDirs 0)
+            blogDirs = $sitedir^$uri
+        uri=$baseuri$"uri
+        master_template=feeds/rss20.tpl
+        response_format=raw
+    }
 
     # Global tpl (eg sitemap.tpl)
     if not if (test -f lib/^$uri^.tpl)
@@ -229,18 +252,16 @@ dprint $body
         set_handler txt_handler $body.txt
 
     # Dir listing
-    if not if(~ $body */index && ~ $#blogDirs 0)
+    if not if(~ $body */index)
         set_handler dir_listing_handler $body
 
     # File not found
-    if not if(~ $#blogDirs 0) {
+    if not {
         set_handler 404_handler $body
         dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
     }
 
-    if(! ~ $#blogDirs 0)
-        set_handler blog_dir_handler $blogDirs
 }
 
 
@@ -268,7 +289,7 @@ if(test -f etc/initrc.local)
 
 
 # Parse request URL
-uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/[^a-zA-Z0-9_+\-\/\.]//g; s/\.\.*/./g;' -e '1q'}
+uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g;' -e '1q'}
 ifs='/' {
 	args = `{echo -n $uri}
 }
@@ -325,17 +346,9 @@ if(~ $pageTitle '')
 if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
-# Template/body selection
-master_template= `{get_lib_file $master_template }
-
-# DEPRECATED
-if(~ $master_template 0)
-    master_template=$sitedir/_default.tpl
-
 
 body=$sitedir/$body
 rssuri=$uri
-
 
 if (test -d $body) {
     if(! ~ $body */)
@@ -344,19 +357,18 @@ if (test -d $body) {
     rssuri=$rssuri/
 }
 
-if(! ~ $#blogDirs 0 || ! ~ $#inBlog 0) {
-    rssuri=`{basename -d $uri}
-    rssuri=$baseuri`{cleanname $"rssuri^/index.rss}
-    extraHeaders=$"extraHeaders ^ \
-    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
-'
-}
-
-
 select_handler
 
-fn template {
-    template.awk | rc $rcargs |
+# Template/body selection
+master_template= `{get_lib_file $master_template}
+
+if(~ $master_template 0) {
+    dprint DEPRECATION WARNING: using $sitedir/_default.tpl, should move to _werc/lib/XXX
+    master_template=$sitedir/_default.tpl
+}
+
+# Is this really useful?
+fn postfil_awk_buf {
     awk '{
         buf = buf $0"\n"
         if(length(buf) > 8192) {
@@ -367,40 +379,20 @@ fn template {
     END{ printf "%s", buf }'
 }
 
-if(! ~ $REQUEST_URI */index.rss) {
+post_filter=postfil_awk_buf
+
+# This probably should merge with tpl_handler
+fn template {
+    if(~ $#post_filter 0)
+        template.awk | rc $rcargs
+    if not
+        template.awk | rc $rcargs | $post_filter
+}
+
+if(~ $response_format html) {
 	cat $headers $master_template | template
 	echo '</body></html>'
-	exit
 }
-
-# RSS
-if (~ $body */[bB]log/index.rss */[bB]log//index.rss && ~ $#blogDirs 0)
-    blogDirs = `{basename -d $body}
-
-
-uri = `{echo $uri | sed 's/index.rss$//'}
-uri=$baseuri$"uri
-
-fn statpost {
-	f = $1
-	uri = `{echo $f | sed 's,^'$sitedir',,'}
-	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
-	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
-	stat=`{stat -c '%Y %U' $f}
-	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
-	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
-	by=$stat(2)
-	ifs=() {
-		summary=`{awk -v max'='1024 '{
-			nc += 1 + length;
-			if(nc > max) {
-				print substr($0, 1, nc - max) "..."
-				exit
-			}
-			print
-		}' $f |fmt -j| sed 's/\]\]>/Fucking goddamn XML garbage/g'}
-	}
+if not if (~ $response_format raw) {
+	template < $master_template 
 }
-
-cat lib/feeds/rss20.tpl | template

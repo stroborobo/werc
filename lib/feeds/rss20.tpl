@@ -1,5 +1,30 @@
 Content-Type: text/xml; charset=utf-8
 
+%{
+fn statpost {
+	f = $1
+	uri = `{echo $f | sed 's,^'$sitedir',,'}
+	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
+	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
+	stat=`{stat -c '%Y %U' $f}
+	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
+	uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
+	by=$stat(2)
+	ifs=() {
+		summary=`{awk -v max'='1024 '{
+			nc += 1 + length;
+			if(nc > max) {
+				print substr($0, 1, nc - max) "..."
+				exit
+			}
+			print
+		}' $f |fmt -j| sed 's/\]\]>/Fucking goddamn XML garbage/g'}
+	}
+}
+
+%}
+
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
