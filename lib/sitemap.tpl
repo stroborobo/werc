@@ -1,7 +1,8 @@
 <h1>Site map</h1>
 
 %{
-
+p=`{pwd}
+tmpfile=$p/tmp/sitemap_$pid.txt
 saveddf = $dirfilter
 
 fn getMdDesc {
@@ -17,9 +18,11 @@ fn listDir {
 
     echo '<ul>'
 
-    if (! ~ $#blogDirs 0 || ~ $1 blog Blog )
-        echo '' 
-    if not {
+    # Don't hide blog dirs for now
+    #if (! ~ $#blogDirs 0 || ~ $1 */blog */Blog )
+    #    echo '' 
+    #if not 
+    {
 
     for ( i in `{ ls -d $d/*/ $d/*.md $d/*.html $d/*.txt >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
         desc = ''
@@ -38,7 +41,8 @@ fn listDir {
         if (! ~ $desc '')
             desc = ' - '$"desc
         tit = `{basename $i|sed 's/_/ /g'}
-        echo '<li><a style="text-transform: capitalize" href="'$i'">'^$"tit^'</a>' $desc '</li>' 
+        echo '<li><a style="text-transform: capitalize" href="/'$i'">'^$"tit^'</a>' $desc '</li>' 
+        echo $baseuri^$i >> $tmpfile
         if (test -d $i)
             @{ listDir $i }
     }
@@ -46,7 +50,10 @@ fn listDir {
     echo '</ul>'
 }
 
-cd $sitedir
+cd $sitedir 
 listDir .
+
+cp $tmpfile ./sitemap.txt
+rm $tmpfile
 
 %}
