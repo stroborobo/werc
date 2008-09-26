@@ -10,13 +10,13 @@ Location: '^$1^'
     exit
 }
 
-fn setvars {
+fn get_post_args {
     ifs='&
 '   for(pair in `{cat}) {
         pair = `{echo -n $pair | sed 's/=/\&/'} \
         ifs=() \
         if(~ $pair(1) $*)
-            eval $pair(1)'=`{urldecode $pair(2)}'
+            $pair(1) = `{urldecode $pair(2)}
     }
 }
 
@@ -36,6 +36,9 @@ fn template { template.awk $* | rc $rcargs }
 
 # .rec parsing
 fn parse_rec {
-    sed 's/% *//; /^$/q' < $1
-    sed -n '/^$/,$p' < $1
+    for(i in `{sed 's/% *//; /^$/q' < $1}) {
+        v = `{echo $i | sed 's/^/rec_/; s/=.*//;'} 
+        $v = `{echo $i | sed 
+    }
+    rec_data = `{sed -n '/^$/,$p' < $1}
 }
