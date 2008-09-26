@@ -1,22 +1,9 @@
 #!/usr/local/plan9/bin/rc
+. cgilib.rc
 cd ..
-
 
 forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
 response_format=html
-
-# Useful functions
-fn dprint {
-    echo $* >[1=2]
-}
-
-fn perm_redirect {
-    echo 'Status: 301 Moved Permanantly
-Location: '^$1^'
-
-'
-    exit
-}
 
 fn get_lib_file {
     wantedfile = $1
@@ -133,13 +120,9 @@ fn set_handler {
     handler_args = $*
 }
 
-fn md_handler {
-    cat $* | $formatter
-}
+fn md_handler { cat $* | $formatter }
 
-fn tpl_handler {
-    template.awk $1 | rc $rcargs
-}
+fn tpl_handler { template $1 }
 
 fn html_handler {
     cat $1 | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
@@ -161,9 +144,7 @@ fn dir_listing_handler {
     echo '</ul>'
 }
 
-fn 404_handler {
-    template.awk `{get_lib_file 404.tpl } | rc $rcargs
-}
+fn 404_handler { template `{get_lib_file 404.tpl } }
 
 fn blog_dir_handler {
     blogDirs = $*
@@ -320,7 +301,7 @@ for (i in ('' $args)) {
     }
 
     if (test -f $fpath/_config)
-        . $fpath/_config
+        . $fpath/_config # DEPRECATED
     if (test -f $fpath/_werc/config)
         . $fpath/_werc/config
 
@@ -335,9 +316,9 @@ if (~ $#redirectPermanent 1)
 if not if (~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $redirectPermanent(1) }) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
     # For now only used at sites/harmful.cat-v.org/software/OO_programming/_config
-    to=`{echo $SERVER_NAME^$REQUEST_URI|sed 's|'^$redirectPermanent(1)^'|'^$redirectPermanent(2)^'|'}
+    to=`{echo $SERVER_NAME^$REQUEST_URI|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
     if(! ~ $to $REQUEST_URI)
-	perm_redirect $to
+        perm_redirect $to
 }
 
 # Set Page title
@@ -348,13 +329,10 @@ if not
 
 
 body=$sitedir/$body
-rssuri=$uri
-
 if (test -d $body) {
     if(! ~ $body */)
     	perm_redirect $REQUEST_URI^'/'
     body=$body/index
-    rssuri=$rssuri/
 }
 
 select_handler
@@ -367,30 +345,10 @@ if(~ $master_template 0) {
     master_template=$sitedir/_default.tpl
 }
 
-# Is this really useful?
-fn postfil_awk_buf {
-    awk '{
-        buf = buf $0"\n"
-        if(length(buf) > 8192) {
-            printf "%s", buf
-            buf = ""
-        }
-    }
-    END{ printf "%s", buf }'
-}
-
-post_filter=postfil_awk_buf
-
-# This probably should merge with tpl_handler
-fn template {
-    if(~ $#post_filter 0)
-        template.awk | rc $rcargs
-    if not
-        template.awk | rc $rcargs | $post_filter
-}
 
 if(~ $response_format html) {
-	cat $headers $master_template | template
+    # Is awk_buffer really useful?
+	template $headers $master_template | awk_buffer
 	echo '</body></html>'
 }
 if not if (~ $response_format raw) {

@@ -1,0 +1,41 @@
+# Useful functions
+
+fn dprint { echo $* >[1=2] }
+
+fn perm_redirect {
+    echo 'Status: 301 Moved Permanantly
+Location: '^$1^'
+
+'
+    exit
+}
+
+fn setvars {
+    ifs='&
+'   for(pair in `{cat}) {
+        pair = `{echo -n $pair | sed 's/=/\&/'} \
+        ifs=() \
+        if(~ $pair(1) $*)
+            eval $pair(1)'=`{urldecode $pair(2)}'
+    }
+}
+
+# Is this really useful?
+fn awk_buffer {
+    awk '{
+        buf = buf $0"\n"
+        if(length(buf) > 8192) {
+            printf "%s", buf
+            buf = ""
+        }
+    }
+    END{ printf "%s", buf }'
+}
+
+fn template { template.awk $* | rc $rcargs }
+
+# .rec parsing
+fn parse_rec {
+    sed 's/% *//; /^$/q' < $1
+    sed -n '/^$/,$p' < $1
+}

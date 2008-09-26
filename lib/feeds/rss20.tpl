@@ -34,8 +34,8 @@ fn statpost {
 		<description>%($blogDesc%)</description>
 		<language>en-us</language>
 		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
-		<webMaster>uriel99+rss@gmail.com (Uriel)</webMaster>
 %{
+		# <webMaster>uriel99+rss@gmail.com (Uriel)</webMaster>
 		for(f in `{sortedBlogPostList $blogDirs}) {
 			statpost $f
 			# Hack to aproximate the last build date 
