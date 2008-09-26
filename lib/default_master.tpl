@@ -33,6 +33,29 @@
 
 % genbody
 
+% if (! ~ $#allowComments 0) {
+
+%{
+cdir = $body.md_werc/comments
+if (test -d $cdir) { 
+    echo '<hr /><h2>Comments</h2>'
+    for(c in `{ls $cdir}) {
+        parse_rec $c
+    
+        echo '<div>'
+        echo User: $rec_user_name '<br />'
+        echo $rec_data | escape_html | sed 's,$,<br />,'
+        echo '<hr /></div>' 
+    }
+}
+%}
+
+<form action="" method="post">
+    <input type="text" name="comment_user_name" value="Anonimous glenda" /><input type="submit" name="post_comment" value="Post a comment" />
+    <textarea name="comment_text" id="comment_text" cols="80" rows="16"></textarea>
+</form>
+% }
+
 </div>
 
 <div id="footer">

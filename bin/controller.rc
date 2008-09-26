@@ -1,5 +1,5 @@
 #!/usr/local/plan9/bin/rc
-. cgilib.rc
+. ./cgilib.rc
 cd ..
 
 forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
@@ -175,7 +175,9 @@ fn quote_html {
 }
 fn debug_handler {
     echo '<pre>'
-    env |quote_html
+    env | quote_html
+    echo ---------------------
+    umask
     echo '</pre>'
 }
 
@@ -187,6 +189,17 @@ fn select_handler {
             set_handler blog_post_handler $body.md
         if not
             set_handler md_handler $body.md
+
+        if (! ~ $#allowComments 0 && ~ $REQUEST_METHOD POST) {
+            get_post_args comment_user_name comment_text
+            ddir = $body.md_werc/comments/
+            umask 002
+            mkdir -m 775 -p $ddir
+            d = `{date -n} # Obvious race
+            { echo '% user_name='^$comment_user_name'
+ 
+'^$comment_text } > $ddir/$d.rec
+        }
     }
     if not if (~ $body */_debug)
         set_handler debug_handler 
@@ -218,7 +231,7 @@ fn select_handler {
     # Rss feeds. TODO: we should check that the request is for a real blog dir
     if not if (~ $REQUEST_URI */index.rss) {
         uri = `{echo $uri | sed 's/index.rss$//'}
-        if(~ $blogDirs 0)
+        if (~ $blogDirs 0)
             blogDirs = $sitedir^$uri
         uri=$baseuri$"uri
         master_template=feeds/rss20.tpl
