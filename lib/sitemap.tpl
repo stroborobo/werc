@@ -1,8 +1,8 @@
 <h1>Site map</h1>
 
 %{
-p=`{pwd}
-tmpfile=$p/tmp/sitemap_$pid.txt
+tmpfile=/tmp/werc_sitemap_$pid.txt
+echo '' > $tmpfile
 saveddf = $dirfilter
 
 fn getMdDesc {
