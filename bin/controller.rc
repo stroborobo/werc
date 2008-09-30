@@ -107,7 +107,12 @@ fn gen_blog_post_title {
     title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
     permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
     du=`{ls -l $1}
-    echo '##<a href="'^$"permlink^'">' $"title^'</a> *('By $du(4) Last mod: $du(7 8 9) ')*'
+    by = ''
+    if (! ~ $#blogAuthor 0)
+        by='By '$"blogAuthor
+    if not if (~ $#blogDirs 1)
+        by='By '$du(4)
+    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
 }
 
 
@@ -155,9 +160,6 @@ fn blog_dir_handler {
     echo '<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>'
 
     for (f in `{ sortedBlogPostList $blogDirs }) {
-        #title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-        #du=`{ls -l $f}
-        #echo '##' $title '*('By $du(4) Last mod: $du(7 8 9) ')*'
         gen_blog_post_title $f
         cat $f 
         echo 
