@@ -216,6 +216,16 @@ fn select_handler {
     if not if (~ $body *.html && test -f $body)
         set_handler html_handler $body
 
+    # Rss feeds. TODO: we should check that the request is for a real blog dir
+    if not if (~ $REQUEST_URI */index.rss) {
+        uri = `{echo $uri | sed 's/index.rss$//'}
+        if (~ $blogDirs 0)
+            blogDirs = $sitedir^$uri
+        uri=$baseuri$"uri
+        master_template=feeds/rss20.tpl
+        response_format=raw
+    }
+
     # Blog handler
     if not if (~ $body */[bB]log/index */[bB]log//index || ! ~ $#blogDirs 0) {
         if (~ $#blogDirs 0)
@@ -228,16 +238,6 @@ fn select_handler {
 '
 
         set_handler blog_dir_handler $blogDirs
-    }
-
-    # Rss feeds. TODO: we should check that the request is for a real blog dir
-    if not if (~ $REQUEST_URI */index.rss) {
-        uri = `{echo $uri | sed 's/index.rss$//'}
-        if (~ $blogDirs 0)
-            blogDirs = $sitedir^$uri
-        uri=$baseuri$"uri
-        master_template=feeds/rss20.tpl
-        response_format=raw
     }
 
     # Global tpl (eg sitemap.tpl)
