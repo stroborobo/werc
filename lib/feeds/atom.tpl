@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XXX TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
 <feed xmlns="http://www.w3.org/2005/Atom"
   xmlns:thr="http://purl.org/syndication/thread/1.0">
   <link rel="self" href="http://intertwingly.net/blog/index.atom"/>
