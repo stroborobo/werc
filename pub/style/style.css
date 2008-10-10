@@ -322,8 +322,8 @@ dd {
 
 /* GENERAL */
 
-/* Spam */
-.spam {
+/* S-pam */
+.gpam {
     text-align: center;
 }
 
@@ -346,7 +346,8 @@ hr {
     border-color: black;
 }
 
-.spam table, .spam th, .spam td {
+/* S-pam */
+.gpam table, .gpam th, .gpam td {
 	border: none;
 }
 
