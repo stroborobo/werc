@@ -42,9 +42,12 @@ fn listDir {
             desc = ' - '$"desc
         tit = `{basename $i|sed 's/_/ /g'}
         echo '<li><a style="text-transform: capitalize" href="/'$i'">'^$"tit^'</a>' $desc '</li>' 
-        echo $baseuri^$i >> $tmpfile
-        if (test -d $i)
+        echo -n $baseuri^$i >> $tmpfile
+        if (test -d $i) {
+            echo / >> $tmpfile	
             @{ listDir $i }
+        }
+        if not echo >> $tmpfile
     }
     }
     echo '</ul>'
