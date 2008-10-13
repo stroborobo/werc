@@ -179,10 +179,9 @@ fn select_handler {
     if not if (test -f $body.html)
         set_handler html_handler $body.html
 
-    # Handle explicit .html urls, this should not happen (the web server will usually handle this anyway)
-    # XXX We probably should setup a permanent redirect to $body|sed 's/.html$//' here
+    # Explicit .html urls, usually the web server will handle this as static files
     if not if (~ $body *.html && test -f $body)
-        set_handler html_handler $body
+        perm_redirect `{ echo $REQUEST_URI|sed 's/.html$//' }
 
     # Rss feeds. TODO: we should check that the request is for a real blog dir
     if not if (~ $REQUEST_URI */index.rss) {
