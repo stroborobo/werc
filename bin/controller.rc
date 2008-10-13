@@ -117,17 +117,17 @@ fn dir_listing_handler {
     d = `{basename -d $1}
     echo '<h1 style="text-transform: capitalize;">' `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
     echo '<ul style="text-transform: capitalize;">'
-    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
+    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,' # XXX I'm not sure what the [^$] does there
     echo '</ul>'
 }
 
-fn 404_handler { template `{get_lib_file 404.tpl } }
+fn 404_handler { template `{ get_lib_file 404.tpl } }
 
 fn blog_dir_handler {
     blogDirs = $*
 
     if (! ~ $blogTitle '')
-        echo '<h1>'$"blogTitle'</h1>' #" stupid vim syntax highlighting ;P
+        echo '<h1>'$"blogTitle'</h1>'
 
     echo '<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>'
 
@@ -139,17 +139,13 @@ fn blog_dir_handler {
 }
 
 fn blog_post_handler {
-
     gen_blog_post_title $1 | $formatter
     $formatter < $1
 }
 
-fn quote_html {
-    sed 's/</\&lt;/g; s/>/\&gt;/g'
-}
 fn debug_handler {
     echo '<pre>'
-    env | quote_html
+    env | escape_html
     echo ---------------------
     umask
     echo '</pre>'
