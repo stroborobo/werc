@@ -179,7 +179,7 @@ fn select_handler {
     if not if (test -f $body.html)
         set_handler html_handler $body.html
 
-    # Explicit .html urls, usually the web server will handle this as static files
+    # Explicit .html urls, unfortunately usually the web server will handle this as static files
     if not if (~ $body *.html && test -f $body)
         perm_redirect `{ echo $REQUEST_URI|sed 's/.html$//' }
 
