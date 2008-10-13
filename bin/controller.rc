@@ -25,9 +25,8 @@ dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/robots.\txt$/d; /\/sitem
 
 # To be used from config files
 fn hide_paths {
-    for(i in $*) {
-	dirfilter = $dirfilter^'/^'$i'$/d; '
-    }
+    for(i in $*)
+       dirfilter = $dirfilter^'/^'$i'$/d; '
 }
 
 # Sidebar 
