@@ -31,13 +31,7 @@ fn hide_paths {
 
 # Sidebar 
 fn menu {
-    lsArgs = ('-F')
-    # XXX will not work properly for $#blogDirs > 1 and matching is hackish
-    # XXX Work in progress, doesn't work well enough to be usable: too inconsistent, doesn't handle corner cases well at all
-    #if ( ! ~ $#blogDirs 0 && ~ $blogDirs^/ *$1 *$1/ ) { 
-    #	lsArgs = ($lsArgs -r)
-    #}
-    ls $lsArgs $1 | sed $dirfilter | awk -F/ '
+    ls -F $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"side-bar\">" }
     END { print "</ul>" }
     # Should add \. to the list of allowed chars in file names, but need to find a way to filter out .txt and so on
