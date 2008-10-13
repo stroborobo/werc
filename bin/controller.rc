@@ -186,7 +186,7 @@ fn select_handler {
     # Rss feeds. TODO: we should check that the request is for a real blog dir
     if not if (~ $REQUEST_URI */index.rss) {
         uri = `{echo $uri | sed 's/index.rss$//'}
-        if (~ $blogDirs 0)
+        if (~ $#blogDirs 0)
             blogDirs = $sitedir^$uri
         uri=$baseuri$"uri
         master_template=feeds/rss20.tpl
