@@ -114,10 +114,10 @@ fn txt_handler {
 }
 
 fn dir_listing_handler {
-    body = $1
-    echo '<h1 style="text-transform: capitalize;">' `{basename -d $body|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
+    d = `{basename -d $1}
+    echo '<h1 style="text-transform: capitalize;">' `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
     echo '<ul style="text-transform: capitalize;">'
-    ls -F `{ basename -d $body } | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
+    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
