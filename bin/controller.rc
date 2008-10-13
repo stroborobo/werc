@@ -203,7 +203,6 @@ fn select_handler {
         extraHeaders=$"extraHeaders ^ \
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
 '
-
         set_handler blog_dir_handler $blogDirs
     }
 
@@ -229,7 +228,6 @@ fn select_handler {
 
 
 fn genbody {
-    # Actually execute request
     $handler $handler_args
 }
 
