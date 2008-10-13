@@ -9,7 +9,7 @@ fn get_lib_file {
     wantedfile = $1
     if (test -f $sitedir/_werc/lib/$wantedfile)
     	echo -n $sitedir/_werc/lib/$wantedfile
-    if not if(! ~ $masterSite 0 && test -f sites/$masterSite/_werc/lib/$wantedfile)
+    if not if(! ~ $#masterSite 0 && test -f sites/$masterSite/_werc/lib/$wantedfile)
     	echo -n       sites/$masterSite/_werc/lib/$wantedfile
     if not if (test -f lib/$wantedfile)
     	echo -n        lib/$wantedfile
