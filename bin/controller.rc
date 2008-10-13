@@ -13,28 +13,7 @@ fn get_lib_file {
     	echo -n       sites/$masterSite/_werc/lib/$wantedfile
     if not if (test -f lib/$wantedfile)
     	echo -n        lib/$wantedfile
-
-    # DEPRECATED
-    if not if (~ $#disableDeprecated 0 && test -f $sitedir/_inc/$wantedfile) {
-    	echo -n $sitedir/_inc/$wantedfile
-        dprint DEPRECATION WARNING: Using file in depracted path: $sitedir/_inc/$wantedfile XXX
-    }
-    if not if(~ $#disableDeprecated 0 && ! ~ $masterSite 0 && test -f sites/$masterSite/_inc/$wantedfile) {
-    	echo -n sites/$masterSite/_inc/$wantedfile
-        dprint DEPRECATION WARNING: Using file in depracted path: sites/$masterSite/_inc/$wantedfile XXX
-    }
-    if not if (~ $#disableDeprecated 0 && test -f inc/$wantedfile) {
-    	echo -n inc/$wantedfile
-        dprint DEPRECATION WARNING: Using file in depracted path: inc/$wantedfile XXX
-    }
 }
-
-# DEPRECATED
-fn get_inc_file {
-    get_lib_file $*
-    dprint DEPRECATION WARNING: Called get_inc_file, should call get_lib_file
-}
-
 
 # Title
 fn gentitle {
@@ -354,12 +333,6 @@ select_handler
 
 # Template/body selection
 master_template= `{get_lib_file $master_template}
-
-if(~ $master_template 0) {
-    dprint DEPRECATION WARNING: using $sitedir/_default.tpl, should move to _werc/lib/XXX
-    master_template=$sitedir/_default.tpl
-}
-
 
 if(~ $response_format html) {
     # Is awk_buffer really useful?
