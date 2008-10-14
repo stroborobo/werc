@@ -23,9 +23,11 @@ right away.
 
 For general configuration options copy etc/initrc to initrc.local and customize
 it to your liking. Site (and directory) specific options can be set in a
-_config file inside the site's directory.
+sites/example.com/_werc/config file inside the site's directory. To customize
+templates you can store your own version of the files in lib/ under
+sites/example.com/_werc/lib
 
-For details see the documentation section of the website.
+For more details see the documentation section of the website.
 
 Contact
 -------

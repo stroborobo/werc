@@ -1,7 +1,3 @@
-* If a request for /foo.html file is 'not found' should automatically redirect to /foo
-* In the sitemap index pages should be used for description of directories
-* Fixed width of left sidebar
-
 02:50 < devn> <META name="description" content="This is the Google Summer of Code blog for Plan9 and Inferno projects.">
 02:50 < devn> <META name="keywords" content="google, summer of code, inferno, plan9, programming">
 
