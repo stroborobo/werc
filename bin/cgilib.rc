@@ -116,7 +116,7 @@ fn make_blog_post {
     for(f in $bdir/$date-*) {
         i = `{echo $f | sed -n 's|^.*/'$date'-([0-9]+)_.*|\1|p'}
         if(! ~ $#i 0 && test $i -ge $n)
-		n = `{hoc -e $i'+1'}
+            n = `{hoc -e $i'+1'}
     }
     title = `{echo $"title | sed 's/[ 	]+/_/g; 1q'}
 
@@ -126,27 +126,27 @@ fn make_blog_post {
 
 
 # --------
-
-app_blog_methods = ( _post index.rss )
-fn app_blog__post {
-
-}
-
-app_blog___default {
-    if (~ $blog
-    call_app blogpost
-}
-
-# --
-app_blogpost_methods = ( comment  _edit )
-
-fn app_blogpost_comment {
-    call_app comments
-}_
-
-# --
-app_comments_methods = ( _post _edit )
-
-fn app_comments___default {
-
-}
+#
+#app_blog_methods = ( _post index.rss )
+#fn app_blog__post {
+#    echo
+#}
+#
+#app_blog___default {
+#    if (~ $blog)
+#    call_app blogpost
+#}
+#
+## --
+#app_blogpost_methods = ( comment  _edit )
+#
+#fn app_blogpost_comment {
+#    call_app comments
+#}
+#
+## --
+#app_comments_methods = ( _post _edit )
+#
+#fn app_comments___default {
+#
+#}

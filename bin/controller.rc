@@ -251,9 +251,7 @@ if(test -f etc/initrc.local)
 
 # Parse request URL
 uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g;' -e '1q'}
-ifs='/' {
-	args = `{echo -n $uri}
-}
+ifs='/' { args = `{echo -n $uri} }
 
 
 if(! ~ $#debug 0)
