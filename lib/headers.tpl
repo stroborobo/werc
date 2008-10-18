@@ -1,3 +1,4 @@
+% for(h in $extraHttpHeaders) echo $h
 Content-Type: text/html
 
 <?xml version="1.0" encoding="UTF-8"?>
