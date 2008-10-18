@@ -89,7 +89,6 @@ fn gen_blog_post_title {
 
 
 
-
 # Handlers
 fn set_handler {
     handler = $1
@@ -123,17 +122,14 @@ fn dir_listing_handler {
 
 fn 404_handler { template `{ get_lib_file 404.tpl } }
 
+fn blog_dir_handler {
+    blogDirs = $*
+    tpl_handler lib/feeds/html.tpl
+}
+
 fn blog_post_handler {
     gen_blog_post_title $1 | $formatter
     $formatter < $1
-}
-
-fn debug_handler {
-    echo '<pre>'
-    env | escape_html
-    echo ---------------------
-    umask
-    echo '</pre>'
 }
 
 
@@ -156,8 +152,6 @@ fn select_handler {
 '^$comment_text } > $ddir/$d.rec
         }
     }
-    if not if (~ $body */_debug)
-        set_handler debug_handler 
     if not if (test -f $body.tpl)
         set_handler tpl_handler $body.tpl
 
