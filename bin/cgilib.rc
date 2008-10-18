@@ -16,12 +16,25 @@ Location: '^$1^'
 }
 
 fn get_post_args {
-    ifs='&
-'   for(pair in `{cat}) {
-        pair = `{echo -n $pair | sed 's/=/\&/'} \
-        ifs=() \
-        if(~ $pair(1) $*)
-            $pair(1) = `{echo $pair(2) | urldecode | tr -d ''}
+    if(~ $#POST_ARGS 0) {
+        ifs='&
+'       for(pair in `{cat}) {
+            pair = `{echo -n $pair | sed 's/=/\&/'} \
+            # Maybe we should urldecode on the first pass?
+            POST_ARGS = ($POST_ARGS $pair)
+            ifs=() \
+            if(~ $pair(1) $*)
+                $pair(1) = `{echo -n $pair(2) | urldecode | tr -d ''}
+        }
+    }
+    if not {
+        pa = $POST_ARGS
+        while(! ~ $#pa 0) {
+            ifs=() \
+            if(~ $pa(1) $*)
+                $pa(1) = `{echo -n $pa(2) | urldecode | tr -d ''}
+            pa = $pa(3-)
+        }
     }
 }
 
@@ -46,7 +59,7 @@ fn parse_rec {
         v = `{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
         $v = `{echo -n $i | sed 's/^[^=]*=//'}
     }
-    ifs=() rec_data = `{sed -n '/^[^%]./,$p' < $1}
+    ifs=() { rec_data = `{sed -n '/^[^%]./,$p' < $1} }
 }
 
 
@@ -88,40 +101,121 @@ BEGIN {
         decoded = decoded c
         ++i
     }
-    print decoded
+    printf decoded
 }
 '
+}
+
+# Cookies
+fn set_cookie {
+    # TODO: should check input values more carefully
+    name = $1
+    val = $2
+    extraHttpHeaders = ($extraHttpHeaders 'Set-cookie: '^$"name^'='^$"val^'; path=/;')
+}
+fn get_cookie {
+    ifs=';' { co = `{ echo $HTTP_COOKIE } }
+
+    #for(c in $co)
+    #    if(~ $c $1^'='*)  # This matching doesn't work
+    #        echo $c|sed 's/[^=]*=//' 
+
+    # WARNING: we might be adding a trailing new line
+    { for(c in $co) echo $c} | sed -n 's/[^=]*=//p' 
 }
 
 # Auth code
 # Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 
-fn auth_user {
-    group = $1
-    user_name = $2
-    user_pass = $3
-
-    pfile = etc/users/$user_name/password
-    grep -s '^'^$user_name^'$' etc/groups/$group && test -f $pfile && ~ $user_pass `{cat $pfile}
+# login_user can't be used from a template because it sets a cookie!
+fn login_user {
+    get_post_args user_name user_password
+    if(auth_user $user_name $user_password) {
+        set_cookie werc_user $"user_name^':0:'^$"user_password        
+        dprint Auth: SET COOKIE FOR USER: $user_name
+    }
+    if not {
+        dprint Auth: failed login for $user_name $user_password
+        false
+    }
 }
 
+fn auth_user {
+    user_name = $1
+    user_pass = $2
+
+    pfile = 'etc/users/'^$"user_name^'/password'
+    if (~ $#user_name 0 || ~ $#user_password 0) {
+        dprint Auth: missing user name or pass: $user_name / $user_password
+        false
+    }
+    if not if(! test -f $pfile) {
+        dprint Auth: cant find $pfile
+        false
+    }
+    if not if (! ~ $user_pass `{cat $pfile}) {
+        dprint Auth: Pass $user_pass doesnt match `{cat $pfile}
+        false
+    }
+    if not {
+        dprint Auth: success
+        true
+    }
+}
+
+fn user_in_group {
+    if(~ $#logged_user 0)
+        get_user
+
+    if(~ $#logged_user 0) {
+        dprint Auth: user_in_group: No logged in user
+        false
+    }
+    if not if (! grep -s '^'^$logged_user^'$' etc/groups/$1) {
+        dprint Auth: user_in_group: Cant find $logged_user in etc/groups/$1
+        false
+    }
+    if not
+        true
+}
+
+fn get_user {
+    if(~ $REQUEST_METHOD POST)
+        get_post_args user_name user_password
+    if(~ $#user_name 0) { 
+        ifs=':' { cu = `{get_cookie werc_user|tr -d $NEW_LINE} }
+        if(! ~ $#cu 0) {
+            user_name = $cu(1) 
+            user_password  = $cu(3)
+        }
+    }
+    if(! ~ $#user_name 0 && auth_user $user_name $user_password) {
+        logged_user = $user_name
+        logged_password = $user_password
+    }
+}
 
 fn make_blog_post {
     bdir = $1
-    title = $2
+    btitle = $2
+    btext = $3
+    if(! ~ 0 $#1 $#2 $#3) {
+        date=`{/bin/date +%F}
 
-    date=`{/bin/date +%F}
+        n = 1
+        for(f in $bdir^$date^'-'*) {
+            i = `{echo -n $f | sed -n 's,^.*/'$date'-([0-9]+)_.*,\1,p'|tr -d $NEW_LINE}
+            if(! ~ $#i 0 && test $i -ge $n)
+                n = `{hoc -e $i'+1'}
+        }
+        btitle = `{echo -n $"btitle | sed 's/[ 	]+/_/g; 1q'}
 
-    n = 1
-    for(f in $bdir/$date-*) {
-        i = `{echo $f | sed -n 's|^.*/'$date'-([0-9]+)_.*|\1|p'}
-        if(! ~ $#i 0 && test $i -ge $n)
-            n = `{hoc -e $i'+1'}
+        echo $btext > $bdir^'/'^$"date^'-'^$"n^_$"btitle.md 
     }
-    title = `{echo $"title | sed 's/[ 	]+/_/g; 1q'}
-
-    $bdir/$"date^'-'^$"n^_$"title.md
-
+    if not {
+        dprint $1 $2 $3 
+        false
+    }
 }
 
 

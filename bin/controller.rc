@@ -257,6 +257,11 @@ ifs='/' { args = `{echo -n $uri} }
 if(! ~ $#debug 0)
     dprint '  ' $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
 
+# Hack: preload post data so we can access it from templates where cgi's stdin is not accesible
+if(~ $REQUEST_METHOD POST) {
+    get_post_args 
+    login_user
+}
 
 if (! ~ $args '') {
     if (~ $args($#args) 'index')
