@@ -127,17 +127,13 @@ fn get_cookie {
 # Auth code
 # Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 
-# login_user can't be used from a template because it sets a cookie!
+# login_user can't be used from a template because it sets a cookie 
 fn login_user {
     get_post_args user_name user_password
-    if(auth_user $user_name $user_password) {
-        set_cookie werc_user $"user_name^':0:'^$"user_password        
-        dprint Auth: SET COOKIE FOR USER: $user_name
-    }
-    if not {
-        dprint Auth: failed login for $user_name $user_password
-        false
-    }
+    if(auth_user $user_name $user_password)
+        set_cookie werc_user $"user_name^':0:'^$"user_password
+    if not
+        status='Auth: failed login for $user_name $user_password'
 }
 
 fn auth_user {
@@ -145,36 +141,24 @@ fn auth_user {
     user_pass = $2
 
     pfile = 'etc/users/'^$"user_name^'/password'
-    if (~ $#user_name 0 || ~ $#user_password 0) {
-        dprint Auth: missing user name or pass: $user_name / $user_password
-        false
-    }
-    if not if(! test -f $pfile) {
-        dprint Auth: cant find $pfile
-        false
-    }
-    if not if (! ~ $user_pass `{cat $pfile}) {
-        dprint Auth: Pass $user_pass doesnt match `{cat $pfile}
-        false
-    }
-    if not {
+    if (~ $#user_name 0 || ~ $#user_password 0)
+        status='Auth: missing user name or pass: '^$user_name^' / '^$user_password
+    if not if(! test -f $pfile)
+        status='Auth: cant find '^$pfile
+    if not if (! ~ $user_pass `{cat $pfile})
+        status='Auth: Pass '$user_pass' doesnt match '^`{cat $pfile}
+    if not
         dprint Auth: success
-        true
-    }
 }
 
 fn user_in_group {
     if(~ $#logged_user 0)
         get_user
 
-    if(~ $#logged_user 0) {
-        dprint Auth: user_in_group: No logged in user
+    if(~ $#logged_user 0)
         false
-    }
-    if not if (! grep -s '^'^$logged_user^'$' etc/groups/$1) {
-        dprint Auth: user_in_group: Cant find $logged_user in etc/groups/$1
+    if not if (! grep -s '^'^$logged_user^'$' etc/groups/$1)
         false
-    }
     if not
         true
 }
