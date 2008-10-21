@@ -247,17 +247,17 @@ if (! ~ $args '') {
         perm_redirect `{ echo $REQUEST_URI | sed 's,/index$,/,' }
         
     pageTitle=`{echo $args | sed -e 's/ / - /g' -e 's/_/ /g'}
-    body=$uri
+    req_path=$uri
 }
 if not {
-    body='/'
+    req_path='/'
 }
 
 fpath=$sitedir
 for (i in ('' $args)) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if (! ~ $#blogDirs 0 && ! ~ $body */index.rss */[bB]log */[bB]log/) {
+    if (! ~ $#blogDirs 0 && ! ~ $req_path */index.rss */[bB]log */[bB]log/) {
         inBlog = $blogDirs
         blogDirs = () 
     }
@@ -290,7 +290,7 @@ if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 
-body=$sitedir/$body
+body=$sitedir/$req_path
 if (test -d $body) {
     if(! ~ $body */)
     	perm_redirect $REQUEST_URI^'/'
