@@ -17,11 +17,24 @@
 <div id="side-bar">
 
 <div>
-% if (! ~ $#sideBarNavTitle 0) {
-%     echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
-% }
-% gensidebar
+%{
+if (! ~ $#sideBarNavTitle 0)
+    echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
+
+gensidebar
+
+%}
 </div>
+
+% # TODO: probably should check if we have the right perms
+% if (! ~ $#wiki 0 && test -f $body.md  && get_user && ! ~ $#logged_user 0) {
+<div> 
+    <form action="/_apps/dirdir/edit" method="POST">
+        <input type="hidden" name="edit_wiki_page" value="%($req_path%)" />
+        <input type="submit" name="" value="Edit page" />
+    </form>
+</div>
+% }
 
 <div>
 </div>
