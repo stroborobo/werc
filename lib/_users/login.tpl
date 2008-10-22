@@ -1,6 +1,6 @@
 %{
-get_user
-if(! ~ $#logged_user 0)
+
+if(check_user)
     echo 'You are logged in as' $logged_user
 if not if (~ $REQUEST_METHOD POST)
     echo 'Login failed!'
