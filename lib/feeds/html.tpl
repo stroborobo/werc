@@ -14,9 +14,9 @@ for (f in `{ sortedBlogPostList $blogDirs }) {
 get_user
 if(~ $#logged_user 1) {
 %}
-<form method="POST" action="/_apps/blog/post_form">
-% echo '<input type="text" name="target_blog_dir" value="'^$blogDirs(1)^'" />'
-    <input type="submit" name="Submit" value="New post" /> 
+<form method="POST" action="/_apps/brag/post_form">
+    <input type="hidden" name="target_blog_dir" value="%($blogDirs(1)%)" />
+    <input type="submit" name="Submit" value="New blog post" /> 
 </form>
 % }
 <hr />
