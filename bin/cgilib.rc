@@ -1,4 +1,5 @@
-# Useful functions
+##############################################
+# Useful CGI functions
 
 NEW_LINE = '
 '
@@ -49,19 +50,6 @@ fn awk_buffer {
     }
     END{ printf "%s", buf }'
 }
-
-fn template { template.awk $* | rc $rcargs }
-
-# .rec parsing
-fn parse_rec {
-    ifs='
-' for(i in `{sed 's/% *//g; /^$/q' < $1}) {
-        v = `{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
-        $v = `{echo -n $i | sed 's/^[^=]*=//'}
-    }
-    ifs=() { rec_data = `{sed -n '/^[^%]./,$p' < $1} }
-}
-
 
 fn urldecode {
 awk '
@@ -124,60 +112,90 @@ fn get_cookie {
     { for(c in $co) echo $c} | sed -n 's/[^=]*=//p' 
 }
 
-# Auth code
-# Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 
+
+##############################################
+# More werc-specific functions
+
+fn template { template.awk $* | rc $rcargs }
+
+# .rec parsing
+fn parse_rec {
+    ifs='
+' for(i in `{sed 's/% *//g; /^$/q' < $1}) {
+        v = `{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
+        $v = `{echo -n $i | sed 's/^[^=]*=//'}
+    }
+    ifs=() { rec_data = `{sed -n '/^[^%]./,$p' < $1} }
+}
+
+
+# Auth code
+
+# Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 # login_user can't be used from a template because it sets a cookie 
 fn login_user {
-    get_post_args user_name user_password
-    if(auth_user $user_name $user_password)
-        set_cookie werc_user $"user_name^':0:'^$"user_password
-    if not
-        status='Auth: failed login for $user_name $user_password'
+    # Note: get_user can use an existing cookie, so we might end up setting an existing cookie
+    if(get_user $*)
+        set_cookie werc_user $"logged_user^':0:'^$"logged_password
 }
 
-fn auth_user {
-    user_name = $1
-    user_pass = $2
-
-    pfile = 'etc/users/'^$"user_name^'/password'
-    if (~ $#user_name 0 || ~ $#user_password 0)
-        status='Auth: missing user name or pass: '^$user_name^' / '^$user_password
-    if not if(! test -f $pfile)
-        status='Auth: cant find '^$pfile
-    if not if (! ~ $user_pass `{cat $pfile})
-        status='Auth: Pass '$user_pass' doesnt match '^`{cat $pfile}
-    if not
-        dprint Auth: success
-}
-
-fn user_in_group {
-    if(~ $#logged_user 0)
-        get_user
-
-    if(~ $#logged_user 0)
-        false
-    if not if (! grep -s '^'^$logged_user^'$' etc/groups/$1)
-        false
+# Checks if we are logged in, if called with an argument, we check group membership too
+fn check_user {
+    if(! get_user)
+        status='Not logged in'
+    if not if (! ~ $#1 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
+        status=User $logged_user not in group $1
     if not
         true
 }
 
+# If not logged in, try to get user login info from POST info or from cookie
 fn get_user {
-    if(~ $REQUEST_METHOD POST)
-        get_post_args user_name user_password
-    if(~ $#user_name 0) { 
-        ifs=':' { cu = `{get_cookie werc_user|tr -d $NEW_LINE} }
-        if(! ~ $#cu 0) {
-            user_name = $cu(1) 
-            user_password  = $cu(3)
+    if (~ $#logged_user 0) {
+        if (~ $#* 2) {
+            user_name = $1 
+            user_password $2
         }
+        if not if(~ $REQUEST_METHOD POST)
+            get_post_args user_name user_password
+
+        if(~ $#user_name 0) { 
+            ifs=':' { cu = `{get_cookie werc_user|tr -d $NEW_LINE} }
+            if(! ~ $#cu 0) {
+                user_name = $cu(1) 
+                user_password  = $cu(3)
+            }
+        }
+        auth_user $user_name $user_password
     }
-    if(! ~ $#user_name 0 && auth_user $user_name $user_password) {
+    if not
+        true
+}
+
+# Check if user_name and user_password represent a valid user account
+# If valid, 'log in' by setting logged_user
+fn auth_user {
+    user_name = $1
+    user_password = $2
+
+    pfile = 'etc/users/'^$"user_name^'/password'
+    if (~ $#user_name 0 || ~ $#user_password 0)
+        status='Auth: missing user name or pass: '^$"user_name^' / '^$"user_password
+    if not if(! test -f $pfile)
+        status='Auth: cant find '^$pfile
+    if not if (! ~ $user_password `{cat $pfile})
+        status='Auth: Pass '$user_password' doesnt match '^`{cat $pfile}
+    if not {
         logged_user = $user_name
         logged_password = $user_password
+        dprint Auth: success
     }
 }
+
+
+
+# Blog stuff
 
 fn make_blog_post {
     bdir = $1
@@ -196,10 +214,8 @@ fn make_blog_post {
 
         echo $btext > $bdir^'/'^$"date^'-'^$"n^_$"btitle.md 
     }
-    if not {
-        dprint $1 $2 $3 
-        false
-    }
+    if not
+        status=Missing blog post arguments $1 $2 $3 
 }
 
 
