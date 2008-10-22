@@ -140,16 +140,28 @@ fn select_handler {
             set_handler blog_post_handler $body.md
         if not
             set_handler md_handler $body.md
-
         if (! ~ $#allowComments 0 && ~ $REQUEST_METHOD POST) {
-            get_post_args comment_user_name comment_text
-            ddir = $body.md_werc/comments/
+            get_post_args comment_text
+            d = `{date -n} # FIXME Obvious race
+            d = $body.md_werc/comments/$d/
+
+            u = $logged_user
+            if (~ $#logged_user 0) {
+                get_post_args comment_user_name comment_user_password
+                # TODO Should take this path too if the user can login but doesn't
+                # belong to required group
+                if (! login_user $comment_user_name $comment_user_password) {
+                    u = $comment_user_name ':' $comment_user_password
+                    d = $d^'_pending'
+                }
+                if not
+                    u = $logged_user
+            }
+
             umask 002
-            mkdir -m 775 -p $ddir
-            d = `{date -n} # Obvious race
-            { echo '% user_name='^$comment_user_name'
- 
-'^$comment_text } > $ddir/$d.rec
+            mkdir -m 775 -p $d
+            echo $u > $d/user
+            echo $comment_text > $d/body
         }
     }
     if not if (test -f $body.tpl)
