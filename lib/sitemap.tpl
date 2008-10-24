@@ -13,8 +13,8 @@ fn listDir {
     d=$1
     dirfilter = $saveddf
     blogDirs = ()
-    if (test -f $d/_config)
-        . $d/_config
+    if (test -f $d/_werc/config)
+        . $d/_werc/config
 
     echo '<ul>'
 
@@ -22,6 +22,7 @@ fn listDir {
     #if (! ~ $#blogDirs 0 || ~ $1 */blog */Blog )
     #    echo '' 
     #if not 
+    if(! ~ $#redirectPermanent 1)
     {
 
     for ( i in `{ ls -d $d/*/ $d/*.md $d/*.html $d/*.txt >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
