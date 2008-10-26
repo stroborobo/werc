@@ -274,8 +274,6 @@ for (i in ('' $args)) {
         blogDirs = () 
     }
 
-    if (test -f $fpath/_config)
-        . $fpath/_config # DEPRECATED
     if (test -f $fpath/_werc/config)
         . $fpath/_werc/config
 
@@ -289,7 +287,7 @@ if (~ $#redirectPermanent 1)
 
 if not if (~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $redirectPermanent(1) }) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
-    # For now only used at sites/harmful.cat-v.org/software/OO_programming/_config
+    # For now only used at sites/harmful.cat-v.org/software/OO_programming/_werc/config
     to=`{echo $SERVER_NAME^$REQUEST_URI|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
     if(! ~ $to $REQUEST_URI)
         perm_redirect $to
