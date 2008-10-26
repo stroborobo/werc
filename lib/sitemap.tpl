@@ -25,7 +25,7 @@ fn listDir {
     if(! ~ $#redirectPermanent 1)
     {
 
-    for ( i in `{ ls -d $d/*/ $d/*.md $d/*.html $d/*.txt >[2]/dev/null |sed $dirfilter^'/index$/d;' } ) {
+    for ( i in `{ ls -d $d/*/ $d/*.md $d/*.html $d/*.txt >[2]/dev/null |sed $dirfilter} ) {
         desc = ''
         if (test -f $i.md) {
             desc = `{ getMdDesc $i.md }

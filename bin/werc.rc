@@ -20,8 +20,9 @@ fn gentitle {
     echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ ' <span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
 }
 
-# Don't change var name or trailing ';', some dirs change the filter!
-dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/robots.\txt$/d; /\/sitemap\.txt$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
+# Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
+# TODO: Specify the canonical path input format handled by dirfilter
+dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots.\txt|sitemap\.txt|index\.md)$/d; /_werc$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
 
 # To be used from config files
 fn hide_paths {
@@ -30,38 +31,41 @@ fn hide_paths {
 }
 
 # Sidebar 
-# PERF: menu takes ~30% of werc's runtime, even for top level pages.
-# Maybe a combination of du -a/find|sort could let us avoid the recursive awk calls... 
 fn menu {
-    ls -F $1 | sed $dirfilter | awk -F/ '
-    BEGIN { print "<ul class=\"side-bar\">" }
-    END { print "</ul>" }
-    # Should add \. to the list of allowed chars in file names, but need to find a way to filter out .txt and so on
-    /^([a-zA-Z0-9+_\-]+[\/*]?)+$/ && $NF != "index" {
-        isdir = match($0, "/$")
-        sub("[*/]$", "")
+    dirs = ./
+    dd = .
+    for(d in $args) {
+       dd=$dd^'/'^$d
+       dirs = ( $dd $dirs )
+    }
+    # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
+    ls -F $dirs >[2]/dev/null | sed 's/[@*]$//; '^$dirfilter|sort -u | awk -F/ ' 
+    function p(x, y, s) {
+        for( i=0; i < x-y; i+=1)
+            print s 
+    }
+    /^([a-zA-Z0-9+_\-]+[*\/]?)+$/ {
 
-        path = bname = $0
-        sub("^(.*/)?([0-9]+_)?", "", bname)
+        d = ""
+        if(match($0, "/$"))
+            d = "/"
+        sub("/$", "") # Strip trailing / for dirs so NF is consistent 
+
+        p(NF, lNF, "<ul class=\"side-bar\">")
+        p(lNF, NF, "</ul>")
+        lNF = NF
+
+        bname = $NF d
+        path = "/" $0 d
         gsub("_", " ", bname)
 
-        if(isdir) {
-            bname = bname "/"
-            path = $0 "/"
-        }
-
-        if(index(ENVIRON["REQUEST_URI"] "/", "/" path) == 1) {
-            if(isdir) {
-                print "<li><a href=\"/" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
-                system("rc -c ''menu " path "''")
-            } else {
-                print "<li><a href=\"/" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
-            }
-        } else 
-            print "<li><a href=\"/" path "\">&rsaquo; " bname "</a>"
-
-        print "</li>"
-    }'
+        if(index(ENVIRON["REQUEST_URI"] "/", path) == 1)
+            print "<li><a href=\"" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
+        else 
+            print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
+    }
+    END { p(lNF, 0, "</ul>") }
+    '
 }
 
 fn gensidebar {
@@ -116,9 +120,10 @@ fn txt_handler {
 
 fn dir_listing_handler {
     d = `{basename -d $1}
-    echo '<h1 style="text-transform: capitalize;">' `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g' } '</h1>'
-    echo '<ul style="text-transform: capitalize;">'
-    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,' # XXX I'm not sure what the [^$] does there
+    dt = `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g'} 
+    echo '<h1 class="dir-list-head">'^$dt^'</h1> <ul class="dir-list">'
+    # XXX I'm not sure what the [^$] does there
+    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
@@ -310,6 +315,8 @@ if (test -d $body) {
 }
 
 select_handler
+
+dprint $handler
 
 # Template/body selection
 master_template= `{get_lib_file $master_template}
