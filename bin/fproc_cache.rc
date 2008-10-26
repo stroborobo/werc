@@ -1,0 +1,18 @@
+#!/usr/bin/env rc
+#. 9.rc # Not really needed when calling from werc, only would be needed if you use fproc_cache.rc standalone
+
+proc=$1
+
+tmpfile=/tmp/fmttmp.$pid
+score=`{{tee $tmpfile || exit 1} | sha1sum}
+
+cachedir=/tmp/fproc_cache/$score
+mkdir -p $cachedir >[2]/dev/null
+
+if(test -f $cachedir/$proc)
+    cat $cachedir/$proc
+if not {
+    $proc < $tmpfile | tee $cachedir/$pid
+    mv $cachedir/$pid $cachedir/$proc
+}
+rm $tmpfile >[2]/dev/null

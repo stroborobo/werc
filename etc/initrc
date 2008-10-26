@@ -12,7 +12,7 @@
 plan9port=$PLAN9
 
 # Path, make sure the plan9port /bin directory is included before /bin
-path=($plan9port/bin/ ./bin/ /bin/ /usr/bin/)
+path=($plan9port/bin/ ./bin/ /bin/ /usr/bin/ ./bin/contrib/)
 
 # Directory where your site(s) live ($site here is your domain name, eg., example.com)
 sitedir=sites/$site
@@ -22,7 +22,7 @@ sitedir=sites/$site
 # configuration markdown.pl, that caches output)
 # Note that some werc components assume a markdown-like formatter, but all
 # major functionality should should be formatter agnostic.
-formatter=(fproc_cache.rc bin/contrib/markdown.pl)
+formatter=(fproc_cache.rc markdown.pl)
 
 # Enable debugging, to disable set to ()
 debug=true

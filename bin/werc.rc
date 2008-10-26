@@ -30,6 +30,8 @@ fn hide_paths {
 }
 
 # Sidebar 
+# PERF: menu takes ~30% of werc's runtime, even for top level pages.
+# Maybe a combination of du -a/find|sort could let us avoid the recursive awk calls... 
 fn menu {
     ls -F $1 | sed $dirfilter | awk -F/ '
     BEGIN { print "<ul class=\"side-bar\">" }
@@ -234,10 +236,10 @@ baseuri=http://$site/
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
 
-. etc/initrc
+. ./etc/initrc
 
 if(test -f etc/initrc.local)
-    . etc/initrc.local
+    . ./etc/initrc.local
 
 
 # Parse request URL
@@ -275,7 +277,7 @@ for (i in ('' $args)) {
     }
 
     if (test -f $fpath/_werc/config)
-        . $fpath/_werc/config
+        . ./$fpath/_werc/config
 
     if (~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
         inBlog = 'yes'
