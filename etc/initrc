@@ -1,9 +1,10 @@
 # This file contains the default werc settings.
-# To change any of this settings globally, copy them to etc/initrc.local
-# and customize them there.
 #
-# Some settings can also be set for a specific site in their respective _config
-# or their master-site _config file.
+# To change any of this settings globally, copy them to etc/initrc.local and
+# customize them there.
+#
+# Some settings can also be set for a specific site in their respective
+# _werc/config or their master-site _werc/config file.
 
 # General options
 
@@ -18,13 +19,10 @@ sitedir=sites/$site
 
 # Set this to your favorite markdown formatter, eg., markdown.pl
 # (md_cache is a wrapper around markdown.pl that caches output)
-formatter=md_cache 
+formatter=md_cache.rc
 
 # Enable debugging, to disable set to ()
 debug=true
-
-# Disable deprecated interfaces
-disableDeprecated=true
 
 # Default site variables, must be set in initrc.local or _werc/config, only siteTitle is required.
 #masterSite=cat-v.org # Not required!
