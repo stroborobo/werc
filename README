@@ -17,7 +17,7 @@ Requirements:
 
 Instructions:
 
-Untar, configure httpd to use bin/controller.rc as a cgi-script, and create a
+Untar, configure httpd to use bin/werc.rc as a cgi-script, and create a
 directory for your web site under sites/ where you can start to add content
 right away. 
 
