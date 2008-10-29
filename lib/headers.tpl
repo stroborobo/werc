@@ -7,8 +7,6 @@ Content-Type: text/html
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 
-<meta name="verify-v1" content="6zEoK0WMlnLmIS/w7Pnh6+srZECHsvnMGN0kQmowSGk=" />
-
     <title>%($pageTitle%)</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -21,7 +19,6 @@ Content-Type: text/html
 
     <link rel="stylesheet" href="/pub/style/style.css" type="text/css" media="screen, handheld" title="default" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
-%#    <link rel="stylesheet alternative" type="text/css" href="/pub/style/style_old.css" media="screen" title="Old Style" />
 % if (test -f $sitedir/_style.css) {
     <link rel="stylesheet" href="/_style.css" type="text/css" media="screen" title="default" />
 % }
