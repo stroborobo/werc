@@ -3,14 +3,13 @@ get_post_args target_blog_dir post_title post_body
 
 if(~ $REQUEST_METHOD POST && ! ~ $#target_blog_dir 0 && ! ~ $#post_title 0) {
 
-    get_user
-
+    # XXX Need a generic way to load the complete config hierarchy for a given path
     if(test -f $sitedir/$target_blog_dir/_werc/config)
         . $sitedir/$target_blog_dir/_werc/config
 
     if(~ $#blog_editors_group 0)
         echo Cant post to $target_blog_dir, no editors group set.
-    if not if (! user_in_group $blog_editors_group)
+    if not if (! check_user $blog_editors_group)
         echo Post to $target_blog_dir denied, user $logged_user not in group $blog_editors_group
     if not if(! make_blog_post $target_blog_dir $post_title $post_body)
         echo Posting to $target_blog_dir failed: $status
