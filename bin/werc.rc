@@ -22,7 +22,7 @@ fn gentitle {
 
 # Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
 # TODO: Specify the canonical path input format handled by dirfilter
-dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots.\txt|sitemap\.txt|index\.md)$/d; /_werc$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
+dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots.\txt|sitemap\.txt|index\.(md|html|txt|tpl))$/d; /_werc$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
 
 # To be used from config files
 fn hide_paths {
