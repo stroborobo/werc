@@ -86,8 +86,10 @@ fn gen_blog_post_title {
     permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
     du=`{ls -l $1}
     by = ''
-    if (! ~ $#blogAuthor 0)
-        by='By '$"blogAuthor
+    if (! ~ $#blogAuthor 0) {
+        if (! ~ $blogAuthor '')
+            by='By '$"blogAuthor
+    }
     if not if (~ $#blogDirs 1)
         by='By '$du(4)
     echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
