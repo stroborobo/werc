@@ -1,5 +1,73 @@
+Content-Type: application/atom+xml
+
 <?xml version="1.0" encoding="utf-8"?>
+
 <!-- XXX TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
+%{
+fn statpost {
+	f = $1
+
+    updated = `{/bin/date --rfc-3339'=seconds' -r $f |sed 's/ /T/'} 
+	post_uri = `{echo $f | sed 's,^'$sitedir',,'}
+	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
+	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
+	stat=`{stat -c '%Y %U' $f}
+	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
+	post_uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
+	by=$stat(2)
+	ifs=() { summary=`{cat $f | crop_text 1024 | $formatter } }
+}
+updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'} 
+%}
+
+<feed xmlns="http://www.w3.org/2005/Atom"
+    xmlns:thr="http://purl.org/syndication/thread/1.0">
+
+    <link rel="self" href="%($uri%)"/>
+    <id>%($uri%)</id>
+    <icon>/favicon.ico</icon>
+
+    <title>%($siteTitle%)</title>
+    <subtitle>%($siteSubTitle%)</subtitle>
+
+    <!-- <updated>2008-09-24T12:47:00-04:00</updated> -->
+    <updated>%($updated%)</updated>
+    <link href="."/>
+
+%{
+		for(f in `{sortedBlogPostList $blogDirs}) {
+            statpost $f
+%}
+    <entry>
+        <!-- <id>tag:intertwingly.net,2004:2899</id> Maybe we should be smarter, see: http://diveintomark.org/archives/2004/05/28/howto-atom-id -->
+        <id>%($post_uri%)</id>
+        <link href="%($post_uri%)"/>
+        <title>%($title%)</title>
+        <!-- <link rel="replies" href="2899.atom" thr:count="0"/> -->
+        <author>
+            <name>%($by%)</name>
+        <!--
+            <email>rubys@intertwingly.net</email>
+            <uri>/blog/</uri>
+        -->
+        </author>
+
+
+        <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+            %($summary%)
+        </div></content>
+
+        <updated>%($updated%)</updated>
+    </entry>
+
+
+%		}
+
+</feed>
+
+% exit 
+
 <feed xmlns="http://www.w3.org/2005/Atom"
   xmlns:thr="http://purl.org/syndication/thread/1.0">
   <link rel="self" href="http://intertwingly.net/blog/index.atom"/>

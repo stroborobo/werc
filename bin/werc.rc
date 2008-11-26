@@ -184,12 +184,19 @@ fn select_handler {
         perm_redirect `{ echo $REQUEST_URI|sed 's/.html$//' }
 
     # Rss feeds. TODO: we should check that the request is for a real blog dir
-    if not if (~ $REQUEST_URI */index.rss) {
-        uri = `{echo $uri | sed 's/index.rss$//'}
+    if not if (~ $REQUEST_URI */index.rss */index.atom) {
+        uri = `{echo $uri | sed 's/index.(rss|atom)$//'}
         if (~ $#blogDirs 0)
-            blogDirs = $sitedir^$uri
+            blogDirs = $sitedir^'/'$uri
         uri=$baseuri$"uri
-        master_template=feeds/rss20.tpl
+
+        if (~ $REQUEST_URI */index.rss) {
+            master_template=feeds/rss20.tpl
+        }
+        if not if (~ $REQUEST_URI */index.atom) {
+            master_template=feeds/atom.tpl
+        }
+
         response_format=raw
     }
 
@@ -198,10 +205,13 @@ fn select_handler {
         if (~ $#blogDirs 0)
             blogDirs = `{basename -d $body}
 
-        rssuri=`{basename -d $uri}
-        rssuri=$baseuri`{cleanname $"rssuri^/index.rss}
+        u=`{cleanname `{basename -d $uri}}
+        rssuri=$baseuri^$"u^/index.rss
+        atomuri=$baseuri^$"u^/index.atom
         extraHeaders=$"extraHeaders ^ \
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
+        <link rel="alternate" type="application/atom+xml" title="ATOM" href="'$atomuri'"/>
+
 '
         set_handler tpl_handler lib/feeds/html.tpl
     }
@@ -278,7 +288,7 @@ fpath=$sitedir
 for (i in ('' $args)) {
     fpath = $fpath/$i
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if (! ~ $#blogDirs 0 && ! ~ $req_path */index.rss */[bB]log */[bB]log/) {
+    if (! ~ $#blogDirs 0 && ! ~ $req_path */index.rss */index.atom */[bB]log */[bB]log/) {
         inBlog = $blogDirs
         blogDirs = () 
     }

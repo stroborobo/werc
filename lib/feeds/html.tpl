@@ -1,7 +1,7 @@
 % if (! ~ $blogTitle '')
 %    echo '<h1>'$"blogTitle'</h1>'
 
-<div style="text-align:right">(<a href="index.rss">rss feed</a>)</div>
+<div style="text-align:right">(<a href="index.rss">RSS Feed</a>|<a href="index.atom">Atom Feed</a>)</div>
 
 %{
 for (f in `{ sortedBlogPostList $blogDirs }) {
