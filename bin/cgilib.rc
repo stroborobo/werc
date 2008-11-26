@@ -94,6 +94,20 @@ BEGIN {
 '
 }
 
+fn crop_text {
+    max_chars = $0
+    awk -v max'='^$max_chars^' ' '
+    {
+        nc += 1 + length;
+        if(nc > max) {
+            print substr($0, 1, nc - max) "..."
+            exit
+        }
+        print
+    }' 
+}
+
+
 # Cookies
 fn set_cookie {
     # TODO: should check input values more carefully
