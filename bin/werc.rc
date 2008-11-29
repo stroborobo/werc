@@ -22,7 +22,7 @@ fn gentitle {
 
 # Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
 # TODO: Specify the canonical path input format handled by dirfilter
-dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots\.txt|sitemap\.txt|index\.(md|html|txt|tpl))$/d; /_werc$/d; s,^\./,,; s,\.md$,,; s,\.html,,; s,\.txt,,; '
+dirfilter = '/\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots\.txt|sitemap\.txt|index\.(md|html|txt|tpl))$/d; /_werc\/?$/d; s,^\./,,; s,\.(md|html|txt)$,,; '
 
 # To be used from config files
 fn hide_paths {
@@ -39,7 +39,7 @@ fn menu {
        dirs = ( $dd $dirs )
     }
     # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
-    ls -F $dirs >[2]/dev/null | sed 's/[@*]$//; '^$dirfilter|sort -u | awk -F/ ' 
+    ls -F $dirs >[2]/dev/null | sed 's/\*$//; '^$dirfilter|sort -u | awk -F/ ' 
     function p(x, y, s) {
         for( i=0; i < x-y; i+=1)
             print s 
@@ -125,7 +125,7 @@ fn dir_listing_handler {
     dt = `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g'} 
     echo '<h1 class="dir-list-head">'^$"dt^'</h1> <ul class="dir-list">'
     # XXX I'm not sure what the [^$] does there
-    ls -F $d | sed -e $dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
+    ls -F $d | sed -e 's/\*$//; '^$dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
