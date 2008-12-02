@@ -8,13 +8,12 @@ fn statpost {
 	f = $1
 
     updated = `{/bin/date --rfc-3339'=seconds' -r $f |sed 's/ /T/'} 
-	post_uri = `{echo $f | sed 's,^'$sitedir',,'}
+	post_uri=$baseuri^`{cleanname `{echo $f | sed -e 's,^'$sitedir',,'-e 's/\.(md|tpl)$//g'}}
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
 	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
 	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
 	stat=`{stat -c '%Y %U' $f}
 	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
-	post_uri=$baseuri^`{cleanname `{echo -n $uri | sed 's/\.(md|tpl)//g'}}
 	by=$stat(2)
 	ifs=() { summary=`{cat $f | crop_text 1024 | $formatter } }
 }
