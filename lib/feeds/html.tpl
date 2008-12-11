@@ -7,7 +7,7 @@
 for (f in `{ sortedBlogPostList $blogDirs }) {
     gen_blog_post_title $f
     cat $f 
-    echo 
+    echo ' ' # XXX I have no clue why the ' ' is needed, a echo without args breaks markdown.pl?!?
 } | $formatter
 
 # TODO Should check if user has perms and so on
