@@ -205,12 +205,10 @@ fn select_handler {
         if (~ $#blogDirs 0)
             blogDirs = `{basename -d $body}
 
-        u=`{cleanname `{basename -d $uri}}
-        rssuri=$baseuri^$"u^/index.rss
-        atomuri=$baseuri^$"u^/index.atom
+        u=`{cleanname $baseuri^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
         extraHeaders=$"extraHeaders ^ \
-    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$rssuri'" />
-        <link rel="alternate" type="application/atom+xml" title="ATOM" href="'$atomuri'"/>
+    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'/index.rss" />
+<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'/index.atom" />
 
 '
         set_handler tpl_handler lib/feeds/html.tpl
