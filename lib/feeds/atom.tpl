@@ -2,12 +2,13 @@ Content-Type: application/atom+xml
 
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- XXX TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
+<!-- TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
 %{
 fn statpost {
 	f = $1
 
     updated = `{/bin/date --rfc-3339'=seconds' -r $f |sed 's/ /T/'} 
+    # XXX $post_uri is broken produces output that includes full file path (eg., /gsoc/www/...)
 	post_uri=$baseuri^`{cleanname `{echo $f | sed -e 's,^'$sitedir',,' -e 's/\.(md|tpl)$//g'}}
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
 	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
@@ -15,7 +16,7 @@ fn statpost {
 	stat=`{stat -c '%Y %U' $f}
 	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
 	by=$stat(2)
-	ifs=() { summary=`{cat $f | crop_text 1024 | $formatter } }
+	ifs=() { summary=`{cat $f | crop_text 512 ... | $formatter } }
 }
 updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'} 
 %}
@@ -39,17 +40,13 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
             statpost $f
 %}
     <entry>
-        <!-- <id>tag:intertwingly.net,2004:2899</id> Maybe we should be smarter, see: http://diveintomark.org/archives/2004/05/28/howto-atom-id -->
+        <!-- Maybe we should be smarter, see: http://diveintomark.org/archives/2004/05/28/howto-atom-id, example: <id>tag:intertwingly.net,2004:2899</id>  -->
         <id>%($post_uri%)</id>
         <link href="%($post_uri%)"/>
         <title>%($title%)</title>
         <!-- <link rel="replies" href="2899.atom" thr:count="0"/> -->
         <author>
             <name>%($by%)</name>
-        <!--
-            <email>rubys@intertwingly.net</email>
-            <uri>/blog/</uri>
-        -->
         </author>
 
 
