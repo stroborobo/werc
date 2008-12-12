@@ -95,12 +95,17 @@ BEGIN {
 }
 
 fn crop_text {
-    max_chars = $0
-    awk -v max'='^$max_chars^' ' '
+    max_chars = $1
+
+    ellipsis = '...'
+    if(~ $#* 2)
+        ellipsis = $2
+
+    awk -v max'='^$"max_chars^' ' -v 'ellipsis='$ellipsis '
     {
         nc += 1 + length;
         if(nc > max) {
-            print substr($0, 1, nc - max) "..."
+            print substr($0, 1, nc - max) ellipsis
             exit
         }
         print
