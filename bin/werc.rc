@@ -79,7 +79,7 @@ fn sortedBlogPostList {
     # the /./->/|/ are added so we can sort -t| and order only the file name
     # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
     if (! ~ $#* 0)
-        ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/\|/,,'
+        ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
 
 fn gen_blog_post_title {
