@@ -9,7 +9,7 @@ score=`{{tee $tmpfile || exit 1} | sha1sum}
 cachedir=/tmp/fproc_cache/$score
 mkdir -p $cachedir >[2]/dev/null
 
-if(test -f $cachedir/$proc)
+if(test -s $cachedir/$proc)
     cat $cachedir/$proc
 if not {
     $proc < $tmpfile | tee $cachedir/$pid
