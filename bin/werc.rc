@@ -125,8 +125,7 @@ fn dir_listing_handler {
     d = `{basename -d $1}
     dt = `{echo $d|sed -e 's,.*//,,g' -e 's,/$,,' -e 's,/, / ,g'} 
     echo '<h1 class="dir-list-head">'^$"dt^'</h1> <ul class="dir-list">'
-    # XXX I'm not sure what the [^$] does there
-    ls -F $d | sed -e 's/\*$//; '^$dirfilter' s,^'$sitedir'/.*/([^$].*),<li><a href="\1">\1</a></li>,'
+    ls -F $d | sed -e 's/\*$//; '^$dirfilter' s,^'$sitedir'/.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
