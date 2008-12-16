@@ -5,18 +5,18 @@ Content-Type: application/atom+xml
 <!-- TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
 %{
 fn statpost {
-	f = $1
+    f = $1
 
     updated = `{/bin/date --rfc-3339'=seconds' -r $f |sed 's/ /T/'} 
     # XXX $post_uri is broken produces output that includes full file path (eg., /gsoc/www/...)
-	post_uri=$baseuri^`{cleanname `{echo $f | sed -e 's,^'$sitedir',,' -e 's/\.(md|tpl)$//g'}}
-	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
-	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
-	stat=`{stat -c '%Y %U' $f}
-	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
-	by=$stat(2)
-	ifs=() { summary=`{cat $f | crop_text 512 ... | $formatter } }
+    post_uri=$baseuri^`{cleanname `{echo $f | sed -e 's,^'$sitedir',,' -e 's/\.(md|tpl)$//g'}}
+    title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+    date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
+    # TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
+    stat=`{stat -c '%Y %U' $f}
+    #mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
+    by=$stat(2)
+    ifs=() { summary=`{cat $f | crop_text 512 ... | $formatter } }
 }
 updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'} 
 %}
@@ -36,7 +36,7 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
     <link href="."/>
 
 %{
-		for(f in `{sortedBlogPostList $blogDirs}) {
+        for(f in `{sortedBlogPostList $blogDirs}) {
             statpost $f
 %}
     <entry>
@@ -58,7 +58,7 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
     </entry>
 
 
-%		}
+%        }
 
 </feed>
 
