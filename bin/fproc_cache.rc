@@ -12,6 +12,7 @@ mkdir -p $cachedir >[2]/dev/null
 if(test -s $cachedir/$proc)
     cat $cachedir/$proc
 if not {
+    # XXX For reliability mv should not be called unless both $proc and tee suceed
     $proc < $tmpfile | tee $cachedir/$pid
     mv $cachedir/$pid $cachedir/$proc
 }
