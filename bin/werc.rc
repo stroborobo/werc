@@ -212,6 +212,7 @@ headers=lib/headers.tpl
 master_template=default_master.tpl
 sidebar=sidebar
 baseuri=http://$site/
+current_date_time=`{date}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
 

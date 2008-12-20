@@ -254,7 +254,7 @@ fn gen_blog_post_title {
     }
     if not if(~ $#blogDirs 1)
         by='By '$du(4)
-    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
+    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) $current_date_time(5) ' )*'
 }
 
 
