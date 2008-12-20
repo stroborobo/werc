@@ -98,7 +98,7 @@ fn dir_listing_handler {
     echo '</ul>'
 }
 
-fn 404_handler { template `{ get_lib_file 404.tpl } }
+fn 404_handler { template `{get_lib_file 404.tpl} }
 
 fn blog_dir_handler {
     blogDirs=$*
