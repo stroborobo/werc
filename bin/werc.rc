@@ -36,12 +36,14 @@ fn gensidebar {
        dirs = ( $sitedir^$dd $dirs )
     }
     # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
-    ls -F $dirs >[2]/dev/null | sed 's/\*$//; s,^'$sitedir',,; '^$dirfilter^' s,^/,,'|sort -u | awk -F/ ' 
+    ls -F $dirs >[2]/dev/null | sed 's/\*$//; s,^'$sitedir',,; '^$dirfilter | sort -u | awk -F/ ' 
     function p(x, y, s) {
         for( i=0; i < x-y; i+=1)
             print s 
     }
-    /^([a-zA-Z0-9+_\-]+[*\/]?)+$/ {
+
+    # XXX Regexp to hide non-document/non-dir stuff, there must be a better way, if we really want this.
+    /^\/([a-zA-Z0-9+_\-]+[*\/]?)+$/ { 
 
         d = ""
         if(match($0, "/$"))
@@ -53,7 +55,7 @@ fn gensidebar {
         lNF = NF
 
         bname = $NF d
-        path = "/" $0 d
+        path = $0 d
         gsub("_", " ", bname)
 
         if(index(ENVIRON["REQUEST_URI"] "/", path) == 1)
@@ -69,8 +71,7 @@ fn gensidebar {
 # Handlers
 fn set_handler {
     handler = $1
-    shift
-    handler_args = $*
+    handler_args = $*(2-)
 }
 
 fn md_handler { cat $* | $formatter }
