@@ -79,7 +79,12 @@ fn md_handler { cat $* | $formatter }
 fn tpl_handler { template $1 }
 
 fn html_handler {
-    cat $1 | /bin/sed '0,/<[Bb][Oo][Dd][Yy][^>]*>/d; /<\/[Bb][Oo][Dd][Yy]>/,$d' 
+    # body states: 0 = no <body> found, 2 = after <body>, 1 = after <body></body>, -1 = after </body>
+    awk 'gsub(".*<[Bb][Oo][Dd][Yy][^>]*>", "") > 0 {body=2}
+        gsub("</ *[Bb][Oo][Dd][Yy][^>]*>.*", "") > 0 {print; body=body-1}
+        body==2 {print}
+        body==0 {buf=buf "\n" $0}
+        END {if(body<=0) {print buf}}' < $1
 }
 
 fn txt_handler {
