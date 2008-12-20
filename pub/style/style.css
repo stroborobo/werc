@@ -369,3 +369,6 @@ h1.dir-list-head, ul.dir-list {
     text-transform: capitalize;
     font-weight: bold;
 }
+ul.sitemap-list a {
+    text-transform: capitalize;
+}
