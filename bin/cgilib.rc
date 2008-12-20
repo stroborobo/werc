@@ -1,7 +1,7 @@
 ##############################################
 # Useful CGI functions
 
-NEW_LINE = '
+NEW_LINE='
 '
 
 fn dprint { echo $* >[1=2] }
@@ -20,21 +20,21 @@ fn get_post_args {
     if(~ $#POST_ARGS 0) {
         ifs='&
 '       for(pair in `{cat}) {
-            pair = `{echo -n $pair | sed 's/=/\&/'} \
+            pair=`{echo -n $pair | sed 's/=/\&/'} \
             # Maybe we should urldecode on the first pass?
-            POST_ARGS = ($POST_ARGS $pair)
+            POST_ARGS=( $POST_ARGS $pair )
             ifs=() \
             if(~ $pair(1) $*)
-                $pair(1) = `{echo -n $pair(2) | urldecode | tr -d ''}
+                $pair(1)=`{echo -n $pair(2) | urldecode | tr -d ''}
         }
     }
     if not {
-        pa = $POST_ARGS
+        pa=$POST_ARGS
         while(! ~ $#pa 0) {
             ifs=() \
             if(~ $pa(1) $*)
-                $pa(1) = `{echo -n $pa(2) | urldecode | tr -d ''}
-            pa = $pa(3-)
+                $pa(1)=`{echo -n $pa(2) | urldecode | tr -d ''}
+            pa=$pa(3-)
         }
     }
 }
@@ -48,7 +48,7 @@ fn awk_buffer {
             buf = ""
         }
     }
-    END{ printf "%s", buf }'
+    END { printf "%s", buf }'
 }
 
 fn urldecode {
@@ -65,7 +65,7 @@ BEGIN {
 }
 {
     decoded = ""
-    i   = 1
+    i = 1
     len = length ($0)
     while ( i <= len ) {
         c = substr ($0, i, 1)
@@ -95,11 +95,11 @@ BEGIN {
 }
 
 fn crop_text {
-    max_chars = $1
+    max_chars=$1
 
-    ellipsis = '...'
+    ellipsis='...'
     if(~ $#* 2)
-        ellipsis = $2
+        ellipsis=$2
 
     awk -v max'='^$"max_chars^' ' -v 'ellipsis='$ellipsis '
     {
@@ -116,9 +116,9 @@ fn crop_text {
 # Cookies
 fn set_cookie {
     # TODO: should check input values more carefully
-    name = $1
-    val = $2
-    extraHttpHeaders = ($extraHttpHeaders 'Set-cookie: '^$"name^'='^$"val^'; path=/;')
+    name=$1
+    val=$2
+    extraHttpHeaders=( $extraHttpHeaders 'Set-cookie: '^$"name^'='^$"val^'; path=/;' )
 }
 fn get_cookie {
     ifs=';' { co = `{ echo $HTTP_COOKIE } }
@@ -128,7 +128,7 @@ fn get_cookie {
     #        echo $c|sed 's/[^=]*=//' 
 
     # WARNING: we might be adding a trailing new line
-    { for(c in $co) echo $c} | sed -n 's/[^=]*=//p' 
+    { for(c in $co) echo $c } | sed -n 's/[^=]*=//p' 
 }
 
 
@@ -142,10 +142,10 @@ fn template { template.awk $* | rc $rcargs }
 fn parse_rec {
     ifs='
 ' for(i in `{sed 's/% *//g; /^$/q' < $1}) {
-        v = `{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
-        $v = `{echo -n $i | sed 's/^[^=]*=//'}
+        v=`{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
+        $v=`{echo -n $i | sed 's/^[^=]*=//'}
     }
-    ifs=() { rec_data = `{sed -n '/^[^%]./,$p' < $1} }
+    ifs=() { rec_data=`{sed -n '/^[^%]./,$p' < $1} }
 }
 
 
@@ -163,7 +163,7 @@ fn login_user {
 fn check_user {
     if(! get_user)
         status='Not logged in'
-    if not if (! ~ $#1 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
+    if not if(! ~ $#1 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
         status=User $logged_user not in group $1
     if not
         true
@@ -171,19 +171,19 @@ fn check_user {
 
 # If not logged in, try to get user login info from POST info or from cookie
 fn get_user {
-    if (~ $#logged_user 0) {
-        if (~ $#* 2) {
-            user_name = $1 
+    if(~ $#logged_user 0) {
+        if(~ $#* 2) {
+            user_name=$1 
             user_password $2
         }
         if not if(~ $REQUEST_METHOD POST)
             get_post_args user_name user_password
 
         if(~ $#user_name 0) { 
-            ifs=':' { cu = `{get_cookie werc_user|tr -d $NEW_LINE} }
+            ifs=':' { cu=`{get_cookie werc_user|tr -d $NEW_LINE} }
             if(! ~ $#cu 0) {
-                user_name = $cu(1) 
-                user_password  = $cu(3)
+                user_name=$cu(1) 
+                user_password=$cu(3)
             }
         }
         auth_user $user_name $user_password
@@ -195,19 +195,19 @@ fn get_user {
 # Check if user_name and user_password represent a valid user account
 # If valid, 'log in' by setting logged_user
 fn auth_user {
-    user_name = $1
-    user_password = $2
+    user_name=$1
+    user_password=$2
 
-    pfile = 'etc/users/'^$"user_name^'/password'
-    if (~ $#user_name 0 || ~ $#user_password 0)
+    pfile='etc/users/'^$"user_name^'/password'
+    if(~ $#user_name 0 || ~ $#user_password 0)
         status='Auth: missing user name or pass: '^$"user_name^' / '^$"user_password
     if not if(! test -f $pfile)
         status='Auth: cant find '^$pfile
-    if not if (! ~ $user_password `{cat $pfile})
+    if not if(! ~ $user_password `{cat $pfile})
         status='Auth: Pass '$user_password' doesnt match '^`{cat $pfile}
     if not {
-        logged_user = $user_name
-        logged_password = $user_password
+        logged_user=$user_name
+        logged_password=$user_password
         dprint Auth: success
     }
 }
@@ -215,21 +215,20 @@ fn auth_user {
 
 
 # Blog stuff
-
 fn make_blog_post {
-    bdir = $1
-    btitle = $2
-    btext = $3
+    bdir=$1
+    btitle=$2
+    btext=$3
     if(! ~ 0 $#1 $#2 $#3) {
         date=`{/bin/date +%F}
 
-        n = 1
+        n=1
         for(f in $bdir^$date^'-'*) {
-            i = `{echo -n $f | sed -n 's,^.*/'$date'-([0-9]+)_.*,\1,p'|tr -d $NEW_LINE}
+            i=`{echo -n $f | sed -n 's,^.*/'$date'-([0-9]+)_.*,\1,p'|tr -d $NEW_LINE}
             if(! ~ $#i 0 && test $i -ge $n)
-                n = `{hoc -e $i'+1'}
+                n=`{hoc -e $i'+1'}
         }
-        btitle = `{echo -n $"btitle | sed 's/[ 	]+/_/g; 1q'}
+        btitle=`{echo -n $"btitle | sed 's/[ 	]+/_/g; 1q'}
 
         echo $btext > $bdir^'/'^$"date^'-'^$"n^_$"btitle.md 
     }
@@ -240,20 +239,20 @@ fn make_blog_post {
 fn sortedBlogPostList {
     # the /./->/|/ are added so we can sort -t| and order only the file name
     # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
-    if (! ~ $#* 0)
+    if(! ~ $#* 0)
         ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
 
 fn gen_blog_post_title {
     title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-    permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
+    permlink=`{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
     du=`{ls -l $1}
-    by = ''
-    if (! ~ $#blogAuthor 0) {
-        if (! ~ $blogAuthor '')
+    by=''
+    if(! ~ $#blogAuthor 0) {
+        if(! ~ $blogAuthor '')
             by='By '$"blogAuthor
     }
-    if not if (~ $#blogDirs 1)
+    if not if(~ $#blogDirs 1)
         by='By '$du(4)
     echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
 }
@@ -263,15 +262,15 @@ fn gen_blog_post_title {
 # App framework
 
 
-app_list = ( hello )
+app_list=( hello )
 
 fn select_apps {
-    found = ()
+    found=()
     for(a in $app_list) {
         . ./apps/$a/app.rc
         if($a^'_test') {
             $a^'_setup'
-            found = yes
+            found=yes
         }
     }
 
@@ -280,7 +279,6 @@ fn select_apps {
 
 fn app_handler {
     $app_body_handler
-        
 }
 
 
