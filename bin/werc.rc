@@ -225,10 +225,6 @@ if(test -f etc/initrc.local)
 uri=`{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
 ifs='/' { args=`{echo -n $uri} }
 
-
-if(! ~ $#debug 0)
-    dprint '  ' $SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_USER_AGENT
-
 # Hack: preload post data so we can access it from templates where cgi's stdin is not accesible
 if(~ $REQUEST_METHOD POST) {
     get_post_args 
@@ -290,7 +286,8 @@ if(test -d $body) {
 
 select_handler
 
-dprint $handler
+if(! ~ $#debug 0)
+    dprint '  '$"SERVER_NAME^$"REQUEST_URI' - '$"HTTP_USER_AGENT' - '$"REQUEST_METHOD' - '$"handler
 
 # Template/body selection
 master_template=`{get_lib_file $master_template}
