@@ -8,38 +8,38 @@ fn die {
 	exit 1
 }
 
-if (~ $#* 0)
+if(~ $#* 0)
     die 'Missing title'
 
 if(~ $#user 0)
-	user = `{whoami}
+	user=`{whoami}
 
-file = (); title = ();
-bloguser = $user
+file=(); title=();
+bloguser=$user
 while(! ~ $#* 0) {
 	switch($1) {
 	case -u
         base=/gsoc/www/people/$user/blog/
 		shift
 	case *
-		title = $"*
+		title=$"*
 	}
     shift
 }
 
 date=`{/bin/date +%F}
 
-n = 1
+n=1
 for(f in $base/$date-*) {
-	i = `{echo $f | sed -n 's|^.*/'$date'-([0-9]+)_.*|\1|p'}
+	i=`{echo $f | sed -n 's|^.*/'$date'-([0-9]+)_.*|\1|p'}
 	if(! ~ $#i 0 && test $i -ge $n)
-		n = `{hoc -e $i'+1'}
+		n=`{hoc -e $i'+1'}
 }
 
 if(~ $EDITOR '')
-	EDITOR = vi
+	EDITOR=vi
 
-file = $home/.blogtmp.$pid
+file=$home/.blogtmp.$pid
 rm $file >[2]/dev/null
 touch $file
 $EDITOR $file
