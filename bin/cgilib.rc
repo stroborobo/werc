@@ -136,7 +136,7 @@ fn get_cookie {
 ##############################################
 # More werc-specific functions
 
-fn template { template.awk $* | rc $rcargs }
+fn template { awk -f bin/template.awk $* | rc $rcargs }
 
 # .rec parsing
 fn parse_rec {
