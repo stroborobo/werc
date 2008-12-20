@@ -75,28 +75,6 @@ fn gensidebar {
     }
 }
 
-fn sortedBlogPostList {
-    # the /./->/|/ are added so we can sort -t| and order only the file name
-    # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
-    if (! ~ $#* 0)
-        ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
-}
-
-fn gen_blog_post_title {
-    title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-    permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
-    du=`{ls -l $1}
-    by = ''
-    if (! ~ $#blogAuthor 0) {
-        if (! ~ $blogAuthor '')
-            by='By '$"blogAuthor
-    }
-    if not if (~ $#blogDirs 1)
-        by='By '$du(4)
-    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
-}
-
-
 
 # Handlers
 fn set_handler {
@@ -225,6 +203,10 @@ fn select_handler {
     if not if(~ $body */index)
         set_handler dir_listing_handler $body
 
+    # Apps
+    if not if(select_apps)
+        set_handler app_handler
+
     # File not found
     if not {
         set_handler 404_handler $body
@@ -258,7 +240,7 @@ if(test -f etc/initrc.local)
 
 
 # Parse request URL
-uri = `{echo -n $REQUEST_URI | sed -e 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g;' -e '1q'}
+uri = `{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
 ifs='/' { args = `{echo -n $uri} }
 
 

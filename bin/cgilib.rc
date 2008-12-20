@@ -237,9 +237,53 @@ fn make_blog_post {
         status=Missing blog post arguments $1 $2 $3 
 }
 
+fn sortedBlogPostList {
+    # the /./->/|/ are added so we can sort -t| and order only the file name
+    # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
+    if (! ~ $#* 0)
+        ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
+}
 
-# --------
-#
+fn gen_blog_post_title {
+    title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+    permlink= `{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
+    du=`{ls -l $1}
+    by = ''
+    if (! ~ $#blogAuthor 0) {
+        if (! ~ $blogAuthor '')
+            by='By '$"blogAuthor
+    }
+    if not if (~ $#blogDirs 1)
+        by='By '$du(4)
+    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) ' )*'
+}
+
+
+###################################
+# App framework
+
+
+app_list = ( hello )
+
+fn select_apps {
+    found = ()
+    for(a in $app_list) {
+        . ./apps/$a/app.rc
+        if($a^'_test') {
+            $a^'_setup'
+            found = yes
+        }
+    }
+
+    ~ $#found 1 # Set status
+}
+
+fn app_handler {
+    $app_body_handler
+        
+}
+
+
 #app_blog_methods = ( _post index.rss )
 #fn app_blog__post {
 #    echo
