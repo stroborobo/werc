@@ -21,7 +21,7 @@ fn gentitle {
 
 # Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
 # TODO: Specify the canonical path input format handled by dirfilter
-dirfilter = 's,/\./,/,g; /\/[._]/d; /'^$forbidden_uri_chars^'/d; /\/(robots\.txt|sitemap\.txt|index\.(md|html|txt|tpl))$/d; /_werc\/?$/d; s,^\./,,; s,\.(md|html|txt)$,,; '
+dirfilter = 's,/+\./+,/,g; /\/[._]/d; /'^$forbidden_uri_chars^'/d; /^\/(robots|sitemap)\.txt$|\/index\.(md|html|txt|tpl)$/d; /_werc\/?$/d; s,^\./,,; s,\.(md|html|txt)$,,; '
 
 # To be used from config files
 fn hide_paths {
@@ -30,15 +30,13 @@ fn hide_paths {
 }
 
 # Sidebar 
-fn menu {
-    dirs = ./
-    dd = .
-    for(d in $args) {
-       dd=$dd^'/'^$d
-       dirs = ( $dd $dirs )
+fn gensidebar {
+    for(d in ./ $args) {
+       dd=$"dd^'/'^$d
+       dirs = ( $sitedir^$dd $dirs )
     }
     # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
-    ls -F $dirs >[2]/dev/null | sed 's/\*$//; '^$dirfilter|sort -u | awk -F/ ' 
+    ls -F $dirs >[2]/dev/null | sed 's/\*$//; s,^'$sitedir',,; '^$dirfilter^' s,^/,,'|sort -u | awk -F/ ' 
     function p(x, y, s) {
         for( i=0; i < x-y; i+=1)
             print s 
@@ -65,13 +63,6 @@ fn menu {
     }
     END { p(lNF, 0, "</ul>") }
     '
-}
-
-fn gensidebar {
-    @{
-        cd $sitedir
-        menu .
-    }
 }
 
 
