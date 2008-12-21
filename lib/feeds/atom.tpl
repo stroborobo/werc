@@ -11,7 +11,7 @@ fn statpost {
     # XXX $post_uri is broken produces output that includes full file path (eg., /gsoc/www/...)
     post_uri=$baseuri^`{cleanname `{echo $f | sed -e 's,^'$sitedir',,' -e 's/\.(md|tpl)$//g'}}
     title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-    date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
+    # Not used: date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
     # TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
     stat=`{stat -c '%Y %U' $f}
     #mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
