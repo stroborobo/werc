@@ -28,6 +28,9 @@ formatter=(fproc_cache.rc markdown.pl)
 # Enable debugging, to disable set to ()
 debug=true
 
+# Globablly enabled apps
+#enabled_apps=( hello )
+
 # Default site variables, must be set in initrc.local or _werc/config, only siteTitle is required.
 #masterSite=cat-v.org # Not required!
 #siteTitle='cat-v'

@@ -261,12 +261,9 @@ fn gen_blog_post_title {
 ###################################
 # App framework
 
-
-app_list=( hello )
-
 fn select_apps {
     found=()
-    for(a in $app_list) {
+    for(a in $enabled_apps) {
         . ./apps/$a/app.rc
         if($a^'_test') {
             $a^'_setup'
