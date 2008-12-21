@@ -195,7 +195,7 @@ fn select_handler {
         set_handler dir_listing_handler $body
 
     # Apps
-    if not if(select_apps)
+    if not if(! ~ $#enabled_apps 0 && select_apps)
         set_handler app_handler
 
     # File not found
