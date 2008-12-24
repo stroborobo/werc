@@ -190,13 +190,13 @@ fn select_handler {
     if not if(test -f $body.txt)
         set_handler txt_handler $body.txt
 
-    # Dir listing
-    if not if(~ $body */index)
-        set_handler dir_listing_handler $body
-
     # Apps
     if not if(! ~ $#enabled_apps 0 && select_apps)
         set_handler app_handler
+
+    # Dir listing
+    if not if(~ $body */index)
+        set_handler dir_listing_handler $body
 
     # File not found
     if not {
