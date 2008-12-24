@@ -1,0 +1,19 @@
+fn blagh_test {
+    ! ~ $#blaghDirs 0 # && test -d / `{echo '-a -d '^blaghDirs}
+}
+
+fn blagh_setup {
+    app_body_handler='blagh_body'
+}
+
+fn blagh_body {
+    posts=`{ls  -F $blaghDirs^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'}
+    for(p in $posts)
+        show_post $p | $formatter 
+}
+
+fn show_post {
+    bds=$blaghDirs^'|'
+    l=`{echo $1 |sed 's,'$bds'XXX,,g'}
+    sed '1s|.*|[&]('$l') -'^$l'|' < $1/index.md  
+}
