@@ -14,7 +14,7 @@ fn statpost {
     # Not used: date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
     # TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
     stat=`{stat -c '%Y %U' $f}
-    #mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
+    #mdate=`{/bin/date -Rd `{mtime $f|awk '{print $1}' }} # Not used because it is unreliable
     by=$stat(2)
     ifs=() { summary=`{cat $f | crop_text 512 ... | $formatter } }
 }
