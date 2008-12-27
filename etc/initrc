@@ -12,7 +12,8 @@
 plan9port=$PLAN9
 
 # Path, make sure the plan9port /bin directory is included before /bin
-path=($plan9port/bin/ ./bin/ /bin/ /usr/bin/ ./bin/contrib/)
+# Keep '.' in path! It is needed.
+path=($plan9port/bin/ . ./bin/ ./bin/contrib/ /bin/ /usr/bin/)
 
 # Directories where your site(s) live ($site here is your domain name, eg., example.com)
 sitesdir=sites
