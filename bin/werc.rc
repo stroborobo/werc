@@ -31,12 +31,8 @@ fn hide_paths {
 
 # Sidebar 
 fn gensidebar {
-    for(d in ./ $args) {
-       dd=$"dd^'/'^$d
-       dirs=( $sitedir^$dd $dirs )
-    }
     # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
-    ls -F $dirs >[2]/dev/null | sed 's,^'$sitedir',,; '^$dirfilter | sort -u | awk -F/ ' 
+    ls -F $sitedir^/./^$req_paths_list >[2]/dev/null | sed 's,^'$sitedir',,; '^$dirfilter | sort -u | awk -F/ ' 
     function p(x, y, s) {
         for(i=0; i < x-y; i+=1)
             print s 
@@ -226,6 +222,7 @@ for(i in siteTitle siteSubTitle pageTitle extraHeaders)
 if(test -f etc/initrc.local)
     . ./etc/initrc.local
 
+werc_root=`{pwd}
 
 # Parse request URL
 uri=`{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
@@ -248,22 +245,27 @@ if not {
     req_path='/'
 }
 
-fpath=$sitedir
+p=()
+cd $sitedir
 for(i in ('' $args)) {
     # TODO We can build a list of paths here that can be used in sidebar, instead of iterating args twice
-    fpath=$fpath/$i
+    p=($"p^/^$i)
+    req_paths_list=($req_paths_list $p)
     # We don't want blog settings to cascade into posts, note that we are inBlog instead
     if(! ~ $#blogDirs 0 && ! ~ $req_path */index.rss */index.atom */[bB]log */[bB]log/) {
         inBlog = $blogDirs
         blogDirs = () 
     }
-
-    if(test -f $fpath/_werc/config)
-        . ./$fpath/_werc/config
+    if(test -d $i) {
+        cd $i
+        if(test -f _werc/config)
+            . _werc/config
+    }
 
     if(~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
         inBlog = 'yes'
 }
+cd $werc_root
 
 # Redirections and other preprocessing
 if(~ $#redirectPermanent 1)
