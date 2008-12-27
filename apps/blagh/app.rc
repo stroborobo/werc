@@ -7,13 +7,13 @@ fn blagh_setup {
 }
 
 fn blagh_body {
-    posts=`{ls  -F $blaghDirs^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'}
+    d=$sitedir$req_path^$blaghDirs^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ 
+    posts=`{ls  -F $d >[2]/dev/null | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'}
     for(p in $posts)
         show_post $p | $formatter 
 }
 
 fn show_post {
-    bds=$blaghDirs^'|'
-    l=`{echo $1 |sed 's,'$bds'XXX,,g'}
-    sed '1s|.*|[&]('$l') -'^$l'|' < $1/index.md  
+    l=`{echo $1 | sed 's|'$sitedir$req_path'||'}
+    sed '1s|.*|[&]('$l')|' < $1/index.md  
 }
