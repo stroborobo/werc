@@ -265,7 +265,7 @@ fn select_apps {
     found=()
     for(a in $enabled_apps) {
         . ./apps/$a/app.rc
-        if($a^'_test')
+        if($a^'_init')
             found=yes
     }
 
@@ -273,7 +273,8 @@ fn select_apps {
 }
 
 fn app_handler {
-    $app_body_handler
+    if(! ~ $#app_body_handler 0)
+        $app_body_handler
 }
 
 
