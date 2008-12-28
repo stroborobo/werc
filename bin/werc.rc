@@ -99,8 +99,6 @@ fn dir_listing_handler {
     echo '</ul>'
 }
 
-fn 404_handler { template `{get_lib_file 404.tpl} }
-
 fn blog_dir_handler {
     blogDirs=$*
     tpl_handler lib/feeds/html.tpl
@@ -196,7 +194,7 @@ fn select_handler {
 
     # File not found
     if not {
-        set_handler 404_handler $body
+        set_handler tpl_handler `{get_lib_file 404.tpl}
         dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
     }
