@@ -157,7 +157,7 @@ fn select_handler {
         uri=`{echo $uri | sed 's/index.(rss|atom)$//'}
         if(~ $#blogDirs 0)
             blogDirs=$sitedir^'/'$uri
-        uri=$baseuri$"uri
+        uri=$base_url$"uri
 
         if(~ $REQUEST_URI */index.rss)
             master_template=feeds/rss20.tpl
@@ -170,7 +170,7 @@ fn select_handler {
         if(~ $#blogDirs 0)
             blogDirs=`{basename -d $body}
 
-        u=`{cleanname $baseuri^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
+        u=`{cleanname $base_url^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
         extraHeaders=$"extraHeaders ^ \
     	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'/index.rss" />
 <link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'/index.atom" />'
@@ -210,7 +210,7 @@ site=$SERVER_NAME
 headers=lib/headers.tpl
 master_template=default_master.tpl
 sidebar=sidebar
-baseuri=http://$site/
+base_url=http://$site/
 current_date_time=`{date}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''

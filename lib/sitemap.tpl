@@ -47,7 +47,7 @@ fn listDir {
             desc=' - '$"desc
         tit=`{echo /$i|sed 's/_/ /g; s,.*/([^/]+)/?$,\1,'}
         echo '<li><a href="/'$i'">'^$"tit^'</a>' $"desc '</li>' 
-        echo -n $baseuri^$i >> $tmpfile
+        echo -n $base_url^$i >> $tmpfile
         if(test -d $i) {
             echo / >> $tmpfile	
             @{ listDir $i }
