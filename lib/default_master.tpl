@@ -26,7 +26,7 @@ gensidebar
 %}
 </div>
 
-% if (! ~ $#wiki 0 && test -f $body.md  && check_user $wiki_editors_group) {
+% if (! ~ $#wiki 0 && test -f $local_path.md  && check_user $wiki_editors_group) {
 <div> 
     <form action="/_apps/dirdir/edit" method="POST">
         <input type="hidden" name="edit_wiki_page" value="%($req_path%)" />
@@ -47,7 +47,7 @@ gensidebar
 % if (! ~ $#allowComments 0) {
 
 %{
-cdir = $body.md_werc/comments
+cdir = $local_path.md_werc/comments
 if (test -d $cdir) { 
     echo '<hr /><h2>Comments</h2>'
     for(c in `{ls $cdir/}) {
