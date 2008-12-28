@@ -5,35 +5,43 @@ fn blagh_init {
     # Should not match sub-dirs!
     if(! ~ $#blaghDirs 0) {
     # && test -d / `{echo '-a -d '^$req_path^$blaghDirs}
+        blagh_uri=`{echo $req_path|sed 's/index\.(atom|rss)$//'}
+        blagh_url=$base_uri^$blagh_root_path
+        blagh_root=$sitedir^$blagh_uri
 
-        if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/*)
+        if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/)
             status='Use default handler'
 
-        if not if(~ $req_path */index) {
+        if not if(~ $req_path */index */) {
             app_body_handler='blagh_body'
-            #u=`{cleanname $baseuri^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
-            u=`{cleanname $baseuri^$req_path'index}
+            u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
-'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />' ^ \
-'<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
+            '<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />
+<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
 
         }
-        if not if(~ $req_path */index.atom)
-            app_body_handler='blagh_body'
-        if not if(~ $req_path */index.rss)
-            app_body_handler='blagh_body'
+        if not {
+            response_format=raw
+            if(~ $req_path */index.atom)
+                master_template=_apps/blagh/atom.tpl
+            if not if(~ $req_path */index.rss)
+                master_template=_apps/blagh/rss20.tpl
+            if not 
+                dprint XXXX $req_path
+        }
 
     }
+    status=()
 }
 
 fn blagh_body {
-    d=$sitedir$req_path^$blaghDirs^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ 
-    posts=`{ls  -F $d >[2]/dev/null | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'}
-    for(p in $posts)
-        show_post $p | $formatter 
+    for(p in `{get_post_list $blagh_root^$blaghDirs}) {
+        l=`{echo -n $p|sed 's!'$sitedir^$req_path'!!'}
+        sed '1s!.*![&]('$l')!' < $p/index.md | $formatter 
+    }
 }
 
-fn show_post {
-    l=`{echo $1 | sed 's|'$sitedir$req_path'||'}
-    sed '1s|.*|[&]('$l')|' < $1/index.md  
+fn get_post_list {
+    d=$*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ 
+    ls  -F $d >[2]/dev/null | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
