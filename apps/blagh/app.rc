@@ -1,9 +1,29 @@
-fn blagh_test {
-    ! ~ $#blaghDirs 0 # && test -d / `{echo '-a -d '^blaghDirs}
-}
+fn blagh_init {
+    if(~ $#blaghDirs 0 && ~ $req_path */[bB]log/index)
+        blaghDirs=( . )
 
-fn blagh_setup {
-    app_body_handler='blagh_body'
+    # Should not match sub-dirs!
+    if(! ~ $#blaghDirs 0) {
+    # && test -d / `{echo '-a -d '^$req_path^$blaghDirs}
+
+        if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/*)
+            status='Use default handler'
+
+        if not if(~ $req_path */index) {
+            app_body_handler='blagh_body'
+            #u=`{cleanname $baseuri^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
+            u=`{cleanname $baseuri^$req_path'index}
+            extraHeaders=$"extraHeaders ^ \
+'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />' ^ \
+'<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
+
+        }
+        if not if(~ $req_path */index.atom)
+            app_body_handler='blagh_body'
+        if not if(~ $req_path */index.rss)
+            app_body_handler='blagh_body'
+
+    }
 }
 
 fn blagh_body {

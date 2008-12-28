@@ -265,10 +265,8 @@ fn select_apps {
     found=()
     for(a in $enabled_apps) {
         . ./apps/$a/app.rc
-        if($a^'_test') {
-            $a^'_setup'
+        if($a^'_test')
             found=yes
-        }
     }
 
     ~ $#found 1 # Set status

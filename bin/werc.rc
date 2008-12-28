@@ -31,7 +31,7 @@ fn hide_paths {
 
 # Sidebar 
 fn gensidebar {
-    # Ignore stderr, last item in path might be a file that doesn't exist (eg., foo for foo.md)
+    # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
     ls -F $sitedir^/./^$req_paths_list >[2]/dev/null | sed 's,^'$sitedir',,; '^$dirfilter | sort -u | awk -F/ ' 
     function p(x, y, s) {
         for(i=0; i < x-y; i+=1)
@@ -248,7 +248,6 @@ if not {
 p=()
 cd $sitedir
 for(i in ('' $args)) {
-    # TODO We can build a list of paths here that can be used in sidebar, instead of iterating args twice
     p=($"p^/^$i)
     req_paths_list=($req_paths_list $p)
     # We don't want blog settings to cascade into posts, note that we are inBlog instead

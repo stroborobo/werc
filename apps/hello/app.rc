@@ -1,10 +1,8 @@
-fn hello_test {
-    ~ $req_path /hello
-}
-
-fn hello_setup {
-    app_body_handler = 'hello_body'
-    pageTitle='Hi title!'
+fn hello_init {
+    if(~ $req_path /hello) {
+        app_body_handler = 'hello_body'
+        pageTitle='Hi title!'
+    }
 }
 
 fn hello_body {
