@@ -1,13 +1,14 @@
 fn blagh_init {
-    if(~ $#blaghDirs 0 && ~ $req_path */[bB]log/index)
+    if(~ $#blaghDirs 0 && ~ $local_path */[bB]log/index*)
         blaghDirs=( . )
 
     # Should not match sub-dirs!
     if(! ~ $#blaghDirs 0) {
     # && test -d / `{echo '-a -d '^$req_path^$blaghDirs}
-        blagh_uri=`{echo $req_path|sed 's/index\.(atom|rss)$//'}
+        blagh_uri=`{echo $req_path|sed 's/index(\.(atom|rss))?$//'}
         blagh_url=$base_uri^$blagh_root_path
         blagh_root=$sitedir^$blagh_uri
+        dprint $blagh_root
 
         if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/)
             status='Use default handler'
@@ -30,8 +31,8 @@ fn blagh_init {
                 dprint XXXX $req_path
         }
 
+        status=()
     }
-    status=()
 }
 
 fn blagh_body {
