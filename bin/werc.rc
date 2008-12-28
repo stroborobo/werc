@@ -54,7 +54,7 @@ fn gensidebar {
         path = $0 d
         gsub("_", " ", bname)
 
-        if(index(ENVIRON["REQUEST_URI"] "/", path) == 1)
+        if(index(ENVIRON["req_path"] "/", path) == 1)
             print "<li><a href=\"" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
         else 
             print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
@@ -99,28 +99,14 @@ fn dir_listing_handler {
     echo '</ul>'
 }
 
-fn blog_dir_handler {
-    blogDirs=$*
-    tpl_handler lib/feeds/html.tpl
-}
-
-fn blog_post_handler {
-    gen_blog_post_title $1 | $formatter
-    $formatter < $1
-}
-
-
 fn select_handler {
 
-    if(test -f $body.md) {
-        if(! ~ $#inBlog 0)
-            set_handler blog_post_handler $body.md
-        if not
-            set_handler md_handler $body.md
+    if(test -f $local_path.md) {
+        set_handler md_handler $local_path.md
         if(! ~ $#allowComments 0 && ~ $REQUEST_METHOD POST) {
             get_post_args comment_text
             d=`{date -n} # FIXME Obvious race
-            d=$body.md_werc/comments/$d/
+            d=$local_path.md_werc/comments/$d/
 
             u=$logged_user
             if(~ $#logged_user 0) {
@@ -141,61 +127,35 @@ fn select_handler {
             echo $comment_text > $d/body
         }
     }
-    if not if(test -f $body.tpl)
-        set_handler tpl_handler $body.tpl
+    if not if(test -f $local_path.tpl)
+        set_handler tpl_handler $local_path.tpl
 
-    if not if(test -f $body.html)
-        set_handler html_handler $body.html
+    if not if(test -f $local_path.html)
+        set_handler html_handler $local_path.html
 
     # Explicit .html urls, unfortunately usually the web server will handle this as static files
-    if not if(~ $body *.html && test -f $body)
-        perm_redirect `{ echo $REQUEST_URI|sed 's/.html$//' }
-
-    # Rss feeds. TODO: we should check that the request is for a real blog dir
-    if not if(~ $REQUEST_URI */index.rss */index.atom) {
-        response_format=raw
-        uri=`{echo $uri | sed 's/index.(rss|atom)$//'}
-        if(~ $#blogDirs 0)
-            blogDirs=$sitedir^'/'$uri
-        uri=$base_url$"uri
-
-        if(~ $REQUEST_URI */index.rss)
-            master_template=feeds/rss20.tpl
-        if not if(~ $REQUEST_URI */index.atom)
-            master_template=feeds/atom.tpl
-    }
-
-    # Blog handler
-    if not if(~ $body */[bB]log/index */[bB]log//index || ! ~ $#blogDirs 0) {
-        if(~ $#blogDirs 0)
-            blogDirs=`{basename -d $body}
-
-        u=`{cleanname $base_url^`{basename -d '/'^$uri}|sed 's,:/,://,'} # Sed recovers '/' in 'http:/' stripped by cleanname
-        extraHeaders=$"extraHeaders ^ \
-    	'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'/index.rss" />
-<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'/index.atom" />'
-        set_handler tpl_handler lib/feeds/html.tpl
-    }
+    if not if(~ $local_path *.html && test -f $local_path)
+        perm_redirect `{ echo $req_path|sed 's/.html$//' }
 
     # Global tpl (eg sitemap.tpl)
-    if not if(test -f lib/^$uri^.tpl)
-        set_handler tpl_handler lib/^$uri^.tpl
+    if not if(test -f lib^$req_path^.tpl)
+        set_handler tpl_handler lib^$req_path^.tpl
 
-    if not if(test -f $body.txt)
-        set_handler txt_handler $body.txt
+    if not if(test -f $local_path.txt)
+        set_handler txt_handler $local_path.txt
 
     # Apps
     if not if(! ~ $#enabled_apps 0 && select_apps)
         set_handler app_handler
 
     # Dir listing
-    if not if(~ $body */index)
-        set_handler dir_listing_handler $body
+    if not if(~ $local_path */index)
+        set_handler dir_listing_handler $local_path
 
     # File not found
     if not {
         set_handler tpl_handler `{get_lib_file 404.tpl}
-        dprint 'NOT FOUND: '$SERVER_NAME^$REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
+        dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
     }
 
@@ -223,8 +183,9 @@ if(test -f etc/initrc.local)
 werc_root=`{pwd}
 
 # Parse request URL
-uri=`{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
-ifs='/' { args=`{echo -n $uri} }
+# NOTE: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto
+req_path=`{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
+ifs='/' { args=`{echo -n $req_path} }
 
 # Hack: preload post data so we can access it from templates where cgi's stdin is not accesible
 if(~ $REQUEST_METHOD POST) {
@@ -234,13 +195,9 @@ if(~ $REQUEST_METHOD POST) {
 
 if(! ~ $args '') {
     if(~ $args($#args) 'index')
-        perm_redirect `{echo $REQUEST_URI | sed 's,/index$,/,'}
+        perm_redirect `{echo $req_path | sed 's,/index$,/,'}
         
     pageTitle=`{echo $args | sed -e 's/ / - /g' -e 's/_/ /g'}
-    req_path=$uri
-}
-if not {
-    req_path='/'
 }
 
 p=()
@@ -248,19 +205,11 @@ cd $sitedir
 for(i in ('' $args)) {
     p=($"p^/^$i)
     req_paths_list=($req_paths_list $p)
-    # We don't want blog settings to cascade into posts, note that we are inBlog instead
-    if(! ~ $#blogDirs 0 && ! ~ $req_path */index.rss */index.atom */[bB]log */[bB]log/) {
-        inBlog = $blogDirs
-        blogDirs = () 
-    }
     if(test -d $i) {
         cd $i
         if(test -f _werc/config)
             . _werc/config
     }
-
-    if(~ $#blogDirs 0 && ~ $#inBlog 0 && ~ $i [Bb]log)
-        inBlog = 'yes'
 }
 cd $werc_root
 
@@ -268,10 +217,10 @@ cd $werc_root
 if(~ $#redirectPermanent 1)
     perm_redirect $"redirectPermanent
 
-if not if(~ $#redirectPermanent 2 && {echo $SERVER_NAME^$REQUEST_URI|grep -s $redirectPermanent(1) }) {
+if not if(~ $#redirectPermanent 2 && {echo $SERVER_NAME^$req_path|grep -s $redirectPermanent(1) }) {
     # Experimental regexp sub-based redirect, probably should find a nicer interface
-    to=`{echo $SERVER_NAME^$REQUEST_URI|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
-    if(! ~ $to $REQUEST_URI)
+    to=`{echo $SERVER_NAME^$req_path|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
+    if(! ~ $to $req_path)
         perm_redirect $to
 }
 
@@ -282,11 +231,11 @@ if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 
-body=$sitedir/$req_path
-if(test -d $body) {
-    if(! ~ $body */)
-    	perm_redirect $REQUEST_URI^'/'
-    body=$body/index
+local_path=$sitedir$req_path
+if(test -d $local_path) {
+    if(! ~ $local_path */)
+    	perm_redirect $req_path^'/'
+    local_path=$local_path^'index'
 }
 
 select_handler
