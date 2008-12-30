@@ -8,7 +8,6 @@ fn blagh_init {
         blagh_uri=`{echo $req_path|sed 's/index(\.(atom|rss))?$//'}
         blagh_url=$base_uri^$blagh_root_path
         blagh_root=$sitedir^$blagh_uri
-        dprint $blagh_root
 
         if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/)
             status='Use default handler'
@@ -27,11 +26,7 @@ fn blagh_init {
                 master_template=_apps/blagh/atom.tpl
             if not if(~ $req_path */index.rss)
                 master_template=_apps/blagh/rss20.tpl
-            if not 
-                dprint XXXX $req_path
         }
-
-        status=()
     }
 }
 
