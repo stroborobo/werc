@@ -185,6 +185,7 @@ werc_root=`{pwd}
 # Parse request URL
 # NOTE: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto
 req_path=`{echo -n $REQUEST_URI | sed 's/\?.*//; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
+local_path=$sitedir$req_path
 ifs='/' { args=`{echo -n $req_path} }
 
 # Hack: preload post data so we can access it from templates where cgi's stdin is not accesible
@@ -231,7 +232,6 @@ if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 
-local_path=$sitedir$req_path
 if(test -d $local_path) {
     if(! ~ $local_path */)
     	perm_redirect $req_path^'/'
