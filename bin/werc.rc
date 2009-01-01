@@ -203,6 +203,8 @@ if(! ~ $args '') {
 
 p=()
 cd $sitedir
+if(test -f _werc/config)
+    . _werc/config
 for(i in ('' $args)) {
     p=($"p^/^$i)
     req_paths_list=($req_paths_list $p)
