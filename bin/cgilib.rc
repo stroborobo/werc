@@ -213,7 +213,6 @@ fn auth_user {
 }
 
 
-
 # Blog stuff
 fn make_blog_post {
     bdir=$1
@@ -235,28 +234,6 @@ fn make_blog_post {
     if not
         status=Missing blog post arguments $1 $2 $3 
 }
-
-fn sortedBlogPostList {
-    # the /./->/|/ are added so we can sort -t| and order only the file name
-    # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
-    if(! ~ $#* 0)
-        ls $*^'/./' | sed -n 's,/\./,/|/,; /\/[0-9]+.*\.md$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
-}
-
-fn gen_blog_post_title {
-    title=`{basename $1 | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-    permlink=`{echo $1 | sed 's,^/[a-z/]*www/,/,; s,^sites/[^/]*/*/,/,; s/\.md$//' }
-    du=`{ls -l $1}
-    by=''
-    if(! ~ $#blogAuthor 0) {
-        if(! ~ $blogAuthor '')
-            by='By '$"blogAuthor
-    }
-    if not if(~ $#blogDirs 1)
-        by='By '$du(4)
-    echo '##<a href="'^$"permlink^'">' $"title^'</a> *( '$by Last mod: $du(7 8 9) $current_date_time(5) ' )*'
-}
-
 
 ###################################
 # App framework
