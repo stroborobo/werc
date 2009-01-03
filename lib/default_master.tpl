@@ -13,12 +13,12 @@
     </div>
 </div>
 
-% if (! ~ $#sidebar 0) {
+% if(! ~ $#sidebar 0) {
 <div id="side-bar">
 
 <div>
 %{
-if (! ~ $#sideBarNavTitle 0)
+if(! ~ $#sideBarNavTitle 0)
     echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
 
 gensidebar
@@ -26,7 +26,7 @@ gensidebar
 %}
 </div>
 
-% if (! ~ $#wiki 0 && test -f $local_path.md  && check_user $wiki_editors_group) {
+% if(! ~ $#wiki 0 && test -f $local_path.md  && check_user $wiki_editors_group) {
 <div> 
     <form action="/_apps/dirdir/edit" method="POST">
         <input type="hidden" name="edit_wiki_page" value="%($req_path%)" />
@@ -44,11 +44,11 @@ gensidebar
 <div id="main-copy">
 % genbody
 
-% if (! ~ $#allowComments 0) {
+% if(! ~ $#allowComments 0) {
 
 %{
 cdir = $local_path.md_werc/comments
-if (test -d $cdir) { 
+if(test -d $cdir) { 
     echo '<hr /><h2>Comments</h2>'
     for(c in `{ls $cdir/}) {
 %}
