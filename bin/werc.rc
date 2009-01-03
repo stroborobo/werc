@@ -21,7 +21,8 @@ fn gentitle {
 
 # Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
 # TODO: Specify the canonical path input format handled by dirfilter
-dirfilter='s/\*$//; s,/+\./+,/,g; /\/[._]/d; /'^$forbidden_uri_chars^'/d; /^\/(robots|sitemap)\.txt$|\/index\.(md|html|txt|tpl)$/d; /_werc\/?$/d; s,^\./,,; s,\.(md|html|txt)$,,; '
+dirfilter='s/\*$//; s,/+\./+,/,g; /\/[._]/d; /'^$forbidden_uri_chars^'/d; /^\/(robots|sitemap)\.txt$|\/index\.(md|html|txt|tpl)$/d; /_werc\/?$/d; s,^\./,,; '
+dirclean=' s/\.(md|html|txt)$//; '
 
 # To be used from config files
 fn hide_paths {
@@ -32,15 +33,13 @@ fn hide_paths {
 # Sidebar 
 fn gensidebar {
     # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
-    ls -F $sitedir^/./^$req_paths_list >[2]/dev/null | sed 's,^'$sitedir',,; '^$dirfilter | sort -u | awk -F/ ' 
+    ls -F $sitedir^/./^$req_paths_list >[2]/dev/null|sed 's!^'$sitedir'!!; '^$dirfilter^'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; '^$dirclean|sort -u|awk -F/ ' 
     function p(x, y, s) {
         for(i=0; i < x-y; i+=1)
             print s 
     }
 
-    # XXX Regexp to hide non-document/non-dir stuff, there must be a better way, if we really want this.
-    /^\/([a-zA-Z0-9+_\-]+[*\/]?)+$/ { 
-
+    { 
         d = ""
         if(match($0, "/$"))
             d = "/"
@@ -95,7 +94,7 @@ fn dir_listing_handler {
     d=`{basename -d $1}
     echo $d|sed 's,.*//,,g; s,/$,,; s,/, / ,g; s,.*,<h1 class="dir-list-head">&</h1> <ul class="dir-list">,'
     # Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
-    ls -F $d/. | sed $dirfilter' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
+    ls -F $d/. | sed $dirfilter$dirclean' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
