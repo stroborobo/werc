@@ -66,10 +66,7 @@ fn gensidebar {
 
 
 # Handlers
-fn set_handler {
-    handler=$1
-    handler_args=$*(2-)
-}
+fn set_handler { handler=$* }
 
 fn md_handler { cat $* | $formatter }
 
@@ -159,26 +156,29 @@ fn select_handler {
 
 }
 
-fn genbody { $handler $handler_args }
+fn genbody { $handler(1) $handler(2-) }
 
 # Careful, the proper p9p path might not be set until initrc.local is sourced
 path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 
 
-site=$SERVER_NAME
 headers=lib/headers.tpl
 master_template=default_master.tpl
 sidebar=sidebar
-base_url=http://$site/
-current_date_time=`{date}
+werc_root=`{pwd}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
+
+# TODO: Per-req variables should move after initrc loading.
+site=$SERVER_NAME
+base_url=http://$site/
+sitesdir=sites
+sitedir=$sitesdir/$site
+current_date_time=`{date}
 
 . ./etc/initrc
 
 if(test -f etc/initrc.local)
     . ./etc/initrc.local
-
-werc_root=`{pwd}
 
 # Parse request URL
 # NOTE: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto

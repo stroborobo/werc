@@ -15,10 +15,6 @@ plan9port=$PLAN9
 # Keep '.' in path! It is needed.
 path=($plan9port/bin/ . ./bin/ ./bin/contrib/ /bin/ /usr/bin/)
 
-# Directories where your site(s) live ($site here is your domain name, eg., example.com)
-sitesdir=sites
-sitedir=$sitesdir/$site
-
 # Set this to your favorite markdown formatter, eg., markdown.pl (fproc_cache
 # is a wrapper around a script it takes as an argument, in the default
 # configuration markdown.pl, that caches output)
