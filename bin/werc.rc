@@ -195,7 +195,7 @@ if(~ $REQUEST_METHOD POST) {
 if(! ~ $#args 0)
     pageTitle=`{ echo $args|sed -e 's/ / - /g' -e 's/_/ /g' }
 
-if(~ $req_path '/index')
+if(~ $req_path */index)
     perm_redirect `{echo $req_path | sed 's,/index$,/,'}
 
 if(~ $local_path */)
