@@ -83,11 +83,8 @@ fn html_handler {
 }
 
 fn txt_handler {
-    echo '<pre>'
-    # XXX Insering a blank line between lines in input is good for fortunes.txt, but maybe not for other .txt files
-    # XXX Words are not broken, even if they are way beyond 82 chars long
-    cat $1 | sed 's/$/\n/g; s/</\&lt;/g; s/>/\&gt;/g' | fmt -l 82 -j
-    echo '</pre>'
+    # Note: Words are not broken, even if they are way beyond 82 chars long
+    echo '<pre>' `{ sed 's/</\&lt;/g; s/>/\&gt;/g' < $1 | fmt -l 82 -j } '</pre>'
 }
 
 fn dir_listing_handler {
