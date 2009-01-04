@@ -192,12 +192,16 @@ if(~ $REQUEST_METHOD POST) {
     login_user
 }
 
-if(! ~ $args '') {
-    if(~ $args($#args) 'index')
-        perm_redirect `{echo $req_path | sed 's,/index$,/,'}
-        
-    pageTitle=`{echo $args | sed -e 's/ / - /g' -e 's/_/ /g'}
-}
+if(! ~ $#args 0)
+    pageTitle=`{ echo $args|sed -e 's/ / - /g' -e 's/_/ /g' }
+
+if(~ $req_path '/index')
+    perm_redirect `{echo $req_path | sed 's,/index$,/,'}
+
+if(~ $local_path */)
+    local_path=$local_path^'index'
+if not if(test -d $local_path)
+    perm_redirect $req_path^'/'
 
 p=()
 cd $sitedir
@@ -230,13 +234,6 @@ if(~ $pageTitle '')
 	pageTitle=$siteTitle^' '^$siteSubTitle
 if not
 	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
-
-
-if(test -d $local_path) {
-    if(! ~ $local_path */)
-    	perm_redirect $req_path^'/'
-    local_path=$local_path^'index'
-}
 
 select_handler
 
