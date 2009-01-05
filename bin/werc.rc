@@ -7,11 +7,11 @@ response_format=html
 
 fn get_lib_file {
     if(test -f $sitedir/_werc/lib/$1)
-    	echo -n $sitedir/_werc/lib/$1
+        echo -n $sitedir/_werc/lib/$1
     if not if(! ~ $#masterSite 0 && test -f $sitesdir/$masterSite/_werc/lib/$1)
-    	echo -n $sitesdir/$masterSite/_werc/lib/$1
+        echo -n $sitesdir/$masterSite/_werc/lib/$1
     if not if(test -f lib/$1)
-    	echo -n lib/$1
+        echo -n lib/$1
 }
 
 # Title
@@ -228,9 +228,9 @@ if not if(~ $#redirectPermanent 2) {
 
 # Set Page title
 if(~ $pageTitle '')
-	pageTitle=$siteTitle^' '^$siteSubTitle
+    pageTitle=$siteTitle^' '^$siteSubTitle
 if not
-	pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
+    pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
 select_handler
 
@@ -242,8 +242,8 @@ master_template=`{get_lib_file $master_template}
 
 if(~ $response_format html) {
     # Is awk_buffer really useful?
-	template $headers $master_template | awk_buffer
-	echo '</body></html>'
+    template $headers $master_template | awk_buffer
+    echo '</body></html>'
 }
 if not if(~ $response_format raw)
-	template < $master_template 
+    template < $master_template 
