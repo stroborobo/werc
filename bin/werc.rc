@@ -38,11 +38,7 @@ fn gensidebar {
     ls -F $sitedir/./$req_paths_list >[2]/dev/null \
         | sed 's!^'$sitedir'!!; '^$dirfilter^'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; '^$dirclean \
         | sort -u | awk -F/ ' 
-    function p(x, y, s) {
-        for(i=0; i < x-y; i+=1)
-            print s 
-    }
-
+    function p(x, y, s) { for(i=0; i < x-y; i+=1) print s }
     { 
         d = ""
         if(match($0, "/$"))
@@ -62,8 +58,7 @@ fn gensidebar {
         else 
             print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
     }
-    END { p(lNF, 0, "</ul>") }
-    '
+    END { p(lNF, 0, "</ul>") }'
 }
 
 
