@@ -219,13 +219,13 @@ for(i in ('' $args)) {
 cd $werc_root
 
 # Redirections and other preprocessing
-if(~ $#redirectPermanent 1)
+if(~ $#redirectPermanent 1) {
     perm_redirect $"redirectPermanent
-
-if not if(~ $#redirectPermanent 2 && {echo $SERVER_NAME^$req_path|grep -s $redirectPermanent(1) }) {
-    # Experimental regexp sub-based redirect, probably should find a nicer interface
-    to=`{echo $SERVER_NAME^$req_path|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
-    if(! ~ $to $req_path)
+}
+if not if(~ $#redirectPermanent 2) {
+    from='http://'^$SERVER_NAME^$req_path
+    to=`{echo $from|sed 's@'^$redirectPermanent(1)^'@'^$redirectPermanent(2)^'@'}
+    if(! ~ $to $from)
         perm_redirect $to
 }
 
