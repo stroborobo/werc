@@ -136,9 +136,9 @@ fn get_cookie {
 # Generic rc programming helpers
 
 fn ll_add {
-    l = $1^_^$#$1
-    $l = $*(2-)
-    $1=( $$1 $l )
+    _l=$1^_^$#$1
+    $_l=$*(2-)
+    $1=( $$1 $_l )
 }
 
 
