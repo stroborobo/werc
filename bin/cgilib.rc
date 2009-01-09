@@ -39,11 +39,11 @@ fn get_post_args {
     }
 }
 
-# Is this really useful?
+# This seems slightly improve performance, but might depend on httpd buffering behavior.
 fn awk_buffer {
     awk '{
         buf = buf $0"\n"
-        if(length(buf) > 8192) {
+        if(length(buf) > 1400) {
             printf "%s", buf
             buf = ""
         }

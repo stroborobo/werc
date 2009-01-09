@@ -241,7 +241,6 @@ if(! ~ $#debug 0)
 master_template=`{get_lib_file $master_template}
 
 if(~ $response_format html) {
-    # Is awk_buffer really useful?
     template $headers $master_template | awk_buffer
     echo '</body></html>'
 }
