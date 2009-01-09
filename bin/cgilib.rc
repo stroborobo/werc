@@ -267,13 +267,8 @@ fn app_handler {
 ##################################
 # Meta-data extract
 
-fn get_var {
-    if(! ~ $#* 2) {
-         status='ERROR: wrong get_var args >>' $* '<< instead of: get_var file-name var-name'
-         dprint $status
-    }
-    if not
-        sed -n '/^\* '$2': /p; /^\* '$2': /q; /^$/q' < $1
+fn get_md_file_attr {
+    sed -n '/^\* '$2': /p; /^\* '$2': /q; /^$/q' < $1
 }
 
 #app_blog_methods = ( _post index.rss )
