@@ -14,11 +14,6 @@ fn get_lib_file {
         echo -n lib/$1
 }
 
-# Title
-fn gentitle {
-    echo '<h1 class="headerTitle"><a href="/">' ^ $"siteTitle ^ ' <span id="headerSubTitle">' ^ $"siteSubTitle ^ '</span></a></h1>'
-}
-
 # Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
 # ls -F style input of the form: $sitedir/path/to/files/
 #          <ls -F+x><symlink hack><Useless?><hiden files  >

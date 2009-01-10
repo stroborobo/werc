@@ -5,7 +5,7 @@
     </div>
 
     <div class="midHeader">
-% gentitle
+    <h1 class="headerTitle"><a href="/">%($"siteTitle%)<span id="headerSubTitle">%( $"siteSubTitle%)</span></a></h1>
     </div>
     
     <div class="subHeader">
