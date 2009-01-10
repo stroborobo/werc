@@ -116,6 +116,28 @@ fn select_handler {
     if not if(~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
 
+    # Fallback static file handler
+    if not if(test -f $local_path) {
+        m='text/plain'
+        if(~ $req_path *.css)
+            m='text/css'
+        if not if(~ $req_path *.ico)
+            m='image/x-icon'
+        if not if(~ $req_path *.png)
+            m='image/png'
+        if not if(~ $req_path *.jpg *.jpeg)
+            m='image/jpeg'
+        if not if(~ $req_path *.gif)
+            m='image/gif'
+        if not if(~ $req_path *.pdf)
+            m='application/pdf'
+
+        echo 'Content-Type: '^$m
+        echo
+        cat $local_path
+        exit
+    }
+
     # File not found
     if not {
         set_handler tpl_handler `{get_lib_file 404.tpl}
