@@ -16,26 +16,41 @@ Location: '^$1^'
     exit
 }
 
+fn static_file {
+    echo 'Content-Type: '`{select_mime $1}
+    echo
+    cat $1
+    exit
+}
+
+
+# Status is () if at least one arg is found.
 fn get_post_args {
-    if(~ $#POST_ARGS 0) {
+    _status='Args not found'
+    if(! ~ $REQUEST_METHOD POST)
+        _status='No http post!'
+    if not if(~ $#POST_ARGS 0) {
         ifs='&
 '       for(pair in `{cat}) {
-            pair=`{echo -n $pair | sed 's/=/\&/'} \
+            pair=`{echo -n $pair | sed 's/=/\&/'}
             # Maybe we should urldecode on the first pass?
             POST_ARGS=( $POST_ARGS $pair )
-            ifs=() \
-            if(~ $pair(1) $*)
-                $pair(1)=`{echo -n $pair(2) | urldecode | tr -d ''}
+            _get_post_args_set_var $pair $*
         }
     }
     if not {
-        pa=$POST_ARGS
-        while(! ~ $#pa 0) {
-            ifs=() \
-            if(~ $pa(1) $*)
-                $pa(1)=`{echo -n $pa(2) | urldecode | tr -d ''}
-            pa=$pa(3-)
+        pair=$POST_ARGS
+        while(! ~ $#pair 0) {
+            _get_post_args_set_var $pair $*
+            pair=$pair(3-)
         }
+    }
+    status=$_status
+}
+fn _get_post_args_set_var {
+    if(~ $1 $*(3-)) {
+        ifs=() { $1=`{echo -n $2 | urldecode | tr -d ''} }
+        _status=()
     }
 }
 
@@ -131,6 +146,22 @@ fn get_cookie {
     { for(c in $co) echo $c } | sed -n 's/[^=]*=//p' 
 }
 
+fn select_mime {
+    m='text/plain'
+    if(~ $1 *.css)
+        m='text/css'
+    if not if(~ $1 *.ico)
+        m='image/x-icon'
+    if not if(~ $1 *.png)
+        m='image/png'
+    if not if(~ $1 *.jpg *.jpeg)
+        m='image/jpeg'
+    if not if(~ $1 *.gif)
+        m='image/gif'
+    if not if(~ $1 *.pdf)
+        m='application/pdf'
+    echo $m
+}
 
 ##############################################
 # Generic rc programming helpers
@@ -247,7 +278,7 @@ fn make_blog_post {
 ###################################
 # App framework
 
-fn select_apps {
+fn init_apps {
     found=()
     for(a in $enabled_apps) {
         . ./apps/$a/app.rc
