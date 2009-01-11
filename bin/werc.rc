@@ -102,9 +102,9 @@ fn setup_handlers {
     if(! ~ $#enabled_apps 0)
         init_apps
 
-    # Dir listing
     if(! ~ $#handler_body_main 0)
-        { } # Pass
+        { }
+    # Dir listing
     if not if(~ $local_path */index)
         handler_body_main=(dir_listing_handler $local_path)
     # Explicit .html urls, the web server might handle this first!
