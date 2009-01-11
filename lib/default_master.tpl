@@ -42,39 +42,16 @@ gensidebar
 % }
 
 <div id="main-copy">
-% genbody
 
-% if(! ~ $#allowComments 0) {
+% run_handlers $handlers_body_head
 
-%{
-cdir = $local_path.md_werc/comments
-if(test -d $cdir) { 
-    echo '<hr /><h2>Comments</h2>'
-    for(c in `{ls $cdir/}) {
-%}
-        <div>
-%       echo  By: `{cat $c/user}
-        <br />
-%       cat $c/body | escape_html | sed 's,$,<br />,'
-        <hr /></div>
-%{
-    }
-}
-%}
-<hr /><hr />
-<form action="" method="post">
-% if(! check_user) {
-    User: <input type="text" name="comment_user_name" value="" /> Password:
-    <input type="password" name="comment_user_password" value="" />
-    <small>If you are not registered enter your desired user/password and your account will be created when your comment is approved.</small>
-% }
-    <textarea name="comment_text" id="comment_text" cols="80" rows="16"></textarea>
-    <input type="submit" name="post_comment" value="Post a comment" />
-</form>
-% }
+% run_handler $handler_body_main
+
+% run_handlers $handlers_body_foot
 
 </div>
 
 <div id="footer">
 % cat `{ get_lib_file footer.inc }
+% echo $"logged_user
 </div>

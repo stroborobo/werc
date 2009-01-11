@@ -58,8 +58,6 @@ fn gensidebar {
 
 
 # Handlers
-fn set_handler { handler=$* }
-
 fn md_handler { cat $* | $formatter }
 
 fn tpl_handler { template $1 }
@@ -86,68 +84,48 @@ fn dir_listing_handler {
     echo '</ul>'
 }
 
-fn select_handler {
+fn setup_handlers {
 
     if(test -f $local_path.md)
-        set_handler md_handler $local_path.md
-
+        handler_body_main=(md_handler $local_path.md)
     if not if(test -f $local_path.tpl)
-        set_handler tpl_handler $local_path.tpl
-
+        handler_body_main=(tpl_handler $local_path.tpl)
     if not if(test -f $local_path.html)
-        set_handler html_handler $local_path.html
-
+        handler_body_main=(html_handler $local_path.html)
     # Global tpl (eg sitemap.tpl), should take precedence over txt handler!
     if not if(test -f lib^$req_path^.tpl)
-        set_handler tpl_handler lib^$req_path^.tpl
-
+        handler_body_main=(tpl_handler lib^$req_path^.tpl)
     if not if(test -f $local_path.txt)
-        set_handler txt_handler $local_path.txt
+        handler_body_main=(txt_handler $local_path.txt)
 
     # Apps
-    if not if(! ~ $#enabled_apps 0 && select_apps)
-        set_handler app_handler
+    if(! ~ $#enabled_apps 0)
+        init_apps
 
     # Dir listing
-    if not if(~ $local_path */index)
+    if(~ $#handler_body_main 0 && ~ $local_path */index)
         set_handler dir_listing_handler $local_path
-
-    # Explicit .html urls, unfortunately usually the web server will handle this as static files
-    if not if(~ $local_path *.html && test -f $local_path)
+    # Explicit .html urls, the web server might handle this first!
+    if not if(~ $#handler_body_main 0 && ~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
-
     # Fallback static file handler
-    if not if(test -f $local_path) {
-        m='text/plain'
-        if(~ $req_path *.css)
-            m='text/css'
-        if not if(~ $req_path *.ico)
-            m='image/x-icon'
-        if not if(~ $req_path *.png)
-            m='image/png'
-        if not if(~ $req_path *.jpg *.jpeg)
-            m='image/jpeg'
-        if not if(~ $req_path *.gif)
-            m='image/gif'
-        if not if(~ $req_path *.pdf)
-            m='application/pdf'
-
-        echo 'Content-Type: '^$m
-        echo
-        cat $local_path
-        exit
-    }
-
+    if not if(~ $#handler_body_main 0 && test -f $local_path)
+        static_file $local_path
     # File not found
-    if not {
+    if not if(~ $#handler_body_main 0) {
         set_handler tpl_handler `{get_lib_file 404.tpl}
         dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
     }
-
 }
 
-fn genbody { $handler(1) $handler(2-) }
+fn run_handlers {
+    for(h in $*)
+        run_handler $$h
+}
+fn run_handler {
+    $*(1) $*(2-)
+}
 
 # Careful, the proper p9p path might not be set until initrc.local is sourced
 path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 
@@ -226,7 +204,7 @@ if(~ $pageTitle '')
 if not
     pageTitle=$"pageTitle^' | '^$"siteTitle^' '^$"siteSubTitle
 
-select_handler
+setup_handlers
 
 if(! ~ $#debug 0)
     dprint '  '$"SERVER_NAME^$"REQUEST_URI' - '$"HTTP_USER_AGENT' - '$"REQUEST_METHOD' - '$"handler

@@ -1,26 +1,35 @@
 fn bridge_init {
-    if(! ~ $#allowComments 0 && ~ $REQUEST_METHOD POST) {
-        get_post_args comment_text
-        d=`{date -n} # FIXME Obvious race
-        d=$local_path.md_werc/comments/$d/
+    if(! ~ $#allowComments 0) {
+        ll_add handlers_body_foot bridge_body_foot 
+        if(get_post_args comment_text) {
+            dprint POST COMMNET $"comment_text
+            d=`{date -n} # FIXME Obvious race
+            d=$local_path^'_werc/comments/'^$d/
 
-        u=$logged_user
-        if(~ $#logged_user 0) {
-            get_post_args comment_user_name comment_user_password
-            # TODO Should take this path too if the user can login but doesn't
-            # belong to required group
-            if(! login_user $comment_user_name $comment_user_password) {
-                u=$comment_user_name ':' $comment_user_password
-                d=$d^'_pending'
+            u=$logged_user
+            if(~ $#logged_user 0) {
+                get_post_args comment_user_name comment_user_password
+                # XXX Should do this too if user not in required group
+                if(! login_user $comment_user_name $comment_user_password) {
+                    u=$comment_user_name ':' $comment_user_password
+                    d=$d^'_pending'
+                }
+                if not
+                    u = $logged_user
             }
-            if not
-                u = $logged_user
-        }
 
-        umask 002
-        mkdir -m 775 -p $d
-        echo $u > $d/user
-        echo $comment_text > $d/body
+            umask 002
+            mkdir -m 775 -p $d
+            echo $u > $d/user
+            echo $comment_text > $d/body
+        }
+        if not
+            dprint SSS $status
     }
 
 }
+
+fn bridge_body_foot {
+    template apps/bridge/foot.tpl
+}
+
