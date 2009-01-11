@@ -279,19 +279,10 @@ fn make_blog_post {
 # App framework
 
 fn init_apps {
-    found=()
     for(a in $enabled_apps) {
         . ./apps/$a/app.rc
-        if($a^'_init')
-            found=yes
+        $a^'_init'
     }
-
-    ~ $#found 1 # Set status
-}
-
-fn app_handler {
-    if(! ~ $#app_body_handler 0)
-        $app_body_handler
 }
 
 

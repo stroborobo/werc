@@ -103,17 +103,19 @@ fn setup_handlers {
         init_apps
 
     # Dir listing
-    if(~ $#handler_body_main 0 && ~ $local_path */index)
-        set_handler dir_listing_handler $local_path
+    if(! ~ $#handler_body_main 0)
+        { } # Pass
+    if not if(~ $local_path */index)
+        handler_body_main=(dir_listing_handler $local_path)
     # Explicit .html urls, the web server might handle this first!
-    if not if(~ $#handler_body_main 0 && ~ $local_path *.html && test -f $local_path)
+    if not if(~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
     # Fallback static file handler
-    if not if(~ $#handler_body_main 0 && test -f $local_path)
+    if not if(test -f $local_path)
         static_file $local_path
     # File not found
-    if not if(~ $#handler_body_main 0) {
-        set_handler tpl_handler `{get_lib_file 404.tpl}
+    if not {
+        handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
         dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
     }

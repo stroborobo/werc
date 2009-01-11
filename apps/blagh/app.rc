@@ -13,7 +13,7 @@ fn blagh_init {
             status='Use default handler'
 
         if not if(~ $req_path */index */) {
-            app_body_handler='blagh_body'
+            handler_body_main=blagh_body
             u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
             '<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />
