@@ -2,14 +2,13 @@
 % if(test -d $cdir) { 
     <hr /><h2>Comments</h2>
 %    for(c in `{ls $cdir/}) {
-        <div>By: '`{cat $c/user} '<br />
-%       cat $c/body | escape_html | sed 's,$,<br />,'
+        <div>By: 
+%           cat $c/user
+            <br />
+%           cat $c/body | escape_html | sed 's,$,<br />,'
         <hr /></div>
 %    }
 % }
-
-% get_post_args action
-% dprint XXX  $"action
 
 <hr /><hr />
 <form action="" method="post">
