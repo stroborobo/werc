@@ -99,15 +99,19 @@ fn setup_handlers {
         handler_body_main=(txt_handler $local_path.txt)
 
     # Apps
-    if(! ~ $#enabled_apps 0)
-        init_apps
+    if(! ~ $#enabled_apps 0) {
+        for(a in $enabled_apps) {
+            . ./apps/$a/app.rc
+            $a^'_init'
+        }
+    }
 
     if(! ~ $#handler_body_main 0)
-        { }
+        { } # We are done
     # Dir listing
     if not if(~ $local_path */index)
         handler_body_main=(dir_listing_handler $local_path)
-    # Explicit .html urls, the web server might handle this first!
+    # Canonize explicit .html urls, the web server might handle this first!
     if not if(~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
     # Fallback static file handler
@@ -116,18 +120,13 @@ fn setup_handlers {
     # File not found
     if not {
         handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
-        dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
         echo 'Status: 404 Not Found'
+        dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
     }
 }
 
-fn run_handlers {
-    for(h in $*)
-        run_handler $$h
-}
-fn run_handler {
-    $*(1) $*(2-)
-}
+fn run_handlers { for(h in $*) run_handler $$h }
+fn run_handler { $*(1) $*(2-) }
 
 # Careful, the proper p9p path might not be set until initrc.local is sourced
 path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 

@@ -42,3 +42,26 @@ fn get_post_list {
     # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
     ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
+
+
+fn make_blog_post {
+    if(! ~ 0 $#1 $#2 $#3) {
+        bdir=$1
+        btitle=$2
+        btext=$3
+        date=`{/bin/date +%F}
+
+        n=1
+        for(f in $bdir^$date^'-'*) {
+            i=`{echo -n $f | sed -n 's,^.*/'$date'-([0-9]+)_.*,\1,p'|tr -d $NEW_LINE}
+            if(! ~ $#i 0 && test $i -ge $n)
+                n=`{hoc -e $i'+1'}
+        }
+        btitle=`{echo -n $"btitle | sed 's/[ 	]+/_/g; 1q'}
+
+        echo $btext > $bdir^'/'^$"date^'-'^$"n^_$"btitle.md 
+    }
+    if not
+        status=Missing blog post arguments $"1 $"2 $"3 
+}
+

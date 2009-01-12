@@ -110,13 +110,11 @@ BEGIN {
 }
 
 fn crop_text {
-    max_chars=$1
-
     ellipsis='...'
     if(~ $#* 2)
         ellipsis=$2
 
-    awk -v max'='^$"max_chars^' ' -v 'ellipsis='$ellipsis '
+    awk -v max'='^$"1^' ' -v 'ellipsis='$ellipsis '
     {
         nc += 1 + length;
         if(nc > max) {
@@ -174,47 +172,36 @@ fn ll_add {
 
 
 ##############################################
-# More werc-specific functions
+# Werc-specific functions
 
 fn template { awk -f bin/template.awk $* | rc $rcargs }
-
-# .rec parsing
-fn parse_rec {
-    ifs='
-' for(i in `{sed 's/% *//g; /^$/q' < $1}) {
-        v=`{echo -n $i | sed 's/^/rec_/; s/=.*//;'} 
-        $v=`{echo -n $i | sed 's/^[^=]*=//'}
-    }
-    ifs=() { rec_data=`{sed -n '/^[^%]./,$p' < $1} }
-}
-
 
 # Auth code
 
 # Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 # login_user can't be used from a template because it sets a cookie 
 fn login_user {
-    # Note: get_user can use an existing cookie, so we might end up setting an existing cookie
+    # Note: we set the cookie even if it is already there.
     if(get_user $*)
         set_cookie werc_user $"logged_user^':0:'^$"logged_password
 }
 
-# Checks if we are logged in, if called with an argument, we check group membership too
+# Check loggin status, if called with group arg we check membership too
 fn check_user {
     if(! get_user)
         status='Not logged in'
-    if not if(! ~ $#1 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
+    if not if(~ $#1 1 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
         status=User $logged_user not in group $1
     if not
-        true
+        status=()
 }
 
-# If not logged in, try to get user login info from POST info or from cookie
+# If not logged in, try to get user login info from POST or from cookie
 fn get_user {
     if(~ $#logged_user 0) {
         if(~ $#* 2) {
             user_name=$1 
-            user_password $2
+            user_password=$2
         }
         if not if(~ $REQUEST_METHOD POST)
             get_post_args user_name user_password
@@ -229,7 +216,7 @@ fn get_user {
         auth_user $user_name $user_password
     }
     if not
-        true
+        status=()
 }
 
 # Check if user_name and user_password represent a valid user account
@@ -249,46 +236,11 @@ fn auth_user {
         logged_user=$user_name
         logged_password=$user_password
         dprint Auth: success
+        status=()
     }
 }
 
-
-# Blog stuff
-fn make_blog_post {
-    bdir=$1
-    btitle=$2
-    btext=$3
-    if(! ~ 0 $#1 $#2 $#3) {
-        date=`{/bin/date +%F}
-
-        n=1
-        for(f in $bdir^$date^'-'*) {
-            i=`{echo -n $f | sed -n 's,^.*/'$date'-([0-9]+)_.*,\1,p'|tr -d $NEW_LINE}
-            if(! ~ $#i 0 && test $i -ge $n)
-                n=`{hoc -e $i'+1'}
-        }
-        btitle=`{echo -n $"btitle | sed 's/[ 	]+/_/g; 1q'}
-
-        echo $btext > $bdir^'/'^$"date^'-'^$"n^_$"btitle.md 
-    }
-    if not
-        status=Missing blog post arguments $1 $2 $3 
-}
-
-###################################
-# App framework
-
-fn init_apps {
-    for(a in $enabled_apps) {
-        . ./apps/$a/app.rc
-        $a^'_init'
-    }
-}
-
-
-##################################
-# Meta-data extract
-
+# .md '(meta-)data' extract
 fn get_md_file_attr {
     sed -n '/^\* '$2': /p; /^\* '$2': /q; /^$/q' < $1
 }
