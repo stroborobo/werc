@@ -3,7 +3,6 @@
 cd ..
 
 forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
-response_format=html
 
 fn get_lib_file {
     if(test -f $sitedir/_werc/lib/$1)
@@ -133,6 +132,7 @@ path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin)
 
 headers=lib/headers.tpl
 master_template=default_master.tpl
+res_tail='</body></html>'
 sidebar=sidebar
 werc_root=`{pwd}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
@@ -210,12 +210,5 @@ setup_handlers
 if(! ~ $#debug 0)
     dprint '  '$"SERVER_NAME^$"REQUEST_URI' - '$"HTTP_USER_AGENT' - '$"REQUEST_METHOD' - '$"handler
 
-# Template/body selection
-master_template=`{get_lib_file $master_template}
-
-if(~ $response_format html) {
-    template $headers $master_template | awk_buffer
-    echo '</body></html>'
-}
-if not if(~ $response_format raw)
-    template < $master_template 
+template $headers `{get_lib_file $master_template} | awk_buffer
+echo $res_tail
