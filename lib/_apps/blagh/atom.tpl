@@ -4,13 +4,12 @@ Content-Type: application/atom+xml
 
 <!-- TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
 %{
-dprint XXX
 fn statpost {
     f = $1
 
     updated = `{/bin/date --rfc-3339'=seconds' -r $f |tr ' ' 'T'} 
     post_uri=$base_url^`{cleanname `{echo $f | sed -e 's!^'$sitedir'!!' -e 's/\.(md|tpl)$//g'}}
-    title=`{read $f}
+    title=`{read $f/index.md}
     # Not used: date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
     # TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
     stat=`{stat -c '%Y %U' $f}

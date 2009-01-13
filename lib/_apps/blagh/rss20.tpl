@@ -5,9 +5,10 @@ Content-Type: text/xml; charset=utf-8
 %{
 fn statpost {
 	f = $1
+
 	post_uri = `{echo $f | sed 's,^'$sitedir',,'}
 	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
-	date=`{/bin/date -Rd `{basename $f |sed 's/(^[0-9\-]*).*/\1/; s/-[0-9]$//'}}
+	date=`{/bin/date -Rd `{echo $f|sed 's,.*/([0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9])/.*,\1,'}}
 	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
 	stat=`{stat -c '%Y %U' $f}
 	#mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
@@ -21,7 +22,7 @@ fn statpost {
 				exit
 			}
 			print
-		}' $f |fmt -j| sed 's/\]\]>/Fucking goddamn XML garbage/g'}
+		}' $f/index.md |fmt -j| sed 's/\]\]>/Fucking goddamn XML garbage/g'}
 	}
 }
 
@@ -37,7 +38,7 @@ fn statpost {
 		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
 %{
 		# <webMaster>uriel99+rss@gmail.com (Uriel)</webMaster>
-		for(f in `{sortedBlogPostList $blogDirs}) {
+        for(f in `{get_post_list $blagh_root$blaghDirs}) {
 			statpost $f
 			# Hack to aproximate the last build date 
 			#(use the mdate from last posted item)
