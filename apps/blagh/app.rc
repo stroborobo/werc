@@ -20,14 +20,18 @@ fn blagh_init {
 <link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
 
         }
-        if not {
-            response_format=raw
-            if(~ $req_path */index.atom)
-                master_template=_apps/blagh/atom.tpl
-            if not if(~ $req_path */index.rss)
-                master_template=_apps/blagh/rss20.tpl
-        }
+        if not if(~ $req_path */index.atom)
+            blagh_setup_feed_handlers atom.tpl
+        if not if(~ $req_path */index.rss)
+            blagh_setup_feed_handlers rss20.tpl
     }
+}
+
+fn blagh_setup_feed_handlers {
+    handler_body_main=NOT_USED_by_blagh_feeds
+    headers=() # Headers included in master tpl
+    res_tail=()
+    master_template=_apps/blagh/$1
 }
 
 fn blagh_body {
@@ -40,7 +44,7 @@ fn blagh_body {
 fn get_post_list {
     # the /./->/|/ are added so we can sort -t| and order only the file name
     # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
-    ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n 's,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
+    ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n '/'^$forbidden_uri_chars^'/d; s,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
 
 
