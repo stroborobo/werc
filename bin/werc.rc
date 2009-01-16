@@ -170,8 +170,12 @@ if(! ~ $#args 0)
 if(~ $req_path */index)
     perm_redirect `{echo $req_path | sed 's,/index$,/,'}
 
-if(~ $local_path */)
-    local_path=$local_path^'index'
+if(~ $local_path */) {
+    if(test -d $local_path)
+        local_path=$local_path^'index'
+    if not
+        perm_redirect `{echo $req_path|sed 's,/+$,,'}
+}
 if not if(test -d $local_path)
     perm_redirect $req_path^'/'
 
