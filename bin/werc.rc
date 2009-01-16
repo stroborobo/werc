@@ -173,7 +173,7 @@ if(~ $req_path */index)
 if(~ $local_path */) {
     if(test -d $local_path)
         local_path=$local_path^'index'
-    if not
+    if not # XXX: This redir might step on apps with synthetic dirs.
         perm_redirect `{echo $req_path|sed 's,/+$,,'}
 }
 if not if(test -d $local_path)
