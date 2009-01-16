@@ -116,8 +116,8 @@ fn setup_handlers {
     # Fallback static file handler
     if not if(test -f $local_path)
         static_file $local_path
-    if not if(test -f pub/$req_path)
-        static_file pub/$req_path
+    if not if(~ $req_path /pub/* && test -f .$req_path)
+        static_file .$req_path
     # File not found
     if not {
         handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
