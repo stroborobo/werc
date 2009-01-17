@@ -1,5 +1,4 @@
-/* Default style */
-/* ##### Common Styles ##### */
+/* Default werc style */
 
 body {
   color: black;
@@ -11,29 +10,11 @@ body {
 }
 
 html > body {
-  /* font-size: 9pt; */
   font-size: 0.7em;
 }
 
-acronym, .titleTip {
-  border-bottom: 1px dotted rgb(153,153,153);
-  cursor: help;
-  margin: 0;
-  padding: 0 0 0.4px 0;
-}
 
-.doNotDisplay {
-  display: none;
-}
-
-.smallCaps {
-  font-size: 110%;
-  font-variant: small-caps;
-}
-
-
-/* ##### Header ##### */
-
+/* # Header # */
 .superHeader {
   color: white;
   background-color: rgb(100,135,220);
@@ -86,12 +67,12 @@ acronym, .titleTip {
 }
 
 .headerTitle a {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 
 .subHeader {
-display: none;
+  display: none;
   color: white;
   background-color: rgb(0,51,153);
   margin: 0;
@@ -117,8 +98,7 @@ display: none;
 }
 
 
-/* ##### Side Boxes ##### */
-
+/* # Side # */
 #side-bar {
   width: 16em;
   float: left;
@@ -144,7 +124,7 @@ display: none;
 }
 
 li ul {
-    padding-left: 1.0em !important;
+  padding-left: 1.0em !important;
 }
 
 #side-bar li {
@@ -167,10 +147,6 @@ li ul {
   color: black!important;
   background-color: white;
   padding-left: 5mm;
-  /*
-  border-top: 1px solid rgb(153,153,153);
-  border-bottom: 1px solid rgb(153,153,153);
-  */
   font-weight: 600;
 }
 
@@ -206,9 +182,7 @@ li ul {
 }
 
 
-
-/* ##### Main Copy ##### */
-
+/* # Main Copy # */
 #main-copy {
   max-width: 70em;
   color: black;
@@ -224,7 +198,6 @@ li ul {
   margin: 0 0 0 15.5em;
   padding: 2mm 5mm 2mm 5mm;
 }
-
 
 #main-copy p {
   margin: 1em 1ex 1em 1ex !important; /* Need !important so troff-generated pages don't look totally squezed */
@@ -284,8 +257,7 @@ dd {
 }
 
 
-/* ##### Footer ##### */
-
+/* # Footer # */
 #footer {
   color: white;
   background-color: rgb(100,135,220);
@@ -322,53 +294,61 @@ dd {
 
 /* GENERAL */
 
-/* S-pam */
-.gpam {
-    text-align: center;
-}
-
-/* Tables */
 table {
-    border: solid 1px black;
+  border: solid 1px black;
 }
 th {
-    background-color: #abc;
-    border: solid 1px black;
-    text-align: center;
+  background-color: #abc;
+  border: solid 1px black;
+   text-align: center;
 }
 td {
-    background-color: #def;
-    border: solid 1px black;
+  background-color: #def;
+  border: solid 1px black;
 }
 
 hr {
-    border-width: 0px 0px 0.1em 0px;
-    border-color: black;
+  border-width: 0px 0px 0.1em 0px;
+  border-color: black;
 }
 
-/* S-pam */
-.gpam table, .gpam th, .gpam td {
-	border: none;
+acronym, .titleTip {
+  border-bottom: 1px dotted rgb(153,153,153);
+  cursor: help;
+  margin: 0;
+  padding: 0 0 0.4px 0;
 }
 
-/* Code */
 pre {
-    margin-left: 2em; 
-    font-size: 1.2em;
+  margin-left: 2em; 
+  font-size: 1.2em;
 }
 
-
-/* Quotes */
 blockquote {
-    border-left: 1px solid blue;
-    font-style: italic;
+  border-left: 1px solid blue;
+  font-style: italic;
 }
 
-/* PAGE/HANDLER SPECIFIC */
+.smallCaps {
+  font-size: 110%;
+  font-variant: small-caps;
+}
+
+.doNotDisplay { display: none; }
+
+
+/* # Page/Handler specific # */
 h1.dir-list-head, ul.dir-list {
-    text-transform: capitalize;
-    font-weight: bold;
+  text-transform: capitalize;
+  font-weight: bold;
 }
 ul.sitemap-list a {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
+
+/* # Junk: should move elsewhere # */
+/* S-pam */
+.gpam { text-align: center; }
+.gpam table, .gpam th, .gpam td { border: none; }
+
+
