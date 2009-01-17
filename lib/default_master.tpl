@@ -13,17 +13,15 @@
     </div>
 </div>
 
-%{
-if(! ~ $#handlers_bar_left 0) {
-    echo '<div id="side-bar">'
-    for(h in $handlers_bar_left) {
-        echo '<div>'
-        run_handler $$h
-        echo '</div>'
-    }
-    echo '<div><!-- Bottom filler div --></div> </div>'
-}
-%}
+% if(! ~ $#handlers_bar_left 0) {
+    <div id="side-bar">
+%   for(h in $handlers_bar_left) {
+        <div>
+%       run_handler $$h
+        </div>
+%   }
+    </div>
+% }
 
 <div id="main-copy">
 
@@ -37,5 +35,4 @@ if(! ~ $#handlers_bar_left 0) {
 
 <div id="footer">
 % cat `{ get_lib_file footer.inc }
-% echo $"logged_user
 </div>
