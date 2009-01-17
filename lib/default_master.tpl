@@ -13,33 +13,17 @@
     </div>
 </div>
 
-% if(! ~ $#sidebar 0) {
-<div id="side-bar">
-
-<div>
 %{
-if(! ~ $#sideBarNavTitle 0)
-    echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
-
-gensidebar
-
+if(! ~ $#handlers_bar_left 0) {
+    echo '<div id="side-bar">'
+    for(h in $handlers_bar_left) {
+        echo '<div>'
+        run_handler $$h
+        echo '</div>'
+    }
+    echo '<div><!-- Bottom filler div --></div> </div>'
+}
 %}
-</div>
-
-% if(! ~ $#wiki 0 && test -f $local_path.md  && check_user $wiki_editors_group) {
-<div> 
-    <form action="/_apps/dirdir/edit" method="POST">
-        <input type="hidden" name="edit_wiki_page" value="%($req_path%)" />
-        <input type="submit" name="" value="Edit page" />
-    </form>
-</div>
-% }
-
-<div>
-</div>
-
-</div>
-% }
 
 <div id="main-copy">
 

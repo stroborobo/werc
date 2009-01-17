@@ -26,7 +26,9 @@ fn hide_paths {
 }
 
 # Sidebar 
-fn gensidebar {
+fn nav_tree {
+    if(! ~ $#sideBarNavTitle 0)
+        echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
     # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
     # /./ to deal with p9p's ls failure to follow dir symlinks otherwise
     ls -F $sitedir/./$req_paths_list >[2]/dev/null \
@@ -135,7 +137,7 @@ path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin)
 headers=lib/headers.tpl
 master_template=default_master.tpl
 res_tail='</body></html>'
-sidebar=sidebar
+ll_add handlers_bar_left nav_tree
 werc_root=`{pwd}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
