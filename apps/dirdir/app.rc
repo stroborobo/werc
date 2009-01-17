@@ -1,0 +1,14 @@
+fn dirdir_init {
+    if(! ~ $#wiki 0 && test -f $local_path.md && check_user $wiki_editors_group) 
+        ll_add handlers_bar_left  dirdir_controls
+}
+
+fn dirdir_controls {
+    # Display 'Edit', 'History', etc, links
+    echo '<div><form action="/_apps/dirdir/edit" method="POST">'
+    echo '<input type="hidden" name="edit_wiki_page" value="'^$req_path^'" />'
+    echo '<input type="submit" name="" value="Edit page" />'
+    echo '</form></div>'
+
+
+}
