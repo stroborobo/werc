@@ -1,5 +1,5 @@
 fn bridge_init {
-    if(! ~ $#allowComments 0) {
+    if(! ~ $#enable_comments 0) {
         ll_add handlers_body_foot bridge_body_foot 
         if(get_post_args comment_text) {
             dprint POST COMMNET $"comment_text
@@ -23,8 +23,6 @@ fn bridge_init {
             echo $u > $d/user
             echo $comment_text > $d/body
         }
-        if not
-            dprint SSS $status
     }
 
 }
