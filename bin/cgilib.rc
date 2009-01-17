@@ -136,12 +136,9 @@ fn set_cookie {
 fn get_cookie {
     ifs=';' { co = `{ echo $HTTP_COOKIE } }
 
-    #for(c in $co)
-    #    if(~ $c $1^'='*)  # This matching doesn't work
-    #        echo $c|sed 's/[^=]*=//' 
-
-    # WARNING: we might be adding a trailing new line
-    { for(c in $co) echo $c } | sed -n 's/[^=]*=//p' 
+    # XXX: we might be adding a trailing new line?
+    # The ' ?' is needed to deal with '; ' inter-cookie delimiter
+    { for(c in $co) echo $c } | sed -n 's/^ ?'$1'=//p' 
 }
 
 fn select_mime {
@@ -189,7 +186,7 @@ fn login_user {
 # Check loggin status, if called with group arg we check membership too
 fn check_user {
     if(! get_user)
-        status='Not logged in'
+        status='Not logged in:' $status
     if not if(~ $#1 1 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
         status=User $logged_user not in group $1
     if not
@@ -239,6 +236,11 @@ fn auth_user {
         status=()
     }
 }
+
+fn user_controls {
+    echo User: $"logged_user
+}
+
 
 # .md '(meta-)data' extract
 fn get_md_file_attr {
