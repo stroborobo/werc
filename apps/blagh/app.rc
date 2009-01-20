@@ -9,10 +9,9 @@ fn blagh_init {
         blagh_url=$base_uri^$blagh_root_path
         blagh_root=$sitedir^$blagh_uri
 
-        if(~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/)
-            status='Use default handler'
-
-        if not if(~ $req_path */index */) {
+        # XXX This is a hideous hack, blogs in dirs that match the number patern wont work, and dirs inside posts (eg., comments) wont work either.
+        # The problem is how to find out the 'root' of this blog, blaghDirs is useless for that.
+        if(~ $req_path */ && ! ~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/*) {
             handler_body_main=blagh_body
             u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
@@ -29,7 +28,6 @@ fn blagh_init {
 
 fn blagh_setup_feed_handlers {
     handler_body_main=NOT_USED_by_blagh_feeds
-    headers=() # Headers included in master tpl
     res_tail=()
     master_template=_apps/blagh/$1
 }
