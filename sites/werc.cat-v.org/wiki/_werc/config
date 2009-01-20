@@ -1,0 +1,2 @@
+enable_wiki=yes
+enabled_apps=($enabled_apps bridge dirdir)
