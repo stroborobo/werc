@@ -1,5 +1,5 @@
 fn dirdir_init {
-    if(! ~ $#wiki 0 && test -f $local_path.md && check_user $wiki_editors_group) 
+    if(! ~ $#enable_wiki 0 && test -f $local_path.md && check_user $wiki_editors_group) 
         ll_add handlers_bar_left  dirdir_controls
 }
 

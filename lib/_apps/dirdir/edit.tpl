@@ -1,4 +1,6 @@
 %{
+# XXX This should be moved to apps/dirdir/, and we should bail out if not called from a dir with $enable_wiki set.
+
 get_post_args edit_wiki_page edit_text edit_preview edit_save
 
 # XXX SECURITY HOLE! should sanitize form input and make sure we only edit files we are allowed
