@@ -216,7 +216,7 @@ if not
 setup_handlers
 
 if(! ~ $#debug 0)
-    dprint '  '$"SERVER_NAME^$"REQUEST_URI' - '$"HTTP_USER_AGENT' - '$"REQUEST_METHOD' - '$"handler
+    dprint '  '$"SERVER_NAME^$"REQUEST_URI' - '$"HTTP_USER_AGENT' - '$"REQUEST_METHOD' - '$"handler_body_main
 
 template $headers `{get_lib_file $master_template} | awk_buffer
 echo $res_tail
