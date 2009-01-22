@@ -99,13 +99,10 @@ fn setup_handlers {
     if not if(test -f $local_path.txt)
         handler_body_main=(txt_handler $local_path.txt)
 
-    # Apps
-    if(! ~ $#enabled_apps 0) {
-        for(a in $enabled_apps) {
-            . ./apps/$a/app.rc
+    # Apps, XXX: Maybe we should check that $enabled_apps exist in $werc_apps.
+    if(! ~ $#enabled_apps 0)
+        for(a in $enabled_apps)
             $a^'_init'
-        }
-    }
 
     if(! ~ $#handler_body_main 0)
         { } # We are done
@@ -138,6 +135,7 @@ headers=lib/headers.tpl
 master_template=default_master.tpl
 res_tail='</body></html>'
 ll_add handlers_bar_left nav_tree
+werc_apps=( apps/* )
 werc_root=`{pwd}
 for(i in siteTitle siteSubTitle pageTitle extraHeaders)
     $i = ''
@@ -153,6 +151,9 @@ current_date_time=`{date}
 
 if(test -f etc/initrc.local)
     . ./etc/initrc.local
+
+for(a in $werc_apps)
+    . ./$a/app.rc
 
 # Parse request URL
 # NOTE: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto
@@ -181,13 +182,13 @@ if(~ $local_path */) {
 if not if(test -d $local_path)
     perm_redirect $req_path^'/'
 
-p=()
 cd $sitedir
 if(test -f _werc/config)
     . _werc/config
+conf_wd='' # This can be used inside config files to know where we are in the document tree.
 for(i in ('' $args)) {
-    p=($"p^/^$i)
-    req_paths_list=($req_paths_list $p)
+    config_wd=($"config_wd^/^$i)
+    req_paths_list=($req_paths_list $config_wd)
     if(test -d $i) {
         cd $i
         if(test -f _werc/config)
