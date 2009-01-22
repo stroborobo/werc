@@ -1,3 +1,11 @@
+# XXX Should use a function to enable blagh instead of depending on blaghDirs, that way we can save the path of the root of the blog.
+fn conf_enable_blog {
+    blagh_root=$conf_wd
+    blagh_dirs=$*
+    if(~ $#blagh_dirs 0)
+        blagh_dirs=$conf_wd
+}
+
 fn blagh_init {
     if(~ $#blaghDirs 0 && ~ $local_path */[bB]log/index*)
         blaghDirs=( . )
