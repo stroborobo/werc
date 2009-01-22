@@ -39,3 +39,46 @@ least Apache, Lighttpd, Cherokee, nhttpd, Hiawatha, and others.
 
 Werc uses markdown by default (and the standard Perl markdown is included with the distribution), to format documents, but any other formatting
 system can be used.
+
+
+Development
+-----------
+To get a copy of the latest development code using mercurial, do:
+
+	hg clone http://gsoc.cat-v.org/hg/werc/
+
+You can also [browse the online repository](http://gsoc.cat-v.org/hg/werc/).
+
+Contact
+-------
+
+For questions, suggestions, bugrepports and contributing patches you can join the [werc9 mailinglist](http://groups.google.com/group/werc9).
+
+On irc, join #plan9 on irc.freenode.org
+
+
+Links
+-----
+
+* [werc project at freshmeat](http://freshmeat.net/projects/werc/) - You can get new release notifications there.
+
+
+License
+-------
+
+Public domain (by default includes markdown.pl which has a different license, but this can be replaced).
+
+Credits
+-------
+
+Thanks to Kris Maglione (aka JG) for implementing rss feeds, for writing the
+awk rc-templating system, and other help and inspiration (some parts of the
+code were based on JG's diri wiki).
+
+Thanks to Mechiel (aka oksel) for the md_cache script.
+
+Thanks Garbeam (aka arg) for writing the original diri code and showing that
+writing complex web apps in rc was feasible.
+
+And thanks to everyone else whom I have forgotten and that has provided fixes
+and feedback.
