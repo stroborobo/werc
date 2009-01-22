@@ -24,7 +24,6 @@ fn static_file {
 }
 
 
-# Status is () if at least one arg is found.
 # Note: should check if content type is application/x-www-form-urlencoded?
 fn load_post_args {
     if(~ $REQUEST_METHOD POST && ~ $#post_args 0) {
@@ -40,6 +39,7 @@ fn load_post_args {
     if not
         status='No POST or post args already loaded'
 }
+# Status is () if at least one arg is found. DEPRECATED: access vars directly.
 fn get_post_args {
     load_post_args
     _status='No post arg matches'
