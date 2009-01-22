@@ -25,33 +25,32 @@ fn static_file {
 
 
 # Status is () if at least one arg is found.
-fn get_post_args {
-    _status='Args not found'
-    if(! ~ $REQUEST_METHOD POST)
-        _status='No http post!'
-    if not if(~ $#POST_ARGS 0) {
+# Note: should check if content type is application/x-www-form-urlencoded?
+fn load_post_args {
+    if(~ $REQUEST_METHOD POST && ~ $#post_args 0) {
         ifs='&
 '       for(pair in `{cat}) {
-            pair=`{echo -n $pair | sed 's/=/\&/'}
-            # Maybe we should urldecode on the first pass?
-            POST_ARGS=( $POST_ARGS $pair )
-            _get_post_args_set_var $pair $*
+            ifs='=' { pair=`{echo -n $pair} }
+            n='post_arg_'^`{echo $pair(1)|tr -cd 'a-zA-Z0-9_'}
+            post_args=( $post_args $n )
+            $n=`{echo -n $pair(2) | urldecode}
         }
+        pair=()
     }
-    if not {
-        pair=$POST_ARGS
-        while(! ~ $#pair 0) {
-            _get_post_args_set_var $pair $*
-            pair=$pair(3-)
+    if not
+        status='No POST or post args already loaded'
+}
+fn get_post_args {
+    load_post_args
+    _status='No post arg matches'
+    for(n in $*) {
+        v=post_arg_$n
+        if(! ~ $#$v 0) {
+            $n=$$v
+            _status=()
         }
     }
     status=$_status
-}
-fn _get_post_args_set_var {
-    if(~ $1 $*(3-)) {
-        ifs=() { $1=`{echo -n $2 | urldecode | tr -d ''} }
-        _status=()
-    }
 }
 
 # This seems slightly improve performance, but might depend on httpd buffering behavior.
@@ -104,7 +103,7 @@ BEGIN {
         decoded = decoded c
         ++i
     }
-    printf decoded
+    printf "%s", decoded
 }
 '
 }
