@@ -58,9 +58,9 @@ fn nav_tree {
 
 
 # Handlers
-fn md_handler { cat $* | $formatter }
+fn md_handler { $formatter < $1 }
 
-fn tpl_handler { template $1 }
+fn tpl_handler { template $* }
 
 fn html_handler {
     # body states: 0 = no <body> found, 2 = after <body>, 1 = after <body></body>, -1 = after </body>
