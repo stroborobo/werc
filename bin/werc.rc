@@ -78,10 +78,9 @@ fn txt_handler {
 
 fn dir_listing_handler {
     d=`{basename -d $1}
-    # XXX $d is based on $local_path, but should display only req_path here.
     echo $d|sed 's,.*//,,g; s,/$,,; s,/, / ,g; s,.*,<h1 class="dir-list-head">&</h1> <ul class="dir-list">,'
     # Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
-    ls -F $dir_listing_ls_opts $d/. | sed $dirfilter$dirclean' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
+    ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
     echo '</ul>'
 }
 
@@ -108,7 +107,7 @@ fn setup_handlers {
         { } # We are done
     # Dir listing
     if not if(~ $local_path */index)
-        handler_body_main=(dir_listing_handler $local_path)
+        handler_body_main=(dir_listing_handler $req_path)
     # Canonize explicit .html urls, the web server might handle this first!
     if not if(~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
