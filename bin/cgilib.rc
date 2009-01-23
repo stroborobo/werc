@@ -5,6 +5,7 @@ NEW_LINE='
 '
 
 fn dprint { echo $* >[1=2] }
+fn dprintvars { { for(v in $*) { echo -n $v^'#'^$#$v^'=' $$v '; '  }; echo } >[1=2] }
 
 fn escape_html { sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' $* }
 
