@@ -38,7 +38,7 @@ fn statpost {
 		<generator>Tom Duff's rc, and Kris Maglione's clever hackery</generator>
 %{
 		# <webMaster>uriel99+rss@gmail.com (Uriel)</webMaster>
-        for(f in `{get_post_list $blagh_root$blaghDirs}) {
+        for(f in `{get_post_list $blagh_root$blagh_dirs}) {
 			statpost $f
 			# Hack to aproximate the last build date 
 			#(use the mdate from last posted item)

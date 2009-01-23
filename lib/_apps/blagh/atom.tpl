@@ -35,7 +35,7 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
     <link href="."/>
 
 %{
-        for(f in `{get_post_list $blagh_root$blaghDirs}) {
+        for(f in `{get_post_list $blagh_root$blagh_dirs}) {
             statpost $f
 %}
     <entry>
