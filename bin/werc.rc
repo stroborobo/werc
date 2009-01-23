@@ -13,8 +13,7 @@ fn get_lib_file {
         echo -n lib/$1
 }
 
-# Don't change var name or trailing ';', dirfilter might be changed from _werc/config!
-# ls -F style input of the form: $sitedir/path/to/files/
+# Expected input: ls -F style, $sitedir/path/to/files/
 #          <ls -F+x><symlink hack><Useless?><hiden files  >
 dirfilter='s/\*$//; s,/+\./+,/,g; s,^\./,,; /\/[._][^\/]/d; /'^$forbidden_uri_chars^'/d; /^\/(robots|sitemap)\.txt$|\/index\.(md|html|txt|tpl)$/d; /_werc\/?$/d; '
 dirclean=' s/\.(md|html|txt)$//; '
@@ -184,13 +183,15 @@ if not if(test -d $local_path)
     perm_redirect $req_path^'/'
 
 cd $sitedir
+req_paths_list='/' # Note: req_paths_list doesn't include 'stnythetic' dirs.
+conf_wd='/' # Used in config files to know where we are in the document tree.
 if(test -f _werc/config)
     . _werc/config
-conf_wd='' # This can be used inside config files to know where we are in the document tree.
-for(i in ('' $args)) {
-    config_wd=($"config_wd^/^$i)
-    req_paths_list=($req_paths_list $config_wd)
+for(i in $args) {
+    conf_wd=$conf_wd^$i
+    req_paths_list=($req_paths_list $conf_wd)
     if(test -d $i) {
+        conf_wd=$conf_wd^'/'
         cd $i
         if(test -f _werc/config)
             . _werc/config
