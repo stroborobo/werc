@@ -1,25 +1,23 @@
-# XXX Should use a function to enable blagh instead of depending on blaghDirs, that way we can save the path of the root of the blog.
 fn conf_enable_blog {
-    blagh_root=$conf_wd
+    blagh_uri=$conf_wd
     blagh_dirs=$*
     if(~ $#blagh_dirs 0)
-        blagh_dirs=$conf_wd
+        blagh_dirs=( . )
 }
 
 fn blagh_init {
-    if(~ $#blaghDirs 0 && ~ $local_path */[bB]log/index*)
-        blaghDirs=( . )
+    if(~ $#blagh_dirs 0 && ~ $req_path */[bB]log/) {
+        blagh_uri=$req_path
+        blagh_dirs=( . )
+    }
 
     # Should not match sub-dirs!
-    if(! ~ $#blaghDirs 0) {
-    # && test -d / `{echo '-a -d '^$req_path^$blaghDirs}
-        blagh_uri=`{echo $req_path|sed 's/index(\.(atom|rss))?$//'}
-        blagh_url=$base_uri^$blagh_root_path
+    if(! ~ $#blagh_dirs 0) {
+    # && test -d / `{echo '-a -d '^$blagh_root^$blagh_dirs}
+        blagh_url=$base_url^$blagh_uri
         blagh_root=$sitedir^$blagh_uri
 
-        # XXX This is a hideous hack, blogs in dirs that match the number patern wont work, and dirs inside posts (eg., comments) wont work either.
-        # The problem is how to find out the 'root' of this blog, blaghDirs is useless for that.
-        if(~ $req_path */ && ! ~ $req_path */[0-9][0-9][0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/ */[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/*) {
+        if(~ $req_path */ && ~ $req_path $blagh_uri) {
             handler_body_main=blagh_body
             u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
@@ -41,7 +39,7 @@ fn blagh_setup_feed_handlers {
 }
 
 fn blagh_body {
-    for(p in `{get_post_list $blagh_root^$blaghDirs}) {
+    for(p in `{get_post_list $blagh_root^$blagh_dirs}) {
         l=`{echo -n $p|sed 's!'$sitedir^$req_path'!!'}
         sed '1s!.*![&]('$l')!' < $p/index.md | $formatter 
     }
@@ -49,7 +47,7 @@ fn blagh_body {
 
 fn get_post_list {
     # the /./->/|/ are added so we can sort -t| and order only the file name
-    # NOTE: this breaks if any path element in blogDirs contain '/./' or '|'
+    # NOTE: this breaks if any path element in blagh_dirs contain '/./' or '|'
     ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n '/'^$forbidden_uri_chars^'/d; s,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
 }
 
