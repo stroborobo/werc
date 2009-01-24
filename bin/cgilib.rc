@@ -186,11 +186,10 @@ fn login_user {
 # Check loggin status, if called with group arg we check membership too
 fn check_user {
     if(! get_user)
-        status='Not logged in:' $status
-    if not if(~ $#1 1 && ! grep -s '^'^$logged_user^'$' etc/groups/$1)
-        status=User $logged_user not in group $1
-    if not
-        status=()
+        _status='Not logged in:' $status
+    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$*)
+        _status=User $logged_user not in groups $*
+    status=$_status
 }
 
 # If not logged in, try to get user login info from POST or from cookie

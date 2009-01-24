@@ -98,7 +98,8 @@ fn setup_handlers {
     if not if(test -f $local_path.txt)
         handler_body_main=(txt_handler $local_path.txt)
 
-    # Apps, XXX: Maybe we should check that $enabled_apps exist in $werc_apps.
+    # XXX Should check that $enabled_apps exist in $werc_apps?
+    # XXX Should split init of apps that provide main handler (eg., blog) and apps that don't (eg., comments)?
     if(! ~ $#enabled_apps 0)
         for(a in $enabled_apps)
             $a^'_init'
@@ -162,7 +163,7 @@ ifs='/' { args=`{echo -n $req_path} }
 
 # Hack: preload post data so we can access it from templates where cgi's stdin is not accesible
 if(~ $REQUEST_METHOD POST) {
-    get_post_args 
+    load_post_args
     login_user
 }
 

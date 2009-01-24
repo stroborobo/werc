@@ -1,4 +1,5 @@
 fn bridge_init {
+    # XXX: Should avoid running for 404s, dir lists, etc.
     if(! ~ $#enable_comments 0) {
         ll_add handlers_body_foot bridge_body_foot 
         if(get_post_args comment_text) {
@@ -19,9 +20,10 @@ fn bridge_init {
             }
 
             umask 002
-            mkdir -m 775 -p $d
-            echo $u > $d/user
-            echo $comment_text > $d/body
+            if(mkdir -m 775 -p $d) { # Rudimentary perm checking
+                echo $u > $d/user
+                echo $comment_text > $d/body
+            }
         }
     }
 
