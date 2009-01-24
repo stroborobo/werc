@@ -10,15 +10,16 @@
 %    }
 % }
 
-<hr /><hr />
+<hr />
+
 <form action="" method="post">
+    <textarea name="comment_text" id="comment_text" cols="80" rows="16"></textarea>
+    <br />
+    <input type="submit" name="post_comment" value="Post a comment" />
 % if(! check_user) {
     User: <input type="text" name="comment_user_name" value="" />
     Password: <input type="password" name="comment_user_password" value="" />
-    <small>If you are not registered enter your desired user/password and your account will be created when your comment is approved.</small>
+    <div style="font-size: 70%">If you are not registered enter your desired user/password and your account will be created when your comment is approved.</div>
 % }
-
-    <textarea name="comment_text" id="comment_text" cols="80" rows="16"></textarea>
-    <input type="submit" name="post_comment" value="Post a comment" />
 </form>
 
