@@ -9,13 +9,15 @@ fn dprintvars { { for(v in $*) { echo -n $v^'#'^$#$v^'=' $$v '; '  }; echo } >[1
 
 fn escape_html { sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' $* }
 
-fn perm_redirect {
-    echo 'Status: 301 Moved Permanantly
+fn http_redirect {
+    echo 'Status: '^$2^'
 Location: '^$1^'
 
 '
     exit
 }
+fn perm_redirect { http_redirect $1 '301 Moved Permanantly' }
+fn post_redirect { http_redirect $1 '303 See Other' }
 
 fn static_file {
     echo 'Content-Type: '`{select_mime $1}
@@ -33,7 +35,7 @@ fn load_post_args {
             ifs='=' { pair=`{echo -n $pair} }
             n='post_arg_'^`{echo $pair(1)|tr -cd 'a-zA-Z0-9_'}
             post_args=( $post_args $n )
-            $n=`{echo -n $pair(2) | urldecode}
+            ifs=() { $n=`{echo -n $pair(2)|urldecode|tr -d ''} }
         }
         pair=()
     }
@@ -171,6 +173,19 @@ fn ll_add {
 ##############################################
 # Werc-specific functions
 
+fn get_lib_file {
+    if(! ~ $#sitedir 0 && test -f $sitedir/_werc/lib/$1)
+        echo -n $sitedir/_werc/lib/$1
+    if not if(! ~ $#masterSite 0 && test -f $sitesdir/$masterSite/_werc/lib/$1)
+        echo -n $sitesdir/$masterSite/_werc/lib/$1
+    if not if(test -f lib/$1)
+        echo -n lib/$1
+    if not if(~ $#* 2)
+        echo -n $2
+    if not
+        status='Can''t find lib file: '$1
+}
+
 fn template { awk -f bin/template.awk $* | rc $rcargs }
 
 # Auth code
@@ -185,10 +200,14 @@ fn login_user {
 
 # Check loggin status, if called with group arg we check membership too
 fn check_user {
-    if(! get_user)
-        _status='Not logged in:' $status
-    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$*)
-        _status=User $logged_user not in groups $*
+    get_user
+    _status=$status
+    if(! ~ $#_status 0 )
+        _status=(Not logged in: $"_status)
+    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$*) {
+        dprint NOT IN GROUP
+        _status=(User $logged_user not in groups $*)
+    }
     status=$_status
 }
 
@@ -223,11 +242,11 @@ fn auth_user {
 
     pfile='etc/users/'^$"user_name^'/password'
     if(~ $#user_name 0 || ~ $#user_password 0)
-        status='Auth: missing user name or pass: '^$"user_name^' / '^$"user_password
+        status=('Auth: missing user name or pass: '^$"user_name^' / '^$"user_password)
     if not if(! test -f $pfile)
-        status='Auth: cant find '^$pfile
+        status=('Auth: cant find '^$pfile)
     if not if(! ~ $user_password `{cat $pfile})
-        status='Auth: Pass '$user_password' doesnt match '^`{cat $pfile}
+        status=('Auth: Pass '$user_password' doesnt match '^`{cat $pfile})
     if not {
         logged_user=$user_name
         logged_password=$user_password
