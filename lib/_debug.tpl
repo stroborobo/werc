@@ -11,7 +11,7 @@ document.prompt.command.focus()
 fn evl {
     # Buffering is probably messing this up:
     #rc -c 'flag x +;{'^$post_arg_command'} |[2] awk ''{print ">> "$0}'''
-    rc -c 'flag x +;'^$post_arg_command
+    rc -c 'flag s +; flag x +;'^$post_arg_command
 }
     if(! ~ $#post_arg_command 0 && ! ~ $#post_arg_command '') {
         echo '<hr /><pre>'
