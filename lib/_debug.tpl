@@ -1,6 +1,6 @@
 % if(! ~ $#debug_shell 0) {
 <form method="POST" name="prompt">
-<input type="text" name="command" />
+<input size="80" type="text" name="command" value="%($"post_arg_command%)" />
 <input type="submit" Value="Run" />
 </form>
 <script language="javascript"><!--
