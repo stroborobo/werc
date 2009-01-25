@@ -12,7 +12,7 @@ fn bridge_init {
                 get_post_args comment_user_name comment_user_password
                 # XXX Should do this too if user not in required group
                 if(! login_user $comment_user_name $comment_user_password) {
-                    u=$comment_user_name ':' $comment_user_password
+                    u=$comment_user_name':'$comment_user_password
                     d=$d^'_pending'
                 }
                 if not
