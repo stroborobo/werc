@@ -2,8 +2,9 @@
 % if(test -d $cdir) { 
     <hr /><h2>Comments</h2>
 %    for(c in `{ls $cdir/}) {
-        <div>By: 
+        <div><b>By: <i> 
 %           cat $c/user
+            </i></b>
             <br />
 %           cat $c/body | escape_html | sed 's,$,<br />,'
         <hr /></div>

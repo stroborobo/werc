@@ -1,9 +1,7 @@
 fn bridge_init {
-    # XXX: Should avoid running for 404s, dir lists, etc.
-    if(! ~ $#enable_comments 0) {
-        ll_add handlers_body_foot bridge_body_foot 
+    if(! ~ $#enable_comments 0 && test -f $local_path.md) {
+        ll_add handlers_body_foot template apps/bridge/foot.tpl
         if(get_post_args comment_text) {
-            dprint POST COMMNET $"comment_text
             d=`{date -n} # FIXME Obvious race
             d=$local_path^'_werc/comments/'^$d/
 
@@ -27,9 +25,5 @@ fn bridge_init {
         }
     }
 
-}
-
-fn bridge_body_foot {
-    template apps/bridge/foot.tpl
 }
 
