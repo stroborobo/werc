@@ -7,8 +7,8 @@
 %    if (~ $REQUEST_METHOD POST)
 %        echo 'Login failed!'
 <form method="POST">
-    User name: <input type="text" name="user_name" /><br />
-    User password: <input type="password" name="user_password" /><br />
+    <label>User name: <input type="text" name="user_name" /></label><br />
+    <lavel>User password: <input type="password" name="user_password" /></label><br />
     <input name="s" type="submit" value="Login" />
 </form>
 % }
