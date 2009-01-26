@@ -1,5 +1,6 @@
+comment_file_types=(md html)
 fn bridge_init {
-    if(! ~ $#enable_comments 0 && test -f $local_path.md) {
+    if(! ~ $#enable_comments 0 && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
         ll_add handlers_body_foot template apps/bridge/foot.tpl
         if(get_post_args comment_text) {
             d=`{date -n} # FIXME Obvious race
