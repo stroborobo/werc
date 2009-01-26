@@ -1,14 +1,24 @@
 fn dirdir_init {
-    if(! ~ $#enable_wiki 0 && test -f $local_path.md && check_user $wiki_editors_group) 
-        ll_add handlers_bar_left  dirdir_controls
+    if(! ~ $#enable_wiki 0 &&  check_user $wiki_editors_group admin) {
+        if(test -f $local_path.md)
+            ll_add handlers_bar_left  dirdir_controls
+
+        if(~ $req_path */dirdir_edit && ~ $REQUEST_METHOD POST) {
+            get_post_args edit_wiki_page edit_text edit_preview edit_save
+            # XXX SECURITY! should sanitize input and ensure we only edit files 
+            # we are allowed. This is a start, but should be way more careful
+            edit_file = `{echo $sitedir/$edit_wiki_page|sed -e 's/\.\.*/./g' -e 's,/$,/index,' | sed 's/$/.md/'}
+            tpl=`{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl}
+            handler_body_main=(tpl_handler $tpl)
+        }
+
+    }
 }
 
 fn dirdir_controls {
     # Display 'Edit', 'History', etc, links
-    echo '<form action="/_apps/dirdir/edit" method="POST">'
+    echo '<form action="dirdir_edit" method="POST">'
     echo '<input type="hidden" name="edit_wiki_page" value="'^$req_path^'" />'
     echo '<input type="submit" name="" value="Edit page" />'
     echo '</form>'
-
-
 }
