@@ -5,9 +5,9 @@
 % }
 % if not {
 %    if (~ $REQUEST_METHOD POST)
-%        echo 'Login failed!'
-<form method="POST">
-    <label>User name: <input type="text" name="user_name" /></label><br />
+%        echo '<div class="notify_errors">Login failed!</div>'
+<form method="POST" style="text-align: right; float: left;">
+    <label>User name: <input type="text" name="user_name" value="%($"post_arg_user_name%)"/></label><br />
     <lavel>User password: <input type="password" name="user_password" /></label><br />
     <input name="s" type="submit" value="Login" />
 </form>
