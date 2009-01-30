@@ -53,8 +53,8 @@ fn mk_new_comment {
             if(validate_new_user $"post_arg_comment_user $post_arg_comment_passwd $post_arg_comment_passwd2) {
                 u=$post_arg_comment_user':'$post_arg_comment_passwd
                 dir=$cdir^'_pending'
+                # XXX: This doesn't work because we then do a redirect. 
                 notify_notes='Saved comment and registration info, they will be enabled when approved by an admin.'
-                ll_add handlers_body_foot notices_handler
             }
             if not
                 _status=$status
