@@ -1,30 +1,98 @@
 comment_file_types=(md html)
-fn bridge_init {
-    if(! ~ $#enable_comments 0 && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
-        ll_add handlers_body_foot template apps/bridge/foot.tpl
-        if(get_post_args comment_text) {
-            d=`{date -n} # FIXME Obvious race
-            d=$local_path^'_werc/comments/'^$d/
 
-            u=$logged_user
-            if(~ $#logged_user 0) {
-                get_post_args comment_user_name comment_user_password
-                # XXX Should do this too if user not in required group
-                if(! login_user $comment_user_name $comment_user_password) {
-                    u=$comment_user_name':'$comment_user_password
-                    d=$d^'_pending'
-                }
-                if not
-                    u = $logged_user
-            }
-
-            umask 002
-            if(mkdir -m 775 -p $d) { # Rudimentary perm checking
-                echo $u > $d/user
-                echo $comment_text > $d/body
-            }
-        }
+fn conf_enable_comments {
+    if(~ $1 -n) {
+        allow_new_user_comments=yes
+        shift
     }
-
+    enable_comments=yes
+    groups_allowed_comments=$*
 }
 
+fn bridge_init {
+    if(~ $#enable_comments 1) {
+    
+        cdir=$sitedir$req_path'_werc/comments'
+        if(test -d $cdir)
+            ll_add handlers_body_foot display_comments $cdir
+
+        if({ check_user $groups_allowed_comments || {~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0} } && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
+            ll_add handlers_body_foot template apps/bridge/foot.tpl
+
+            if(~ $REQUEST_METHOD POST && mk_new_comment $cdir)
+                post_redirect $base_url^$post_arg_document_uri
+            if not
+                saved_comment_text=$post_arg_comment_text
+        }
+    }
+}
+
+fn validate_new_user {
+    usr=$1; pass=$2; pass2=$3
+    _status=()
+
+    if(~ $"usr '' || ! echo $usr |sed 1q|grep -s '^'$allowed_user_chars'+$')
+        _status='Requested user name is invalid, must match: '^$allowed_user_chars^'+'
+    if not if(test -d etc/users/$usr)
+        _status='Sorry, user name '''^$usr^''' already taken, please pick a different one.'
+
+    if(~ $"pass '' || ! ~ $"pass $"pass2)
+        _status=($_status 'Provided passwords don''t match.')
+
+    status=$_status
+}
+
+
+fn mk_new_comment {
+    _status=()
+    dir=$1
+    if(~ $"post_arg_comment_text '')
+        _status='Provide a comment!'
+    if not if(~ $#logged_user 0) {
+        if(! ~ $#allow_new_user_comments 0) {
+            if(validate_new_user $"post_arg_comment_user $post_arg_comment_passwd $post_arg_comment_passwd2) {
+                u=$post_arg_comment_user':'$post_arg_comment_passwd
+                dir=$cdir^'_pending'
+                notify_notes='Saved comment and registration info, they will be enabled when approved by an admin.'
+                ll_add handlers_body_foot notices_handler
+            }
+            if not
+                _status=$status
+        }
+        if not
+            _status='You need to log in to comment.'
+    }
+    if not if(check_user $groups_allowed_comments)
+        u=$logged_user
+    if not
+        _status='You are not a memeber of a group allowed to comment.'
+
+    if(~ $#_status 0) {
+        umask 002
+
+        dir=$dir'/'`{date -n} # FIXME Obvious race
+        mkdir -m 775 -p $dir &&
+            echo $u > $dir/user &&
+            echo $post_arg_comment_text > $dir/body
+        _s=$status
+        if(! ~ $"_s '') {
+           dprint 'ERROR XXX: Could not create comment: ' $_s 
+            _status='Could not post comment due internal error, sorry.'
+        }
+    }
+    notify_errors=$_status
+    status=$_status
+}
+
+fn display_comments {
+    echo '<hr /><h2>Comments</h2>'
+
+    for(c in `{ls $*/}) {
+        if(test -s $c/body) {
+            echo '<div>'
+            sed 's!.+!<b>By: <i>&</i></b><br />!' < $c/user
+            cat $c/body | escape_html | sed 's,$,<br />,'
+            echo '<hr /></div>'
+        }
+     }
+}
