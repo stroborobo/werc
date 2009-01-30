@@ -70,7 +70,9 @@ fn html_handler {
 
 fn txt_handler {
     # Note: Words are not broken, even if they are way beyond 82 chars long
-    echo '<pre>' `{ sed 's/</\&lt;/g; s/>/\&gt;/g' < $1 | fmt -l 82 -j } '</pre>'
+    echo '<pre>'
+    sed 's/</\&lt;/g; s/>/\&gt;/g' < $1 | fmt -l 82 -j
+    echo '</pre>'
 }
 
 fn dir_listing_handler {
