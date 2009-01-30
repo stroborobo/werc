@@ -10,8 +10,14 @@ fn dprintvars { { for(v in $*) { echo -n $v^'#'^$#$v^'=' $$v '; '  }; echo } >[1
 fn escape_html { sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' $* }
 
 fn http_redirect {
+    if(~ $1 http:* https:*)
+        t=$1
+    if not if(~ $1 /*)
+        t=$"base_url^$1
+    if not
+        t=$"base_url^$"req_path^$1
     echo 'Status: '^$2^'
-Location: '^$1^'
+Location: '^$t^'
 
 '
     exit
@@ -189,7 +195,7 @@ fn get_lib_file {
 fn template { awk -f bin/template.awk $* | rc $rcargs }
 
 # Auth code
-
+allowed_user_chars='[a-zA-Z0-9_]'
 # Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 # login_user can't be used from a template because it sets a cookie 
 fn login_user {
@@ -198,13 +204,13 @@ fn login_user {
         set_cookie werc_user $"logged_user^':0:'^$"logged_password
 }
 
-# Check loggin status, if called with group arg we check membership too
+# Check login status, if called with group arg we check membership too
 fn check_user {
     get_user
     _status=$status
-    if(! ~ $#_status 0 )
+    if(! ~ $"_status '')
         _status=(Not logged in: $"_status)
-    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$*) {
+    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$* etc/groups/admin) {
         dprint NOT IN GROUP
         _status=(User $logged_user not in groups $*)
     }
