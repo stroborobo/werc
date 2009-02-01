@@ -27,7 +27,7 @@ Content-Type: text/html
 % if(! ~ $#h 0)
 %   cat $h
 
-    %($extraHeaders%)
+    %($"extraHeaders%)
 
 </head>
 <body>
