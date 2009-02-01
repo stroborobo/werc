@@ -54,9 +54,9 @@ fn blagh_setup_feed_handlers {
 
 fn blagh_body {
     for(p in `{get_post_list $blagh_root^$blagh_dirs}) {
-        l=`{echo -n $p|sed 's!'$sitedir^$req_path'!!'}
-        sed '1s!.*![&]('$l')!' < $p/index.md | $formatter 
-    }
+        l=`{echo -n $p|sed 's!'$sitedir^$req_path'./([0-9]+/[0-9][0-9]/[0-9][0-9])(.*)!\1 ./\1\2!'}
+        sed '1s!.*![&]('^$l(2)^') ('^$l(1)^')!' < $p/index.md 
+    } | $formatter 
 }
 
 fn get_post_list {
