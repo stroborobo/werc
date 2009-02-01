@@ -1,5 +1,5 @@
 siteTitle='werc'
 siteSubTitle=' Bringing minimalism and sanity to the web'
-enable_comments=yes
+conf_enable_comments
 enabled_apps=($enabled_apps hello dirdir bridge)
 
