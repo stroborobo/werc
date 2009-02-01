@@ -334,6 +334,18 @@ blockquote {
 .doNotDisplay { display: none; }
 
 
+.notify_errors,
+.notify_notes,
+.notify_success { padding: .8em; margin-bottom: 1em; border: 2px solid #ddd; }
+ 
+.notify_errors { background: #FBE3E4; color: #8a1f11; border-color: #FBC2C4; }
+.notify_notes { background: #FFF6BF; color: #514721; border-color: #FFD324; }
+.notify_success { background: #E6EFC2; color: #264409; border-color: #C6D880; }
+.notify_errors a { color: #8a1f11; }
+.notify_notes a { color: #514721; }
+.notify_success a { color: #264409; }
+
+
 /* # Page/Handler specific # */
 h1.dir-list-head, ul.dir-list {
   text-transform: capitalize;

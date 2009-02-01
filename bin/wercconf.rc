@@ -1,0 +1,12 @@
+# To be used from config files
+fn conf_perm_redirect {
+    if(~ $#* 1)
+        perm_redirect $1
+    if not
+        perm_redir_patterns=($perm_redir_patterns $1 $2)
+}
+
+fn conf_hide_paths {
+    for(i in $*)
+       dirfilter=$dirfilter^'/^'$i'$/d; '
+}

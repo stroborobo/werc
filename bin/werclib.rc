@@ -1,0 +1,117 @@
+fn get_lib_file {
+    if(! ~ $#sitedir 0 && test -f $sitedir/_werc/lib/$1)
+        echo -n $sitedir/_werc/lib/$1
+    if not if(! ~ $#masterSite 0 && test -f $sitesdir/$masterSite/_werc/lib/$1)
+        echo -n $sitesdir/$masterSite/_werc/lib/$1
+    if not if(test -f lib/$1)
+        echo -n lib/$1
+    if not if(~ $#* 2)
+        echo -n $2
+    if not
+        status='Can''t find lib file: '$1
+}
+
+fn template { awk -f bin/template.awk $* | rc $rcargs }
+
+# Auth code
+allowed_user_chars='[a-zA-Z0-9_]'
+# Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
+# login_user can't be used from a template because it sets a cookie 
+fn login_user {
+    # Note: we set the cookie even if it is already there.
+    if(get_user $*)
+        set_cookie werc_user $"logged_user^':0:'^$"logged_password
+}
+
+# Check login status, if called with group arg we check membership too
+fn check_user {
+    get_user
+    _status=$status
+    if(! ~ $"_status '')
+        _status=(Not logged in: $"_status)
+    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$* etc/groups/admin) {
+        dprint NOT IN GROUP
+        _status=(User $logged_user not in groups $*)
+    }
+    status=$_status
+}
+
+# If not logged in, try to get user login info from POST or from cookie
+fn get_user {
+    if(~ $#logged_user 0) {
+        if(~ $#* 2) {
+            user_name=$1 
+            user_password=$2
+        }
+        if not if(~ $REQUEST_METHOD POST)
+            get_post_args user_name user_password
+
+        if(~ $#user_name 0) { 
+            ifs=':' { cu=`{get_cookie werc_user|tr -d $NEW_LINE} }
+            if(! ~ $#cu 0) {
+                user_name=$cu(1) 
+                user_password=$cu(3)
+            }
+        }
+        auth_user $user_name $user_password
+    }
+    if not
+        status=()
+}
+
+# Check if user_name and user_password represent a valid user account
+# If valid, 'log in' by setting logged_user
+fn auth_user {
+    user_name=$1
+    user_password=$2
+
+    pfile='etc/users/'^$"user_name^'/password'
+    if(~ $#user_name 0 || ~ $#user_password 0)
+        status=('Auth: missing user name or pass: '^$"user_name^' / '^$"user_password)
+    if not if(! test -f $pfile)
+        status=('Auth: cant find '^$pfile)
+    if not if(! ~ $user_password `{cat $pfile})
+        status=('Auth: Pass '$user_password' doesnt match '^`{cat $pfile})
+    if not {
+        logged_user=$user_name
+        logged_password=$user_password
+        dprint Auth: success
+        status=()
+    }
+}
+
+fn user_controls {
+    echo User: $"logged_user
+}
+
+
+# .md '(meta-)data' extract
+fn get_md_file_attr {
+    sed -n '/^\* '$2': /p; /^\* '$2': /q; /^$/q' < $1
+}
+
+##########################################################################
+##########################################################################
+#app_blog_methods = ( _post index.rss )
+#fn app_blog__post {
+#    echo
+#}
+#
+#app_blog___default {
+#    if (~ $blog)
+#    call_app blogpost
+#}
+#
+## --
+#app_blogpost_methods = ( comment  _edit )
+#
+#fn app_blogpost_comment {
+#    call_app comments
+#}
+#
+## --
+#app_comments_methods = ( _post _edit )
+#
+#fn app_comments___default {
+#
+#}

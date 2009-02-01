@@ -1,0 +1,115 @@
+# Werc builtin handlers
+
+fn nav_tree {
+    if(! ~ $#sideBarNavTitle 0)
+        echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
+    # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
+    # /./ to deal with p9p's ls failure to follow dir symlinks otherwise
+    ls -F $sitedir/./$req_paths_list >[2]/dev/null \
+        | sed 's!^'$sitedir'!!; '$dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; '$dirclean \
+        | sort -u | awk -F/ ' 
+    function p(x, y, s) { for(i=0; i < x-y; i+=1) print s }
+    { 
+        d = ""
+        if(match($0, "/$"))
+            d = "/"
+        sub("/$", "") # Strip trailing / for dirs so NF is consistent 
+
+        p(NF, lNF, "<ul class=\"side-bar\">")
+        p(lNF, NF, "</ul>")
+        lNF = NF
+
+        bname = $NF d
+        path = $0 d
+        gsub("_", " ", bname)
+
+        if(index(ENVIRON["req_path"] "/", path) == 1)
+            print "<li><a href=\"" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a>"
+        else 
+            print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
+    }
+    END { p(lNF, 0, "</ul>") }'
+}
+
+
+fn md_handler { $formatter < $1 }
+
+fn tpl_handler { template $* }
+
+fn html_handler {
+    # body states: 0 = no <body> found, 2 = after <body>, 1 = after <body></body>, -1 = after </body>
+    awk 'gsub(".*<[Bb][Oo][Dd][Yy][^>]*>", "") > 0 {body=2}
+        gsub("</ *[Bb][Oo][Dd][Yy][^>]*>.*", "") > 0 {print; body=body-1}
+        body==2 {print}
+        body==0 {buf=buf "\n" $0}
+        END {if(body<=0) {print buf}}' < $1
+}
+
+fn txt_handler {
+    # Note: Words are not broken, even if they are way beyond 82 chars long
+    echo '<pre>'
+    sed 's/</\&lt;/g; s/>/\&gt;/g' < $1 | fmt -l 82 -j
+    echo '</pre>'
+}
+
+fn dir_listing_handler {
+    d=`{basename -d $1}
+    if(~ $#d 0)
+        d='/'
+    echo $d|sed 's,.*//,,g; s,/$,,; s,/, / ,g; s,.*,<h1 class="dir-list-head">&</h1> <ul class="dir-list">,'
+    # Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
+    ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
+    echo '</ul>'
+}
+
+fn notices_handler {
+    for(type in notify_errors notify_notes notify_success)
+        for(n in $$type)
+            echo '<div class="'$type'"><b>'$"n'</b></div>'
+}
+
+fn setup_handlers {
+
+    if(test -f $local_path.md)
+        handler_body_main=(md_handler $local_path.md)
+    if not if(test -f $local_path.tpl)
+        handler_body_main=(tpl_handler $local_path.tpl)
+    if not if(test -f $local_path.html)
+        handler_body_main=(html_handler $local_path.html)
+    # Global tpl (eg sitemap.tpl), should take precedence over txt handler!
+    if not if(test -f lib^$req_path^.tpl)
+        handler_body_main=(tpl_handler lib^$req_path^.tpl)
+    if not if(test -f $local_path.txt)
+        handler_body_main=(txt_handler $local_path.txt)
+
+    # XXX Should check that $enabled_apps exist in $werc_apps?
+    # XXX Should split init of apps that provide main handler (eg., blog) and apps that don't (eg., comments)?
+    if(! ~ $#enabled_apps 0)
+        for(a in $enabled_apps)
+            $a^'_init'
+
+    if(! ~ $#handler_body_main 0)
+        { } # We are done
+    # Dir listing
+    if not if(~ $local_path */index)
+        handler_body_main=(dir_listing_handler $req_path)
+    # Canonize explicit .html urls, the web server might handle this first!
+    if not if(~ $local_path *.html && test -f $local_path)
+        perm_redirect `{ echo $req_path|sed 's/.html$//' }
+    # Fallback static file handler
+    if not if(test -f $local_path)
+        static_file $local_path
+    if not if(~ $req_path /pub/* && test -f .$req_path)
+        static_file .$req_path
+    # File not found
+    if not {
+        handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
+        echo 'Status: 404 Not Found'
+        dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
+    }
+}
+
+fn run_handlers { for(h in $*) run_handler $$h }
+fn run_handler { $*(1) $*(2-) }
+
+
