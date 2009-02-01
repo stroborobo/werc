@@ -73,6 +73,7 @@ fn mk_new_comment {
         dir=$dir'/'`{date -n} # FIXME Obvious race
         mkdir -m 775 -p $dir &&
             echo $u > $dir/user &&
+            echo $current_date_time > $dir/posted &&
             echo $post_arg_comment_text > $dir/body
         _s=$status
         if(! ~ $"_s '') {
@@ -89,8 +90,7 @@ fn display_comments {
 
     for(c in `{ls $*/}) {
         if(test -s $c/body) {
-            echo '<div>'
-            sed 's!.+!<b>By: <i>&</i></b><br />!' < $c/user
+            ifs=() { echo '<div class="comment"><h5>By: <i>'`{cat $c/user}'</i></b> ('`{cat $c/posted}')</h5>'}
             cat $c/body | escape_html | sed 's,$,<br />,'
             echo '<hr /></div>'
         }
