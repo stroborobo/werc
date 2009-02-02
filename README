@@ -1,8 +1,9 @@
 werc - a minimalist document management system
 ----------------------------------------------
 
-Werc is a CMS designed to be simple to use, simple to setup, and not get on the
-way while allowing users easy customization and implement new functionality.
+Werc is a content management system and web framework designed to be simple to
+use, simple to setup, simple to hack on, and not get on the way while allowing
+users easy customization.
 
 For more information see the official website: http://werc.cat-v.org/
 
@@ -21,13 +22,18 @@ Untar, configure httpd to use bin/werc.rc as a cgi-script, and create a
 directory for your web site under sites/ where you can start to add content
 right away. 
 
-For general configuration options copy etc/initrc to initrc.local and customize
-it to your liking. Site (and directory) specific options can be set in a
-sites/example.com/_werc/config file inside the site's directory. To customize
-templates you can store your own version of the files in lib/ under
-sites/example.com/_werc/lib
+If your Plan 9 from User Space installation is located somewhere else than the
+standard /usr/local/plan9/ you will need to edit the first line of bin/werc.rc
 
-For more details see the documentation section of the website.
+For general configuration options copy etc/initrc to initrc.local and customize
+it as needed. Site (and directory) specific options can be set in a
+sites/example.com/_werc/config file inside the site's directory. To customize
+templates and included files you can store your own version of the files in
+lib/ under sites/example.com/_werc/lib
+
+For more details see the documentation section of the website:
+http://werc.cat-v.org/docs/
+
 
 Contact
 -------
@@ -38,6 +44,9 @@ in irc.freenode.org
 
 If you have a public website that uses werc I would love to hear about it and
 get feedback about you experience setting it up.
+
+If you want to be notified of new releases see the News section of the website
+or use Freshmeat: http://freshmeat.net/projects/werc/
 
 
 License
