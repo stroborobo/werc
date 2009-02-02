@@ -25,6 +25,7 @@ Here are some of the features provided by werc:
 * Applications can be easily combined: eg., add comments to your blog or wiki by enabling the 'bridge' app; or by enabling the 'diridir' wiki convert any document tree into a wiki.
 * Can easily write werc 'apps' and extensions in *any* language! (But of course, rc is recommended).
 
+
 Install Requirements
 --------------------
 
@@ -41,13 +42,15 @@ Werc uses markdown by default (and the standard Perl markdown is included with t
 system can be used.
 
 
-Development
------------
+Latest Source
+-------------
+
 To get a copy of the latest development code using mercurial, do:
 
 	hg clone http://gsoc.cat-v.org/hg/werc/
 
 You can also [browse the online repository](http://gsoc.cat-v.org/hg/werc/).
+
 
 Contact
 -------
