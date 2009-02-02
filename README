@@ -31,6 +31,9 @@ sites/example.com/_werc/config file inside the site's directory. To customize
 templates and included files you can store your own version of the files in
 lib/ under sites/example.com/_werc/lib
 
+The source tree for the werc website is included under sites/werc.cat-v.org as
+an example, feel free to use it as a template for your own site.
+
 For more details see the documentation section of the website:
 http://werc.cat-v.org/docs/
 
