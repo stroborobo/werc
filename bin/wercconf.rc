@@ -8,5 +8,5 @@ fn conf_perm_redirect {
 
 fn conf_hide_paths {
     for(i in $*)
-       dirfilter=$dirfilter^'/^'$i'$/d; '
+       dirfilter=$dirfilter^'/'^`{echo $i|sed 's!/!\\/!g'}^'/d; '
 }

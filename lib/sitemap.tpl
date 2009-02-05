@@ -9,6 +9,7 @@ fn getMdDesc {
     sed 's/^(.......................................................................................................[^ ]*).*$/\1/g; 1q' < $1 
 }
 
+# XXX Instead of recursion should use du(1) or similar.
 fn listDir {
     d=$1
     if(~ $#d 0)
