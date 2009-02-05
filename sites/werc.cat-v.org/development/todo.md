@@ -56,6 +56,7 @@ Future plans
 Known bugs
 ----------
 
+* Sitemap can handle $dirfilter inconsistently from other places.
 * Finding directories that are inaccessible (-rx) can generate an infinite loop (Works for me? Fixed with new menu code?)
 * Some cat-v.org bits still left over here and there, should make them configurable (1.0 blocker) (fixed?)
 
