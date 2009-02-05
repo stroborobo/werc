@@ -1,5 +1,5 @@
-Blagh - A Blogging engine for people who hates blogs
-====================================================
+Blagh - A Blogging engine for people who hate blogs
+===================================================
 
 Balgh is werc a werc app that implements a blogging engine.
 
