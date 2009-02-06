@@ -56,7 +56,7 @@ fn listDir {
     echo '</ul>'
 }
 
-fproc_cache.rc listDir $sitedir/
+fltr_cache listDir $sitedir/
 #listDir $sitedir/
 
 if(test -s $tmpfile)

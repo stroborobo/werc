@@ -3,6 +3,7 @@
 . ./werclib.rc
 . ./wercconf.rc
 . ./corehandlers.rc
+. ./fltr_cache.rc
 cd ..
 
 forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
@@ -105,7 +106,7 @@ fn werc_exec_request {
     if(! ~ $#debug 0)
         dprint $"SERVER_NAME^$"REQUEST_URI - $"HTTP_USER_AGENT - $"REQUEST_METHOD - $"handler_body_main - $"master_template
 
-    template $headers $master_template #| awk_buffer
+    template $headers $master_template | awk_buffer
     echo $res_tail
 }
 
