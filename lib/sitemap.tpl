@@ -2,7 +2,6 @@
 
 %{
 tmpfile=/tmp/werc_sitemap_$pid.txt
-echo '' > $tmpfile
 saveddf=$dirfilter
 
 fn get_md_title {
