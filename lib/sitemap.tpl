@@ -5,65 +5,61 @@ tmpfile=/tmp/werc_sitemap_$pid.txt
 echo '' > $tmpfile
 saveddf=$dirfilter
 
-fn getMdDesc {
-    sed 's/^(.......................................................................................................[^ ]*).*$/\1/g; 1q' < $1 
+fn get_md_title {
+    sed 's/^(................................................................[^ ]*).*$/\1/g; 1q' < $1 
 }
 
-# XXX Instead of recursion should use du(1) or similar.
+fn get_html_title {
+    # H1 is not reliable because htmlroff doesn't use it :(
+    #desc=`{cat $1 | sed 32q | grep '<[Hh]1>' | sed 's/<[Hh]1>(.*)(<\/[Hh]1>|$)/\1/;s/<[^>]*>//g;1q'}
+    # Pick the first line of body  instead
+    desc=`{sed -n '/<[Bb][Oo][Dd][Yy]/,/./s/(<[^>]*>|$)//gp' < $1}
+    if(~ $#desc 0)
+        desc=`{sed 's/<[^>]*>//g; 1q' < $1}
+}
+
+fn get_file_title {
+        
+    if(~ $1 */) {
+        if(test -f $1/index.md)
+            get_md_title $1/index.md
+        if not if(test -f $1/index.html)
+            get_html_title $1/index.html
+    }
+    if not if(~ $1 *.md)
+        get_md_title $1
+    if not if(~ $1 *.html)
+        get_html_title $1
+    if not
+        echo ''
+}
+
 fn listDir {
     d=$1
-    if(~ $#d 0)
-        d=''
     dirfilter=$saveddf
-    blogDirs=()
     if(test -f $d/_werc/config)
         . ./$d/_werc/config
 
     echo '<ul class="sitemap-list">'
 
-    # Don't hide blog dirs for now
-    #if(! ~ $#blogDirs 0 || ~ $1 */blog */Blog)
-    #    echo '' 
-    #if not 
-    if(! ~ $#redirectPermanent 1)
-    {
-
-    for(i in `{ls -dF $d^*/ $d^*.md $d^*.html $d^*.txt >[2]/dev/null | sed $dirfilter$dirclean}) {
-        desc=''
-        if(test -f $i.md)
-            desc=`{getMdDesc $i.md}
-        if not if(~ $i */ && test -f $i/index.md)
-            desc=`{getMdDesc $i/index.md}
-        if not if(test -f $i.html) {
-            # H1 is not reliable because htmlroff doesn't use it :(
-            #desc = `{cat $i.html |sed 32q | grep '<[Hh]1>' |sed 's/<[Hh]1>(.*)(<\/[Hh]1>|$)/\1/;s/<[^>]*>//g;1q'}
-            # Pick the first line of body  instead
-            desc=`{sed -n '/<[Bb][Oo][Dd][Yy]/,/./s/(<[^>]*>|$)//gp' < $i.html}
-            if(~ $#desc 0)
-                desc=`{sed 's/<[^>]*>//g; 1q' < $i.html}
-            #desc=`{/bin/sed -e '0,/<[Bb][Oo][Dd][Yy]/d;s/<[^>]*>//g;/^$/d' < $i.html >[2]/dev/null | sed 1q}
-        }
-
+    for(i in `{ls -dF $d^*/ $d^*.md $d^*.html $d^*.txt >[2]/dev/null | sed $dirfilter}) {
+        desc=`{get_file_title $i}
+        u=`{echo $i|sed 's!'$sitedir'!!; '$dirclean's!/index$!/!; '}
         if(! ~ $#desc 0 && ! ~ $desc '')
             desc=' - '$"desc
-        tit=`{echo /$i|sed 's/_/ /g; s,.*/([^/]+)/?$,\1,'}
-        echo '<li><a href="/'$i'">'^$"tit^'</a>' $"desc '</li>' 
-        echo -n $base_url^$i >> $tmpfile
-        if(test -d $i) {
-            echo / >> $tmpfile	
+        n=`{echo /$u|sed 's/_/ /g; s,.*/([^/]+)/?$,\1,'}
+        echo '<li><a href="'$base_url$u'">'^$"n^'</a>' $"desc '</li>' 
+        echo $base_url^$u >> $tmpfile
+        if(test -d $i)
             @{ listDir $i }
-        }
-        if not
-            echo >> $tmpfile
-    }
     }
     echo '</ul>'
 }
 
-cd $sitedir 
-listDir ''
+fproc_cache.rc listDir $sitedir/
+#listDir $sitedir/
 
-cp $tmpfile ./sitemap.txt
-rm $tmpfile
+if(test -s $tmpfile)
+    mv $tmpfile $sitedir/sitemap.txt &
 
 %}
