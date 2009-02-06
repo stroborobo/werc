@@ -1,19 +1,34 @@
 #!/usr/bin/env rc
 #. 9.rc # Not really needed when calling from werc, only would be needed if you use fproc_cache.rc standalone
-# TODO: Allow to provide two arguments, second arg is a file name, use filename+size+mtime for hashing.
-#    Useful when dealing with many big files (eg., thumb gallery generation).
+
+a=()
+tmpf=()
 
 proc=$1
-tmpfile=/tmp/fmttmp.$pid
-score=`{{tee $tmpfile || exit 1} | sha1sum}
+shift
 
+if(~ $#* 0) {
+    tmpf=/tmp/fmttmp.$pid
+    f=$tmpf
+    score=`{{tee $tmpf || exit 1} | sha1sum}
+}
+if not {
+    f=$1
+    if(~ $f */) {
+        score=`{du -an $f | sha1sum || exit 1} # XXX using -n(bytes) instead of -t(lastmod) because sitemap proc touches files in tree.
+        a=$f
+        f=/dev/null
+    }
+    if not
+        score=`{sha1sum $f || exit 1}
+}
 cachedir=/tmp/fproc_cache/$score
 mkdir -p $cachedir >[2]/dev/null
 
 if(test -s $cachedir/$proc)
     cat $cachedir/$proc
 if not
-    if($proc < $tmpfile | tee $cachedir/$pid)
+    if($proc $a < $f | tee $cachedir/$pid)
         mv $cachedir/$pid $cachedir/$proc
 
-rm $tmpfile $cachedir/$pid >[2]/dev/null &
+rm $tmpf $cachedir/$pid >[2]/dev/null &
