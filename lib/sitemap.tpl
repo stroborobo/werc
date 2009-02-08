@@ -56,7 +56,6 @@ fn listDir {
 }
 
 fltr_cache listDir $sitedir/
-#listDir $sitedir/
 
 if(test -s $tmpfile)
     mv $tmpfile $sitedir/sitemap.txt &

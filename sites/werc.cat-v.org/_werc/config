@@ -1,5 +1,6 @@
+masterSite=default.cat-v.org
 siteTitle='werc'
 siteSubTitle=' Bringing minimalism and sanity to the web'
 conf_enable_comments
-enabled_apps=($enabled_apps hello dirdir )
+conf_enable_wiki admin
 

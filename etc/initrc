@@ -25,7 +25,7 @@ formatter=(fltr_cache markdown.pl)
 debug=true
 
 # Globally enabled apps
-enabled_apps=( blagh )
+enabled_apps=( )
 
 # Default site variables, must be set in initrc.local or _werc/config, only siteTitle is required.
 #masterSite=cat-v.org # Not required!
