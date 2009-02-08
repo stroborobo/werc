@@ -3,6 +3,7 @@ fn conf_enable_blog {
     blagh_dirs=$*
     if(~ $#blagh_dirs 0)
         blagh_dirs=( . )
+    conf_enable_app blagh
 }
 
 fn blagh_init {

@@ -1,5 +1,12 @@
+fn conf_enable_wiki {
+    enable_wiki=yes
+    wiki_editors_group=$* 
+    conf_enable_app dirdir
+}
+
+
 fn dirdir_init {
-    if(! ~ $#enable_wiki 0 &&  check_user $wiki_editors_group admin) {
+    if(! ~ $#enable_wiki 0 && check_user $wiki_editors_group) {
         if(test -f $local_path.md)
             ll_add handlers_bar_left  dirdir_controls
 
