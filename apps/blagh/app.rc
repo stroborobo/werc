@@ -54,8 +54,13 @@ fn blagh_setup_feed_handlers {
 }
 
 fn blagh_body {
+    if (! ~ $"blogTitle '')
+        echo '<h1>'$"blogTitle'</h1>'
+
+    echo '<div style="text-align:right">(<a href="index.rss">RSS Feed</a>|<a href="index.atom">Atom Feed</a>)</div>'
+
     for(p in `{get_post_list $blagh_root^$blagh_dirs}) {
-        l=`{echo -n $p|sed 's!'$sitedir^$req_path'./([0-9]+/[0-9][0-9]/[0-9][0-9])(.*)!\1 ./\1\2!'}
+        l=`{echo -n $p|sed 's!'$sitedir^'/?(.*)([0-9]+/[0-9][0-9]/[0-9][0-9])(/[^/]+/)!\2 /\1\2\3!'}
         sed '1s!.*![&]('^$l(2)^') ('^$l(1)^')!' < $p/index.md 
     } | $formatter 
 }
