@@ -17,8 +17,12 @@ fn blagh_init {
     # && test -d / `{echo '-a -d '^$blagh_root^$blagh_dirs}
         blagh_url=$base_url^$blagh_uri
         blagh_root=$sitedir^$blagh_uri
-        if(check_user $blog_editors admin) {
+        if(check_user $blog_editors blog-editors) {
             editor_mode=on
+            if(~ $"post_arg_date '')
+                post_date=`{/bin/date +%F|sed 's,-,/,g'}
+            if not
+                post_date=$post_arg_date
             ll_add handlers_bar_left echo '<a href="'$blagh_uri'new_post">Make a new post</a>'
         }
 
@@ -35,11 +39,12 @@ fn blagh_init {
             blagh_setup_feed_handlers rss20.tpl
         case $blagh_uri^new_post 
             if(! ~ $#editor_mode 0) {
-                if(~ $REQUEST_METHOD GET)
-                    handler_body_main=( tpl_handler `{get_lib_file blagh/new_post.tpl apps/blagh/new_post.tpl} )
-                if not if(~ $REQUEST_METHOD POST) {
-                    mkbpost $post_arg_id $post_arg_title $post_arg_body
-                    post_redirect $blagh_uri
+                handler_body_main=( tpl_handler `{get_lib_file blagh/new_post.tpl apps/blagh/new_post.tpl} )
+                if(~ $REQUEST_METHOD POST) {
+                    if(mkbpost $"post_arg_body $"post_date $"post_arg_title $post_arg_id)
+                        post_redirect $blagh_uri
+                    if not
+                        notify_errors=$status
                 }
             }
         }
@@ -73,21 +78,30 @@ fn get_post_list {
 }
 
 fn mkbpost {
-    if(! ~ 0 $#1 $#2) {
+    bptext=$1
+    bpdate=$2
+    bptitle=$3
+    bpid=$4
+    _status=()
+    if(~ $"bptext '')
+        _status=($_status 'You need to provide a post body.')
+    if(! ~ $"bpdate [0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9])
+        _status=($_status 'Invalid date: '''^$"bpdate^'''') # XXX Should make semantic check.
+
+    if(~ $#_status 0) {
         umask 002 # Let group write
-        bptitle=$1
-        bptext=$2
-        if(! ~ $#3 0)
-            bpid=`{echo -n '-'^$"bpid | sed 's/'$forbidden_uri_chars'+/_/g; 1q'}
-        d=`{/bin/date +%F|sed 's,-,/,g'}
+        if(! ~ $"bpid '')
+            bpid=`{echo -n '-'^$bpid | sed 's/'$forbidden_uri_chars'+/_/g; 1q'}
         
-        ddir=$blagh_root^$d^'/'
+        ddir=$blagh_root^$bpdate^'/'
         n=`{ls $ddir >[2]/dev/null |wc -l}
         
         mkdir -p $ddir/$"n^$"bpid/
         {
-            echo $bptitle
-            echo '========================================='
+            if(! ~ $"bptitle '') {
+                echo $bptitle
+                echo '========================================='
+            }
             # TODO: Enable metadata
             #echo '* Posted:' `{date}
             #if(! ~ $#logged_user 0)
@@ -96,6 +110,5 @@ fn mkbpost {
             echo $bptext
         }> $ddir/$"n^$"bpid/index.md 
     }
-    if not
-        status=Missing blog post arguments $"1 $"2
+    status=$_status
 }
