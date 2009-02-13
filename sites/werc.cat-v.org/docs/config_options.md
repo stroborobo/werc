@@ -12,9 +12,9 @@ Variables:
     * siteSubTitle
 
 * Html header meta tags:
-    * meta_description
-    * meta_keywords
-    * extraHeaders  - Raw extra headers.
+    * meta_description - `<meta name="description" ...`
+    * meta_keywords - `<meta name="keywords" ...`
+    * extraHeaders  - Raw extra html headers, the content of this var will be inserted inside the `<head>` tag..
 
 
 Sidebar and navigation
@@ -26,7 +26,7 @@ Variables:
 
 Functions:
 
-* `conf_hide_paths [paths_patterns ...]` - Hide the given patterns from navigation menu, sitemap and dir listing (do *not* depend on this for securty!).
+* `conf_hide_paths [path_patterns ...]` - Hide the given patterns from navigation menu, sitemap and dir listing (do *not* depend on this for securty!).
 
 Http control
 ------------
