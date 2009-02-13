@@ -3,53 +3,62 @@
 path=( $PLAN9/bin  $path )
 base=.
 
-fn die {
-	echo error: $* >[1=2]
-	exit 1
-}
-
-if(~ $#* 0)
-    die 'Missing title'
-
 if(~ $#user 0)
-	user=`{whoami}
+    user=`{whoami}
 
 file=(); title=();
 bloguser=$user
 while(! ~ $#* 0) {
-	switch($1) {
-	case -u
+    switch($1) {
+    case -u
         base=/gsoc/www/people/$user/blog/
-		shift
-	case *
-		title=$"*
-	}
+    case -b
+	shift
+        base=$1
+    case -f
+	shift
+        file=$1
+    }
     shift
 }
 
-date=`{/bin/date +%F}
+if(~ $"EDITOR '')
+    EDITOR=vi
 
-n=1
-for(f in $base/$date-*) {
-	i=`{echo $f | sed -n 's|^.*/'$date'-([0-9]+)_.*|\1|p'}
-	if(! ~ $#i 0 && test $i -ge $n)
-		n=`{hoc -e $i'+1'}
+if(~ $#file 0 || ! test -f $file) {
+    file=/tmp/blogtmp.$pid
+    rm $file >[2]/dev/null
+    touch $file
 }
 
-if(~ $EDITOR '')
-	EDITOR=vi
-
-file=$home/.blogtmp.$pid
-rm $file >[2]/dev/null
-touch $file
 $EDITOR $file
 ispell $file
 rm $file.bak >[2]/dev/null
 
+fn mkbpost {
+        umask 002 # Let group write
+        bptext=$1
+        if(! ~ $#2 0)
+            bpid=`{echo -n '-'^$"bpid | sed 's/'$forbidden_uri_chars'+/_/g; 1q'}
+        d=`{/bin/date +%F|sed 's,-,/,g'}
+        
+        ddir=$blagh_root^$d^'/'
+        n=`{ls $ddir >[2]/dev/null |wc -l}
+        
+        mkdir -p $ddir/$"n^$"bpid/
+        {
+            # TODO: Enable metadata
+            #echo '* Posted:' `{date}
+            #if(! ~ $#logged_user 0)
+            #   echo '* Author: '$logged_user
+            cat $bptext 
+        }> $ddir/$"n^$"bpid/index.md 
+}
 
-title = `{ echo $"title | sed 's/ /_/g' }
+forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
+blagh_root=$base
 
-title = `{echo $"title | sed 's/[ 	]+/_/g; 1q'}
-
-mv $file $base/$"date^'-'^$"n^_$"title.md
-
+if(test -s $file)
+    mkbpost $file
+if not
+    echo Empty file!
