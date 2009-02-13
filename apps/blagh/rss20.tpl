@@ -7,7 +7,8 @@ fn statpost {
 	f = $1
 
 	post_uri = `{echo $f | sed 's,^'$sitedir',,'}
-	title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+	#title=`{basename $f | sed 's/^[0-9\-]*_(.*)\.md$/\1/; s/_/ /g' }
+        title=`{read $f/index.md}
 	date=`{/bin/date -Rd `{echo $f|sed 's,.*/([0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9])/.*,\1,'}}
 	# TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
 	stat=`{stat -c '%Y %U' $f}
