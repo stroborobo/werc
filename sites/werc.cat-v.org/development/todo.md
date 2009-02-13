@@ -1,26 +1,21 @@
 Plans and ideas for the future
 ==============================
 
-* Review ideas from: http://www.w3.org/TR/chips/ and http://www.w3.org/Provider/Style/URI and see if we can do better
+* Review ideas from: http://www.w3.org/TR/chips/ and http://www.w3.org/Provider/Style/URI and see if we can do better.
 * Canonize and redirect all requests, we already do this for things like missing or trailing /, should do the same for /. and /./, etc. Deleting trailing . and , should make pasted urls in emails work as links.
-
 * Blog:
 	* Comment threading.
 	* Some form of pagination (taking advantage of history browsing.)
-
 * Sitemaps:
 	* Index pages should be used for description of directories.
-	* Cache web sitemap generation.
-
+	* Cache web sitemap generation. (**done**)
 * Layout improvements:
 	* Need to find a way to rig the order of items in the sidebar.
 	* Right sidebar.
 	* Make it easier to disable all sidebars and headers/footers, eg., for full screen mode.
 	* More testing and optimizations for movile browsers, eg., http://www.operamini.com/demo/ Left sidebar had some minor issues in cellphones at some poitn.
-
 * Better page titles (include whole path hierarchy?)
 * Allow utf-8 characters in path elements (need to make sure this is safe, and not sure how useful it will be)
-
 * General code:
 	* Write a regression test suite
 	* Replace all references to non p9p/p9 programs (done?)
@@ -56,9 +51,6 @@ Future plans
 Known bugs
 ----------
 
-* Sitemap can handle $dirfilter inconsistently from other places.
+* Sitemap can handle $dirfilter inconsistently from other places (**fixed**).
 * Finding directories that are inaccessible (-rx) can generate an infinite loop (Works for me? Fixed with new menu code?)
-* Some cat-v.org bits still left over here and there, should make them configurable (1.0 blocker) (fixed?)
-
-
-
+* Some cat-v.org bits still left over here and there, should make them configurable (1.0 blocker) (**fixed**?)
