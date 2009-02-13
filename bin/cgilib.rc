@@ -160,16 +160,21 @@ fn ll_add {
 NEW_LINE='
 '
 
+# crop_text [max_lenght [ellipsis]] 
+# TODO: Option to crop only at word-delimiters.
 fn crop_text {
-    ellipsis='...'
-    if(~ $#* 2)
-        ellipsis=$2
+    m=512
+    e='...'
+    if(! ~ $#1 0)
+        m=$1
+    if(! ~ $#2 0)
+        e=$2
 
-    awk -v max'='^$"1^' ' -v 'ellipsis='$ellipsis '
+    awk -v 'max='^$"m -v 'ellipsis='$e '
     {
         nc += 1 + length;
         if(nc > max) {
-            print substr($0, 1, nc - max) ellipsis
+            print substr($0, 1, nc - max) " " ellipsis
             exit
         }
         print
