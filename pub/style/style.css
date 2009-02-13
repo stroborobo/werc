@@ -60,6 +60,7 @@ body {
 #headerSubTitle {
   font-size: 50%;
   font-style: italic;
+  margin-left: 1em;
 }
 
 .headerTitle a {
