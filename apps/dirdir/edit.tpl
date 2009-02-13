@@ -3,7 +3,7 @@
     <h1>Editing %($edit_wiki_page%)</h1>
     <br />
     <form action="dirdir_edit" method="post">
-        <input type="hidden" name="edit_wiki_page" value="%($edit_wiki_page%)"
+        <input type="hidden" name="edit_wiki_page" value="%($edit_wiki_page%)">
         <textarea name="edit_text" id="edit_text" cols="80" rows="43">%{
 
             if(~ $#edit_text 0 && test -f $edit_file)
