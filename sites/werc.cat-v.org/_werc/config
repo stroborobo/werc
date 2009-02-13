@@ -1,6 +1,6 @@
 masterSite=default.cat-v.org
 siteTitle='werc'
-siteSubTitle=' Bringing minimalism and sanity to the web'
+siteSubTitle='Bringing minimalism and sanity to the web'
 conf_enable_comments
 conf_enable_wiki admin
 
