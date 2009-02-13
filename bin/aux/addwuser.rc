@@ -10,7 +10,7 @@ fn usage {
     exit usage
 }
 
-if(! test -d etc/users/
+if(! test -d etc/users/)
     usage 'Run for root of werc installation or set $werc_root'
 
 user_name=$1
