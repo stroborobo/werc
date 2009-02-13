@@ -50,6 +50,7 @@ fn blagh_init {
 fn blagh_setup_feed_handlers {
     handler_body_main=NOT_USED_by_blagh_feeds
     res_tail=()
+    headers=()
     master_template=apps/blagh/$1 # Should we allow tempalte override?
 }
 
