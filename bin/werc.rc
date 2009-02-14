@@ -81,6 +81,8 @@ fn werc_exec_request {
     }
     cd $werc_root
 
+    if(~ $#perm_redir_to 1)
+        perm_redirect $perm_redir_to
     f=();t=()
     for(i in $perm_redir_patterns) {
         if(~ $#f 0)

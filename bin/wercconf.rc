@@ -1,9 +1,11 @@
 # To be used from config files
 fn conf_perm_redirect {
     if(~ $#* 1)
-        perm_redirect $1
-    if not
+        perm_redir_to=$1
+    if not {
         perm_redir_patterns=($perm_redir_patterns $1 $2)
+        conf_hide_paths $1 # XXX Will hide paths even if replacement string is the same as matched sctring.
+    }
 }
 
 fn conf_hide_paths {
