@@ -10,7 +10,7 @@ forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
 
 # Expected input: ls -F style, $sitedir/path/to/files/
 #          <ls -F+x><symlink hack><Useless?><hiden files  >
-dirfilter='s/\*$//; s,/+\./+,/,g; s,^\./,,; /\/[._][^\/]/d; /'$forbidden_uri_chars'/d; /^\/(robots|sitemap)\.txt$|\/index\.(md|html|txt|tpl)$/d; /_werc\/?$/d; '
+dirfilter='s/\*$//; s,/+\./+,/,g; s,^\./,,; /\/[._][^\/]/d; /'$forbidden_uri_chars'/d; /\/index\.(md|html|txt|tpl)$/d; /\/(robots|sitemap)\.txt$/d; /_werc\/?$/d; '
 dirclean=' s/\.(md|html|txt)$//; '
 
 # Careful, the proper p9p path might not be set until initrc.local is sourced
