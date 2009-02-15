@@ -2,8 +2,8 @@ Content-Type: application/atom+xml
 
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- TODO: See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS  -->
 %{
+# See for more info:http://www.tbray.org/ongoing/When/200x/2005/07/27/Atomic-RSS
 fn statpost {
     f = $1
 
@@ -15,7 +15,8 @@ fn statpost {
     stat=`{stat -c '%Y %U' $f}
     #mdate=`{/bin/date -Rd `{mtime $f|awk '{print $1}' }} # Not used because it is unreliable
     by=$stat(2)
-    ifs=() { summary=`{cat $f/index.md | crop_text 512 ... | $formatter } }
+    #ifs=() { summary=`{cat $f/index.md | crop_text 1024 ... | $formatter } }
+    ifs=() { summary=`{cat $f/index.md | $formatter } }
 }
 updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'} 
 %}
@@ -30,23 +31,20 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
     <title>%($siteTitle%)</title>
     <subtitle>%($siteSubTitle%)</subtitle>
 
-    <!-- <updated>2008-09-24T12:47:00-04:00</updated> -->
+% # <updated>2008-09-24T12:47:00-04:00</updated>
     <updated>%($updated%)</updated>
     <link href="."/>
 
-%{
-        for(f in `{get_post_list $blagh_root$blagh_dirs}) {
-            statpost $f
-%}
+% for(f in `{get_post_list $blagh_root$blagh_dirs}) {
+%    statpost $f
+
     <entry>
-        <!-- Maybe we should be smarter, see: http://diveintomark.org/archives/2004/05/28/howto-atom-id, example: <id>tag:intertwingly.net,2004:2899</id>  -->
+% # Maybe we should be smarter, see: http://diveintomark.org/archives/2004/05/28/howto-atom-id, example: <id>tag:intertwingly.net,2004:2899</id>
         <id>%($post_uri%)</id>
         <link href="%($post_uri%)"/>
         <title>%($title%)</title>
-        <!-- <link rel="replies" href="2899.atom" thr:count="0"/> -->
-        <author>
-            <name>%($by%)</name>
-        </author>
+% # <link rel="replies" href="2899.atom" thr:count="0"/>
+        <author><name>%($by%)</name></author>
 
 
         <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
@@ -56,8 +54,7 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
         <updated>%($updated%)</updated>
     </entry>
 
-
-%        }
+% }
 
 </feed>
 
