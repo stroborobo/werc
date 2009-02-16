@@ -26,26 +26,26 @@ fn blagh_init {
             ll_add handlers_bar_left echo '<a href="'$blagh_uri'new_post">Make a new post</a>'
         }
 
-        switch($req_path) {
-        case $blagh_uri
+        if(~ $req_path $blagh_uri) {
             handler_body_main=blagh_body
             u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
 '<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />
 <link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
-        case $blagh_uri^index.atom
+        }
+        if not if(~ $req_path $blagh_uri^index.atom)
             blagh_setup_feed_handlers atom.tpl
-        case $blagh_uri^index.rss
+
+        if not if(~ $req_path $blagh_uri^index.rss)
             blagh_setup_feed_handlers rss20.tpl
-        case $blagh_uri^new_post 
-            if(! ~ $#editor_mode 0) {
-                handler_body_main=( tpl_handler `{get_lib_file blagh/new_post.tpl apps/blagh/new_post.tpl} )
-                if(~ $REQUEST_METHOD POST) {
-                    if(mkbpost $"post_arg_body $"post_date $"post_arg_title $post_arg_id)
-                        post_redirect $blagh_uri
-                    if not
-                        notify_errors=$status
-                }
+
+        if not if(~ $req_path $blagh_uri^new_post && ! ~ $#editor_mode 0) {
+            handler_body_main=( tpl_handler `{get_lib_file blagh/new_post.tpl apps/blagh/new_post.tpl} )
+            if(~ $REQUEST_METHOD POST) {
+                if(mkbpost $"post_arg_body $"post_date $"post_arg_title $post_arg_id)
+                    post_redirect $blagh_uri
+                if not
+                    notify_errors=$status
             }
         }
         
