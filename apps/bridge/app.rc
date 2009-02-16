@@ -13,18 +13,21 @@ fn conf_enable_comments {
 fn bridge_init {
     if(~ $#enable_comments 1) {
     
-        cdir=$sitedir$req_path'_werc/comments'
-        if(test -d $cdir)
-            ll_add handlers_body_foot display_comments $cdir
+        comments_dir=$sitedir$req_path'_werc/comments'
+        if(test -d $comments_dir)
+            ll_add handlers_body_foot template apps/bridge/comments_list.tpl
 
         if({ check_user $groups_allowed_comments || {~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0} } && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
             ll_add handlers_body_foot template apps/bridge/foot.tpl
 
-            if(~ $REQUEST_METHOD POST && mk_new_comment $cdir)
+            if(~ $REQUEST_METHOD POST && mk_new_comment $comments_dir)
                 post_redirect $base_url^$post_arg_document_uri
             if not
                 saved_comment_text=$post_arg_comment_text
         }
+        if not
+            ll_add handlers_body_foot echo '<p>To post a comment you need to <a href="/_users/login">login</a> first.'
+        
     }
 }
 
@@ -53,7 +56,7 @@ fn mk_new_comment {
         if(! ~ $#allow_new_user_comments 0) {
             if(validate_new_user $"post_arg_comment_user $post_arg_comment_passwd $post_arg_comment_passwd2) {
                 u=$post_arg_comment_user':'$post_arg_comment_passwd
-                dir=$cdir^'_pending'
+                dir=$comments_dir^'_pending'
                 # XXX: This doesn't work because we then do a redirect. 
                 notify_notes='Saved comment and registration info, they will be enabled when approved by an admin.'
             }
@@ -84,16 +87,4 @@ fn mk_new_comment {
     }
     notify_errors=$_status
     status=$_status
-}
-
-fn display_comments {
-    echo '<hr /><h2>Comments</h2>'
-
-    for(c in `{ls $*/}) {
-        if(test -s $c/body) {
-            ifs=() { echo '<div class="comment"><h5>By: <i>'`{cat $c/user}'</i></b> ('`{cat $c/posted}')</h5>'}
-            cat $c/body | escape_html | sed 's,$,<br />,'
-            echo '<hr /></div>'
-        }
-     }
 }
