@@ -23,6 +23,7 @@ fn post_redirect { http_redirect $1 '303 See Other' }
 
 
 # Note: should check if content type is application/x-www-form-urlencoded?
+# Should compare with http://www.shelldorado.com/scripts/cmds/urlgetopt.txt
 fn load_post_args {
     if(~ $REQUEST_METHOD POST && ~ $#post_args 0) {
         ifs='&
