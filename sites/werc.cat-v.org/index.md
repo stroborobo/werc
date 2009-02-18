@@ -64,7 +64,7 @@ Links
 -----
 
 * [werc project at freshmeat](http://freshmeat.net/projects/werc/) - You can get new release notifications there.
-
+* [werc project at ohloh](https://www.ohloh.net/p/werc/)
 
 License
 -------
