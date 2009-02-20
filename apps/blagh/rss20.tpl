@@ -13,7 +13,7 @@ fn statpost {
     # TODO: use mtime(1) and ls(1) instead of lunix's stat(1)
     stat=`{stat -c '%Y %U' $f}
     #mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
-    post_uri=$base_url^`{cleanname `{echo -n $post_uri | sed 's/\.(md|tpl)//g'}}
+    post_uri=$base_url^`{cleanname `{echo $f | sed -e 's!^'$sitedir'!!'}}^'/'
     by=$stat(2)
     ifs=() { summary=`{cat $f/index.md | $formatter | escape_html} }
 }
