@@ -89,6 +89,7 @@ fn werc_exec_request {
             f=$i
         if not {
             t=$i
+            # TODO: should handle absolute and relative urls differently.
             from=$base_url^$req_path
             to=`{ echo $from | sed 's!'$f'!'$t'!' }
             if(! ~ $to $from)
