@@ -6,7 +6,7 @@ fn nav_tree {
     # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
     # /./ to deal with p9p's ls failure to follow dir symlinks otherwise
     ls -F $sitedir/./$req_paths_list >[2]/dev/null \
-        | sed 's!^'$sitedir'!!; '$dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; '$dirclean \
+        | sed $dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; s!^'$sitedir'!!; '$dirclean \
         | sort -u | awk -F/ ' 
     function p(x, y, s) { for(i=0; i < x-y; i+=1) print s }
     { 
