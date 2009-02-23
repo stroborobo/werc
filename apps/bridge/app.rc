@@ -26,7 +26,7 @@ fn bridge_init {
                 saved_comment_text=$post_arg_comment_text
         }
         if not
-            ll_add handlers_body_foot echo '<p>To post a comment you need to <a href="/_users/login">login</a> first.'
+            ll_add handlers_body_foot echo '<hr /><p>To post a comment you need to <a href="/_users/login">login</a> first.'
         
     }
 }
