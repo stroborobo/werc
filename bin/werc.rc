@@ -6,7 +6,7 @@
 . ./fltr_cache.rc
 cd ..
 
-forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.]'
+forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.,:]'
 
 # Expected input: ls -F style, $sitedir/path/to/files/
 #          <ls -F+x><symlink hack><Useless?><hiden files  >
@@ -58,8 +58,10 @@ fn werc_exec_request {
         if not # XXX: This redir might step on apps with synthetic dirs.
             perm_redirect `{echo $req_path|sed 's,/+$,,'}
     }
+    if not if(~ $req_path *'.' *',' *';' *':')
+        perm_redirect `{echo $req_path | sed 's/[.,;:)]$//'}
     if not if(test -d $local_path)
-        perm_redirect $base_url^$req_path^'/'
+        perm_redirect $req_path^'/'
 
     if(! ~ $#args 0)
         pageTitle=`{ echo $args|sed -e 's/ / - /g' -e 's/_/ /g' }
