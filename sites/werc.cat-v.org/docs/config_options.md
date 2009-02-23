@@ -26,7 +26,7 @@ Variables:
 
 Functions:
 
-* `conf_hide_paths [path_patterns ...]` - Hide the given patterns from navigation menu, sitemap and dir listing (do *not* depend on this for securty!).
+* `conf_hide_paths [path_patterns ...]` - Hide the given patterns from navigation menu, sitemap and dir listing (do *not* depend on this for security!).
 
 Http control
 ------------
@@ -40,4 +40,12 @@ Functions:
 * `conf_perm_redirect [pattern] destination` - If pattern is provided, match it against the requested url, and replace the match with `destination`; ie., *s/pattern/destination/.
 
 
+Access Control and Permissions
+------------------------------
 
+The permissions system is very flexible, for example to only allow access to members of the group 'editors' you can do something like:
+
+    if(! check_user editors)
+        perm_redirect /_users/login
+
+See also [the documentation on user and group management](user_management).
