@@ -4,7 +4,7 @@ body {
   color: black;
   background-color: white;
   font-family: verdana, helvetica, arial, sans-serif;
-  font-size: 88%;  /* Enables font size scaling in MSIE */
+  font-size: 84%;  /* Enables font size scaling in MSIE */
   margin: 0;
   padding: 0;
 }
@@ -15,6 +15,10 @@ body {
   color: white;
   background-color: rgb(100,135,220);
   height: 2em;
+}
+
+.superHeader img {
+  vertical-align: bottom;
 }
 
 .superHeader a {
