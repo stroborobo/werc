@@ -20,7 +20,12 @@ Instructions:
 
 Untar, configure httpd to use bin/werc.rc as a cgi-script, and create a
 directory for your web site under sites/ where you can start to add content
-right away. 
+right away.
+
+If you will want to allow updates via the web interface (eg., for wiki or
+comments apps) make sure all files under sites/ are writable by the user your
+cgi will run as, usually www-data, for example by doing: chown -R :www-data
+sites/; chmod -R g+w sites/
 
 If your Plan 9 from User Space installation is located somewhere else than the
 standard /usr/local/plan9/ you will need to edit the first line of bin/werc.rc
