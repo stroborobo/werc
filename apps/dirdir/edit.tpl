@@ -1,15 +1,15 @@
-% if (~ $"edit_save '') {
+% if(~ $"edit_save '') {
 <div>
     <h1>Editing %($edit_wiki_page%)</h1>
     <br />
     <form action="dirdir_edit" method="post">
         <input type="hidden" name="edit_wiki_page" value="%($edit_wiki_page%)">
         <textarea name="edit_text" id="edit_text" cols="80" rows="43">%{
-
+# FIXME Extra trailing new lines get added to the content somehow, should avoid it.
             if(~ $#edit_text 0 && test -f $edit_file)
                 cat $edit_file | escape_html
             if not
-                echo $edit_text | escape_html
+                echo -n $edit_text | escape_html
 
         %}</textarea>
         <br />
@@ -37,10 +37,10 @@
     dirdir_verdir = $dirdir_dir/`{date -n}^/
     mkdir $dirdir_verdir
 
-    echo $loggin_user > $dirdir_verdir/author
+    echo $logged_user > $dirdir_verdir/author
     echo $edit_text > $dirdir_verdir/data 
     echo $edit_text > $edit_file
 %}
-<h1>Saved <a href="%($edit_wiki_page%)">%($edit_wiki_page%)!</a></h1>
+<h1>Saved <a href="%($edit_wiki_page%)">%($edit_wiki_page%)</a>!</h1>
 % }
 
