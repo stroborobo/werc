@@ -15,7 +15,7 @@ fn nav_tree {
             d = "/"
         sub("/$", "") # Strip trailing / for dirs so NF is consistent 
 
-        p(NF, lNF, "<ul class=\"side-bar\">")
+        p(NF, lNF, "<ul>")
         p(lNF, NF, "</ul>")
         lNF = NF
 
