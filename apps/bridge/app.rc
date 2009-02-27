@@ -11,23 +11,27 @@ fn conf_enable_comments {
 }
 
 fn bridge_init {
-    if(~ $#enable_comments 1) {
-    
+    if(~ $#enable_comments 1 && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
+
         comments_dir=$sitedir$req_path'_werc/comments'
-        if(test -d $comments_dir)
+        if(~ $REQUEST_METHOD GET && test -d $comments_dir)
             ll_add handlers_body_foot template apps/bridge/comments_list.tpl
 
-        if({ check_user $groups_allowed_comments || {~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0} } && ! ~ `{ls $local_path.$comment_file_types >[2]/dev/null|wc -l} 0) {
-            ll_add handlers_body_foot template apps/bridge/foot.tpl
+        if(check_user $groups_allowed_comments || {~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0}) {
 
-            if(~ $REQUEST_METHOD POST && mk_new_comment $comments_dir)
-                post_redirect $base_url^$post_arg_document_uri
-            if not
-                saved_comment_text=$post_arg_comment_text
+            if(~ $#post_arg_bridge_post 1) {
+                ll_add handlers_body_foot template apps/bridge/foot.tpl
+
+                if(mk_new_comment $comments_dir)
+                    post_redirect $base_url^$req_path
+                if not
+                    saved_comment_text=$post_arg_comment_text
+            }
+            if not if(~ $REQUEST_METHOD GET)
+                ll_add handlers_body_foot template apps/bridge/foot.tpl
         }
-        if not
+        if not if(~ $REQUEST_METHOD GET)
             ll_add handlers_body_foot echo '<hr /><p>To post a comment you need to <a href="/_users/login">login</a> first.'
-        
     }
 }
 

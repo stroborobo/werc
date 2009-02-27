@@ -1,46 +1,25 @@
-% if(~ $"edit_save '') {
 <div>
-    <h1>Editing %($edit_wiki_page%)</h1>
+    <h1>Editing: <a href="%($req_path%)">%($req_path%)</a></h1>
     <br />
-    <form action="dirdir_edit" method="post">
-        <input type="hidden" name="edit_wiki_page" value="%($edit_wiki_page%)">
+    <form action="" method="post">
         <textarea name="edit_text" id="edit_text" cols="80" rows="43">%{
 # FIXME Extra trailing new lines get added to the content somehow, should avoid it.
-            if(~ $#edit_text 0 && test -f $edit_file)
-                cat $edit_file | escape_html
+            if(~ $#post_arg_edit_text 0 && test -f $dirdir_file)
+                cat $dirdir_file | escape_html
             if not
-                echo -n $edit_text | escape_html
+                echo -n $post_arg_edit_text | escape_html
 
         %}</textarea>
         <br />
-        <input type="submit" name="edit_save" value="Save"/>
-        <input type="submit" name="edit_preview" value="Preview" />
+        <input type="submit" name="dirdir_save" value="Save"/>
+        <input type="submit" name="dirdir_preview" value="Preview" />
         <small>DirDir documents are written using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a>.</small>
     </form>
 </div>
-% }
 
-% if(! ~ $"edit_preview '') {
+% if(! ~ $"post_arg_dirdir_preview '') {
             <H2>Preview:</H2>
             <div id="preview">
-%               echo $edit_text | $formatter
+%               echo $post_arg_edit_text | $formatter
             </div>
-            <hr /><hr />
 % }
-% if not if(! ~ $"edit_save '') {
-%{
-    dirdir_dir = $edit_file^'_werc/dirdir/'
-
-    if(! test -d  $dirdir_dir)
-        mkdir -p $dirdir_dir
-
-    dirdir_verdir = $dirdir_dir/`{date -n}^/
-    mkdir $dirdir_verdir
-
-    echo $logged_user > $dirdir_verdir/author
-    echo $edit_text > $dirdir_verdir/data 
-    echo $edit_text > $edit_file
-%}
-<h1>Saved <a href="%($edit_wiki_page%)">%($edit_wiki_page%)</a>!</h1>
-% }
-

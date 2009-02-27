@@ -1,12 +1,10 @@
 <hr />
 
 % notices_handler
-% # XXX should post to bridge_post or similar
 <form action="" method="post">
     <textarea name="comment_text" id="comment_text" cols="80" rows="16">%($"saved_comment_text%)</textarea>
     <br />
-    <input type="hidden" name="document_uri" value="%($req_path%)" />
-    <input type="submit" name="post_comment" value="Post a comment" />
+    <input type="submit" name="bridge_post" value="Post a comment" />
 
 % if(~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0) {
     <label>New user name:
