@@ -26,6 +26,8 @@ mkdir etc/users/$user_name
 echo $user_pass > etc/users/$user_name/password
 
 if(! ~ $#user_groups 0)
-    for(g in $user_groups)
-        echo $user_name >> etc/groups/$g
+    for(g in $user_groups) {
+        mkdir -p etc/users/$g
+        echo $user_name >> etc/users/$g/members
+    }
   

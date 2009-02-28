@@ -29,8 +29,8 @@ fn check_user {
     _status=$status
     if(! ~ $"_status '')
         _status=(Not logged in: $"_status)
-    if not if(! ~ $#* 0 && ! grep -s '^'^$logged_user^'$' etc/groups/$* etc/groups/admin)
-        _status=(User $logged_user not in groups $*)
+    if not if(! ~ $#* 0 && ! ~ $logged_user $* && ! grep -s '^'^$logged_user^'$' etc/users/$*/members etc/users/admin/members >[2]/dev/null)
+        _status=(User $logged_user not in: $*)
     status=$_status
 }
 
