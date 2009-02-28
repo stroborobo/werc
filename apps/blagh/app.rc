@@ -5,6 +5,7 @@ fn conf_enable_blog {
         blagh_dirs=( . )
     conf_enable_app blagh
 }
+conf_blog_editors=blog-editors
 
 fn blagh_init {
     if(~ $#blagh_dirs 0 && ~ $req_path */[bB]log/*) {
@@ -17,7 +18,7 @@ fn blagh_init {
     # && test -d / `{echo '-a -d '^$blagh_root^$blagh_dirs}
         blagh_url=$base_url^$blagh_uri
         blagh_root=$sitedir^$blagh_uri
-        if(check_user $blog_editors blog-editors) {
+        if(check_user $conf_blog_editors) {
             editor_mode=on
             if(~ $"post_arg_date '')
                 post_date=`{/bin/date +%F|sed 's,-,/,g'}
