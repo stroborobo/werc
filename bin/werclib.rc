@@ -68,7 +68,7 @@ fn auth_user {
         status=('Auth: missing user name or pass: '^$"user_name^' / '^$"user_password)
     if not if(! test -f $pfile)
         status=('Auth: cant find '^$pfile)
-    if not if(! ~ $user_password `{cat $pfile})
+    if not if(! test -s $pfile || ! ~ $user_password `{cat $pfile})
         status=('Auth: Pass '$user_password' doesnt match '^`{cat $pfile})
     if not {
         logged_user=$user_name
