@@ -7,6 +7,7 @@
 cd ..
 
 forbidden_uri_chars='[^a-zA-Z0-9_+\-\/\.,:]'
+difs=$ifs # Used to restore default ifs when needed 
 
 # Expected input: ls -F style, $sitedir/path/to/files/
 #          <ls -F+x><symlink hack><Useless?><hiden files  >

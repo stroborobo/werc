@@ -45,7 +45,7 @@ fn get_user {
             get_post_args user_name user_password
 
         if(~ $#user_name 0) { 
-            ifs=':' { cu=`{get_cookie werc_user|tr -d $NEW_LINE} }
+            ifs=':' { cu=`{ifs=$difs {get_cookie werc_user} | tr -d $NEW_LINE} }
             if(! ~ $#cu 0) {
                 user_name=$cu(1) 
                 user_password=$cu(3)

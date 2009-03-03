@@ -15,7 +15,7 @@ fn statpost {
     #mdate=`{/bin/date -Rd $stat(1)} # Not used because it is unreliable
     post_uri=$base_url^`{cleanname `{echo $f | sed -e 's!^'$sitedir'!!'}}^'/'
     by=$stat(2)
-    ifs=() { summary=`{cat $f/index.md | $formatter | escape_html} }
+    ifs=() {summary=`{ cat $f/index.md | ifs=$difs {$formatter | escape_html} }}
 }
 
 %}
