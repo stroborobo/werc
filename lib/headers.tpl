@@ -1,5 +1,7 @@
 % for(h in $extraHttpHeaders) echo $h
 Content-Type: text/html
+% if(~ $REQUEST_METHOD HEAD)
+%   exit
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
