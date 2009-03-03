@@ -40,6 +40,7 @@ fn werc_exec_request {
 
     # Note: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto
     req_path=`{echo -n $REQUEST_URI | sed 's/\?.*//; s!//+!/!g; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
+    req_url=$base_url^$req_path
     local_path=$sitedir$req_path
     ifs='/' { args=`{echo -n $req_path} }
 
@@ -85,18 +86,19 @@ fn werc_exec_request {
 
     if(~ $#perm_redir_to 1)
         perm_redirect $perm_redir_to
-    f=();t=()
+    p=();
     for(i in $perm_redir_patterns) {
-        if(~ $#f 0)
-            f=$i
+        if(~ $#p 0)
+            p=$i
         if not {
-            t=$i
-            # TODO: should handle absolute and relative urls differently.
-            from=$base_url^$req_path
-            to=`{ echo $from | sed 's!'$f'!'$t'!' }
-            if(! ~ $to $from)
-                perm_redirect $to
-            f=() 
+            # If target is absolute, require patern matches whole string
+            if(~ $i http://* https://)
+                p='^'$p 
+            t=`{ echo $req_path | sed 's!'$p'!'$i'!' }
+
+            if(! ~ $"t '' && ! ~ $t $req_path)
+                perm_redirect $t
+            p=() 
         } 
     }
 

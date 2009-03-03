@@ -2,15 +2,13 @@
 fn conf_perm_redirect {
     if(~ $#* 1)
         perm_redir_to=$1
-    if not {
+    if not
         perm_redir_patterns=($perm_redir_patterns $1 $2)
-        conf_hide_paths $1 # XXX Will hide paths even if replacement string is the same as matched sctring.
-    }
 }
 
 fn conf_hide_paths {
     for(i in $*)
-       dirfilter=$dirfilter^'/'^`{echo $sitedir'/'$i|sed 's!/+!\\/!g'}^'/d; '
+       dirfilter=$dirfilter^'/'^`{echo $sitedir$conf_wd$i|sed 's!/+!\\/!g'}^'/d; '
 }
 
 # Usually will be called from within conf_enable_foo 
