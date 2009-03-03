@@ -116,7 +116,7 @@ fn set_cookie {
     extraHttpHeaders=( $extraHttpHeaders 'Set-cookie: '^$"name^'='^$"val^'; path=/;' )
 }
 fn get_cookie {
-    ifs=';' { co = `{ echo $HTTP_COOKIE } }
+    ifs=';' { co=`{echo $HTTP_COOKIE} }
 
     # XXX: we might be adding a trailing new line?
     # The ' ?' is needed to deal with '; ' inter-cookie delimiter
