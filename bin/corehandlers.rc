@@ -31,6 +31,18 @@ fn nav_tree {
     END { p(lNF, 0, "</ul>") }'
 }
 
+fn link_bar {
+    if(~ $1 -t) {
+        echo '<p class="sideBarTitle">'$2'</p>'
+        shift; shift
+    }
+    echo '<ul>'
+    while(! ~ $#* 0) {
+        echo '<li><a href="'$2'">- '$1'</a></li>'
+        shift; shift
+    }
+    echo '</ul>'
+}
 
 fn md_handler { $formatter < $1 }
 
