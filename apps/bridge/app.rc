@@ -31,7 +31,7 @@ fn bridge_init {
                 ll_add handlers_body_foot template apps/bridge/foot.tpl
         }
         if not if(~ $REQUEST_METHOD GET)
-            ll_add handlers_body_foot echo '<hr /><p>To post a comment you need to <a href="/_users/login">login</a> first.'
+            ll_add handlers_body_foot echo '<hr /><p>To post a comment you need to <a href="/_users/login">login</a> first.</p>'
     }
 }
 
