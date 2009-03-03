@@ -1,5 +1,5 @@
-Nhttpd config for werc
-======================
+Nhttpd/Nostromo  Web Server Configuration for Werc
+==================================================
 
 Contributed by nsz, thanks!
 
@@ -54,3 +54,5 @@ To solve this problem just add a
     SERVER_NAME=$HTTP_HOST
 
 line somewhere at the top of `werc.rc`.
+
+
