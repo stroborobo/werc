@@ -9,14 +9,15 @@ fn nav_tree {
         | sed $dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; s!^'$sitedir'!!; '$dirclean \
         | sort -u | awk -F/ ' 
     function p(x, y, s) { for(i=0; i < x-y; i+=1) print s }
+    BEGIN { lNF=2; print "<ul>" }
     { 
         d = ""
         if(match($0, "/$"))
             d = "/"
         sub("/$", "") # Strip trailing / for dirs so NF is consistent 
 
-        p(NF, lNF, "<ul>")
-        p(lNF, NF, "</ul>")
+        p(NF, lNF, "<li><ul>")
+        p(lNF, NF, "</ul></li>")
         lNF = NF
 
         bname = $NF d
@@ -28,7 +29,7 @@ fn nav_tree {
         else 
             print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
     }
-    END { p(lNF, 0, "</ul>") }'
+    END { p(lNF, 2, "</ul></li>"); print "</ul>" }'
 }
 
 fn link_bar {
