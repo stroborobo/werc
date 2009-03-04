@@ -30,7 +30,7 @@ fn dirdir_init {
             mkdir -p `{basename -d $local_path}
             save_page
         }
-        if not
+        if not if(~ $"handler_body_main  '')
             ll_add handlers_bar_left tpl_handler \
                 apps/dirdir/sidebar_controls.tpl
 
