@@ -5,27 +5,47 @@ fn conf_enable_wiki {
 }
 
 fn dirdir_init {
-    if(! ~ $#enable_wiki 0 && check_user $wiki_editors_groups && test -f $local_path.md) {
+    if(! ~ $#enable_wiki 0 && check_user $wiki_editors_groups) {
         dirdir_file=$local_path.md
         dirdir_dir=$dirdir_file^'_werc/dirdir/'
             
-        if(~ $#post_arg_dirdir_save 1 && ! ~ $"post_arg_edit_text '') {
+        if(test -f $local_path.md) {
+            if(~ $#post_arg_dirdir_save 1 && ! ~ $"post_arg_edit_text '')
+                save_page
 
-            dirdir_verdir=$dirdir_dir/^`{date -n}^/
-            mkdir -p $dirdir_verdir
+            if not if(~ 1 $#post_arg_dirdir_edit $#post_arg_dirdir_preview)
+                handler_body_main=(tpl_handler \
+                    `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl})
 
-            # XXX Use a tmp file and  mv(1) to ensure updates are atomic?
-            echo $logged_user > $dirdir_verdir/author
-            echo $post_arg_edit_text > $dirdir_verdir/data 
-            echo $post_arg_edit_text > $dirdir_file
-
-            post_redirect $base_url^$req_path
-            #notify_notes='Saved <a href="'$"req_path'">'$"req_path'</a>!'
+            if not if(! ~ $REQUEST_METHOD POST)
+                ll_add handlers_bar_left tpl_handler \
+                    apps/dirdir/sidebar_controls.tpl
         }
-        if not if(~ $#post_arg_dirdir_edit 1 || ~ $#post_arg_dirdir_preview 1)
-            handler_body_main=(tpl_handler `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl} )
-        if not if(! ~ $REQUEST_METHOD POST)
-            ll_add handlers_bar_left tpl_handler apps/dirdir/sidebar_controls.tpl
+
+        if not if(~ 1 $#post_arg_dirdir_edit)
+            handler_body_main=(tpl_handler \
+                `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl})
+
+        if not if(~ 1 $#post_arg_dirdir_save) {
+            mkdir -p `{basename -d $local_path}
+            save_page
+        }
+        if not
+            ll_add handlers_bar_left tpl_handler \
+                apps/dirdir/sidebar_controls.tpl
 
     }
+}
+
+fn save_page {
+    dirdir_verdir=$dirdir_dir/^`{date -n}^/
+    mkdir -p $dirdir_verdir
+
+    # XXX Use a tmp file and  mv(1) to ensure updates are atomic?
+    echo $logged_user > $dirdir_verdir/author
+    echo $post_arg_edit_text > $dirdir_verdir/data 
+    echo $post_arg_edit_text > $dirdir_file
+
+    post_redirect $base_url^$req_path
+    #notify_notes='Saved <a href="'$"req_path'">'$"req_path'</a>!'
 }
