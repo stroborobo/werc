@@ -143,6 +143,7 @@ li ul {
   text-transform: capitalize;
   font-weight: bold!important;
   font-size: 104%;
+  border-left: white solid 0.2em;
 }
 
 .thisPage, .thisPage a {
