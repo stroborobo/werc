@@ -48,4 +48,6 @@ The permissions system is very flexible, for example to only allow access to mem
     if(! check_user editors)
         perm_redirect /_users/login
 
+To automatically redirect users without permission to the login page if they are not members of the group 'editors'.
+
 See also [the documentation on user and group management](user_management).
