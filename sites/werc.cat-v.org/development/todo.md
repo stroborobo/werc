@@ -2,13 +2,13 @@ Plans and ideas for the future
 ==============================
 
 * Review ideas from: http://www.w3.org/TR/chips/ and http://www.w3.org/Provider/Style/URI and see if we can do better.
-* Canonize and redirect all requests, we already do this for things like missing or trailing /, should do the same for /. and /./, etc. Deleting trailing . and , should make pasted urls in emails work as links.
+* Canonize and redirect all requests, we already do this for things like missing or trailing /, should do the same for /. and /./, etc. Deleting trailing . and , should make pasted urls in emails work as links (**Mostly done in RC1**)
 * Blog:
 	* Comment threading.
 	* Some form of pagination (taking advantage of history browsing.)
 * Sitemaps:
 	* Index pages should be used for description of directories.
-	* Cache web sitemap generation. (**done**)
+	* Cache web sitemap generation. (**Done in RC0**)
 * Layout improvements:
 	* Need to find a way to rig the order of items in the sidebar.
 	* Right sidebar.
@@ -53,5 +53,5 @@ Known bugs
 ----------
 
 * Sitemap can handle $dirfilter inconsistently from other places (**fixed**).
-* Finding directories that are inaccessible (-rx) can generate an infinite loop (Works for me? Fixed with new menu code?)
+* Finding directories that are inaccessible (-rx) can generate an infinite loop (**Works for me? Fixed with new menu code?**)
 * Some cat-v.org bits still left over here and there, should make them configurable (1.0 blocker) (**fixed**?)
