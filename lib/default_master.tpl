@@ -8,9 +8,7 @@
     <h1 class="headerTitle"><a href="/">%($"siteTitle%)<span id="headerSubTitle">%( $"siteSubTitle%)</span></a></h1>
     </div>
     
-    <div class="subHeader">
-        <br />
-    </div>
+    <div class="subHeader"><br /></div>
 </div>
 
 % if(! ~ $#handlers_bar_left 0) {
