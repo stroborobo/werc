@@ -130,7 +130,7 @@ li ul {
 
 #side-bar li {
   margin: 0;
-  padding: 0.1ex 0;  /* Circumvents a rendering bug (?) in MSIE 6.0 */
+  /*padding: 0.1ex 0;  /* Circumvents a rendering bug (?) in MSIE 6.0  XXX should move to iehacks.css, this causes an ugly gap */
 }
 
 #side-bar a {
