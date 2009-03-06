@@ -57,7 +57,8 @@ fn werc_exec_request {
     if(~ $local_path */) {
         if(test -d $local_path)
             local_path=$local_path^'index'
-        if not # XXX: This redir might step on apps with synthetic dirs.
+        # XXX: This redir might step on apps with synthetic dirs.
+        if not if(ls `{basename -d $local_path}^* >/dev/null >[2]/dev/null)
             perm_redirect `{echo $req_path|sed 's,/+$,,'}
     }
     if not if(~ $req_path *'.' *',' *';' *':')

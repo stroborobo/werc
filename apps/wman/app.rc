@@ -1,0 +1,49 @@
+fn conf_enable_wman {
+    wman_base_uri=$conf_wd
+    wman_man_path=$*
+    if(~ $#wman_man_path 0)
+        wman_man_path=$wman_base_uri
+    conf_enable_app wman
+}
+
+fn wman_init {
+    ifs='/' { p=`{echo $req_path | sed 's!^'^$wman_base_uri^'!!'} }
+    m=$args($#args)
+
+    if(~ $req_path $wman_base_uri)
+       handler_body_main=wman_list_secs_handler
+    if not if(~ $req_path $wman_base_uri^*) {
+        if(~ $req_path $wman_base_uri^*/[a-z0-9]*)
+           handler_body_main=(wman_page_handler $wman_man_path $p(1)  $m)
+        if not if(~ $req_path $wman_base_uri^*/)
+           handler_body_main=(wman_sec_list_handler $wman_man_path/$m)
+        if not if(~ $m [A-Z]*) # Correct badly capitalized links
+            perm_redirect $wman_base_uri$p/^`{echo $m |tr 'A-Z' 'a-z'}
+    }
+}
+
+fn wman_sec_list_handler {
+    ls -F $* | sed $dirfilter^' /\.html$/d' | awk -F/ '
+BEGIN { print "<h1>Manual pages</h1><ul>" }
+$(NF-1) ~ /^[a-z]*[0-9][0-9]?$/ {
+    print "<li><a href=\""$(NF)"\">"$(NF)"</a></li>"
+}
+END { print "</ul>" }'
+}
+
+fn wman_list_secs_handler {
+    ls -F $wman_man_path | awk -F/ '
+BEGIN { print "<h1>Manual Sections</h1><ul>" }
+$(NF-1) ~ /^[a-z]*[0-9][0-9]?$/ {
+    print "<li><a href=\""$(NF-1)"/\">"$(NF-1)"</a></li>"
+}
+END { print "</ul>" }'
+}
+
+fn wman_page_handler {
+	#troff -manhtml $1 | troff2html -t 'Plan 9 from User Space'
+    p='../\2/\1'
+    if(~ $2 man[0-9])
+        p='../man\2/\1.\2'
+    nroff -man $1/$2/$3 | sed 's!([\-a-zA-Z0-9]+)\(([0-9])\)!<a href="'$p'">&</a>!g' | awk ' BEGIN { print "<pre>" } /^$/ {if(n != 1) print; n=1; next} /./ {n=0; print} END { print "</pre>" }'
+}
