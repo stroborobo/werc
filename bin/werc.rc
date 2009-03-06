@@ -15,7 +15,7 @@ dirfilter='s/\*$//; s,/+\./+,/,g; s,^\./,,; /\/[._][^\/]/d; /'$forbidden_uri_cha
 dirclean=' s/\.(md|html|txt)$//; '
 
 # Careful, the proper p9p path might not be set until initrc.local is sourced
-path=(. $PLAN9/bin ./bin/ /bin/ /usr/bin) 
+path=(. $PLAN9/bin ./bin /bin /usr/bin) 
 
 headers=lib/headers.tpl
 res_tail='</body></html>'

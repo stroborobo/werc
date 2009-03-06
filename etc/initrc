@@ -13,7 +13,7 @@ plan9port=$PLAN9
 
 # Path, make sure the plan9port /bin directory is included before /bin
 # Keep '.' in path! It is needed.
-path=($plan9port/bin/ . ./bin/ ./bin/contrib/ /bin/ /usr/bin/)
+path=($plan9port/bin . ./bin ./bin/contrib /bin /usr/bin)
 
 # Set this to your favorite markdown formatter, eg., markdown.pl (fltr_cache
 # takes as an argument a filter, in the default configuration markdown.pl, that
