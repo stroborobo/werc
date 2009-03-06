@@ -31,8 +31,8 @@ fn blagh_init {
             handler_body_main=blagh_body
             u=$blagh_uri'index'
             extraHeaders=$"extraHeaders ^ \
-'<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />
-<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />'
+'<link rel="alternate" type="application/atom+xml" title="ATOM" href="'$"u'.atom" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />'
         }
         if not if(~ $req_path $blagh_uri^index.atom)
             blagh_setup_feed_handlers atom.tpl
