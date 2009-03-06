@@ -37,7 +37,8 @@ so it will handle every request).
     # ALIASES [OPTIONAL]
     
     /pub            /path/to/werc/pub
-    /favicon.ico        /path/to/werc/pub/default_favicon.ico
+    # The following line doesn't work because nhttpd doesn't support file aliases yet.
+    #/favicon.ico        /path/to/werc/pub/default_favicon.ico
     
     # VIRTUAL HOSTS [OPTIONAL]
     
@@ -48,11 +49,12 @@ so it will handle every request).
 To use werc on `main.host.com` as well just set `docroot` to `/path/to/werc/bin/werc.rc`
 and set `docindex` to empty string.
 
-There was a bug in nhttpd <=1.9, it did not set `SERVER_NAME` properly (leaft it `main.host.com`).
+There was a bug in nhttpd <=1.9, it did not set `SERVER_NAME` properly (left it `main.host.com`).
 To solve this problem just add a
 
     SERVER_NAME=$HTTP_HOST
 
 line somewhere at the top of `werc.rc`.
+
 
 
