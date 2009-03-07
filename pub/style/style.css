@@ -104,11 +104,10 @@ body {
   width: 16em;
   float: left;
   clear: left;
-  border-right: 1px solid rgb(153,153,153);
 }
 
 #side-bar div {
-  border-bottom: 1px solid rgb(153,153,153);
+  border-bottom: 1px solid #eee;
 }
 
 .sideBarTitle {
@@ -194,7 +193,7 @@ li ul {
   line-height: 1.5em;
   margin: 0em 0 0 16em;
   padding: 0.5mm 5mm 5mm 5mm;
-  border-left: 1px solid rgb(153,153,153);
+  border-left: 1px solid #eee;
 }
 
 #bodyText {
@@ -316,7 +315,7 @@ hr {
 }
 
 acronym, .titleTip {
-  border-bottom: 1px dotted rgb(153,153,153);
+  border-bottom: 1px solid #eee;
   cursor: help;
   margin: 0;
   padding: 0 0 0.4px 0;
