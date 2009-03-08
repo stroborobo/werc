@@ -1,13 +1,20 @@
 # Werc builtin handlers
 
+# API
+fn add_synth_paths {
+    synth_paths=($synth_paths $conf_wd^$*)
+}
+
 fn nav_tree {
     if(! ~ $#sideBarNavTitle 0)
         echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
     # Ignore stderr, last path element might be a file that doesn't exist (eg., foo for foo.md)
     # /./ to deal with p9p's ls failure to follow dir symlinks otherwise
     ls -F $sitedir/./$req_paths_list >[2]/dev/null \
-        | sed $dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; s!^'$sitedir'!!; '$dirclean \
-        | sort -u | awk -F/ ' 
+        | { 
+            sed $dirfilter'/\/[^_.\/][^\/]*(\.(md|txt|html)|\/)$/!d; s!^'$sitedir'!!; '$dirclean 
+            if(! ~ $#synth_paths 0) echo $synth_paths | tr ' ' $NEW_LINE 
+        } | sort -u | awk -F/ ' 
     function p(x, y, s) { for(i=0; i < x-y; i+=1) print s }
     BEGIN { lNF=2; print "<ul>" }
     { 
