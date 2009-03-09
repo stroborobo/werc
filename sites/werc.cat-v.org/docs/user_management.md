@@ -1,7 +1,7 @@
 User and Group Management
 =========================
 
-User accounts and group membership are stored under `etc/users/` and `etc/groups/` respectively.
+User account and group membership information are stored under `etc/users/`.
 
 A user account consists of a directory under `etc/users/` that contains files with that users account information, the only required file is `password` containing a password for the user. For example:
 
