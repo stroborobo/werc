@@ -1,10 +1,5 @@
 # Werc builtin handlers
 
-# API
-fn add_synth_paths {
-    synth_paths=($synth_paths $conf_wd^$*)
-}
-
 fn nav_tree {
     if(! ~ $#sideBarNavTitle 0)
         echo '<p class="sideBarTitle">'$"sideBarNavTitle':</p>'
