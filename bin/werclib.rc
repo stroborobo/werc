@@ -26,10 +26,11 @@ fn login_user {
 # Check login status, if called with group arg we check membership too
 fn check_user {
     get_user
+    g=($* admin)
     _status=$status
     if(! ~ $"_status '')
         _status=(Not logged in: $"_status)
-    if not if(! ~ $#* 0 && ! ~ $logged_user $* && ! grep -s '^'^$logged_user^'$' etc/users/$*/members etc/users/admin/members >[2]/dev/null)
+    if not if(! ~ $#* 0 && ! ~ $logged_user $* && ! grep -s '^'^$logged_user^'$' $werc_root/etc/users/$g/members >[2]/dev/null)
         _status=(User $logged_user not in: $*)
     status=$_status
 }
@@ -63,7 +64,7 @@ fn auth_user {
     user_name=$1
     user_password=$2
 
-    pfile='etc/users/'^$"user_name^'/password'
+    pfile=$werc_root/etc/users/$"user_name/password
     if(~ $#user_name 0 || ~ $#user_password 0)
         status=('Auth: missing user name or pass: '^$"user_name^' / '^$"user_password)
     if not if(! test -f $pfile)
