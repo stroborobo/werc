@@ -7,50 +7,41 @@ fn conf_enable_wman {
 }
 
 fn wman_init {
-    ifs='/' { p=`{echo $req_path | sed 's!^'^$wman_base_uri^'!!'} }
-    m=$args($#args)
+    ifs=$ifs^'/' { p=`{echo $req_path | sed 's!^'^$wman_base_uri^'!!'} }
+    wman_cat=$p(1)
+    wman_page=$p(2)
+    if(~ $#wman_unix_mode 1) {
+        wman_cp='man'
+        wman_pe=.^$"wman_cat
+    }
+    if(! ~ $"wman_cat '')
+        wman_cat_path=$wman_man_path^/^$"wman_cp^$p(1)
 
-    synth_paths=($wman_base_uri`{ls -F $wman_man_path|awk -F/ '$(NF-1) ~ /^[a-z]*[0-9][0-9]?$/ {print $(NF-1)"/"}'})
+    wman_cat_list=`{ls -F $wman_man_path/*/  \
+        | sed '/\/(index\.html|INDEX|\.cvsignore)$/d; s!.*/'^$"wman_cp^'([^/]+)/[^/]+$!\1!; /[0-9]+/!d' \
+        | sort -un}
+
+    synth_paths=($wman_base_uri$wman_cat_list'/')
+
     if(~ $req_path $wman_base_uri)
-       handler_body_main=wman_list_secs_handler
+       handler_body_main=(tpl_handler apps/wman/section_list.tpl)
     if not if(~ $req_path $wman_base_uri^*) {
-        if(~ $req_path $wman_base_uri^*/[a-z0-9]*[a-z]* $wman_base_uri^*/*[a-z]*[a-z0-9] $wman_base_uri^*/[a-z])
-           handler_body_main=(wman_page_handler $wman_man_path $p(1) $m)
+        #^*/[a-z0-9]*[a-z]* $wman_base_uri^*/*[a-z]*[a-z0-9] $wman_base_uri^*/[a-z])
+        if(echo $req_path | grep -s '^'^$wman_base_uri^'/*[0-9]+/[0-9a-z\-\.]+$')
+           handler_body_main=(tpl_handler apps/wman/man_page.tpl)
         if not if(~ $req_path $wman_base_uri^*/)
-           handler_body_main=(wman_sec_list_handler $m)
-        if not if(~ $m [A-Z]* [0-9][A-Z]*) # Correct badly capitalized links
-            perm_redirect $wman_base_uri$p/^`{echo $m |tr 'A-Z' 'a-z'}
+           handler_body_main=(tpl_handler apps/wman/page_list.tpl)
+        if not if(~ $p(2) [A-Z]* [0-9][A-Z]*) # Correct badly capitalized links
+            perm_redirect $wman_base_uri/^$p(1)^/^`{echo $p(2) |tr 'A-Z' 'a-z'}
     }
 }
 
-fn wman_get_section_desc { sed '1,2d; s!intro \\- introduction to !!; 3q;' < $wman_man_path/$1/0intro* }
+fn wman_get_section_desc { sed '1,2d; s!intro \\- introduction to !!; 3q;' < $wman_man_path/^$"wman_cp^$1/0intro* }
 
-fn wman_sec_list_handler {
-    d=`{wman_get_section_desc $1} 
-    ls -F $wman_man_path/$1 | sed $dirfilter^' /(\/INDEX|\.html)$/d; s/\.([0-9]|9p)$//; s!/0intro$!/intro!' | awk -F/ -v 'sec='^$1^': '^$"d '
-        BEGIN { print "<h1>Manual pages - Section "sec"</h1><ul style=\"float:left\">" }
-        { print "<li><a href=\""$(NF)"\">"$(NF)"</a></li>" }
-        NR%28 == 0 { print "</ul><ul style=\"float: left\">" }
-        END { print "</ul>" }'
-}
-
-fn wman_list_secs_handler {
-    l=`{ls -F $wman_man_path/* |sed -e '/\/(index\.html|INDEX|\.cvsignore)$/d; s!/[^/]*$!!; s!.*/([^/]+$)!\1!; /^(man)?[0-9][0-9]?$/!d; '|sort -u}
-    echo '<h1>Manual Sections</h1><ul style="text-transform: capitalize;">'
-    for(c in $l)
-        echo '<li><a href="'$c'/"><b>' `{echo $c|sed 's!^(man)?([0-9]+)!Section: \2</b></a>!'} `{wman_get_section_desc $c} '</li>'
-    echo '</ul>'
-}
-wman_m=an
-fn wman_page_handler {
-	#troff -manhtml $1 | troff2html -t 'Plan 9 from User Space'
-    f=$1/$2/$3
-    if(~ $3 intro && test -f $1/$2/0intro)
-        f=$1/$2/0intro
-    { 
-    if(~ $2 man[0-9])
-        nroff -m^$wman_m $f.[0-9] |escape_html| sed 's!([\.\-a-zA-Z0-9]+)\(([1-9]|10)\)!<a href="../man\2/\1">&</a>!g'
-    if not
-        nroff -man $f |escape_html| sed 's!([\.\-a-zA-Z0-9]+)\(([1-9]|10)\)!<a href="../\2/\1">&</a>!g'
-    } | awk ' BEGIN { print "<pre>" } /^$/ {if(n != 1) print; n=1; next} /./ {n=0; print} END { print "</pre>" }'
+fn wman_page_gen {
+    #troff -manhtml $1| troff2html -t 'Plan 9 from User Space'
+    nroff -man $1 \
+    | escape_html \
+    | sed 's!([\.\-a-zA-Z0-9]+)\(([1-9]|10)\)!<a href="../\2/\1">&</a>!g' \
+    | awk '/^$/ {if(n != 1) print; n=1; next} /./ {n=0; print}'
 }
