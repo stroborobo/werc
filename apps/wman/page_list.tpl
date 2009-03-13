@@ -3,8 +3,7 @@
 
 <ul style="float:left">
 %{
-ls -F $wman_cat_path \
-    | sed $dirfilter^' /(\/INDEX|\.html)$/d; s/\.([0-9]|9p)$//; s!/0intro$!/intro!' \
+wman_ls_pages $wman_cat_path \
     | awk -F/ '{ print "<li><a href=\""$(NF)"\">"$(NF)"</a></li>" }
     NR%28 == 0 { print "</ul><ul style=\"float: left\">" }'
 %}
