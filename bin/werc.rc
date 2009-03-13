@@ -19,6 +19,7 @@ path=(. $PLAN9/bin ./bin /bin /usr/bin)
 
 headers=lib/headers.tpl
 res_tail='</body></html>'
+http_content_type='text/html'
 ll_add handlers_bar_left nav_tree
 werc_apps=( apps/* )
 werc_root=`{pwd}
@@ -112,9 +113,16 @@ fn werc_exec_request {
 
     setup_handlers
 
+    for(h in $extraHttpHeaders)
+        echo $h
+    echo 'Content-Type: '^$http_content_type
+    if(~ $REQUEST_METHOD HEAD)
+        exit
+
     if(! ~ $#debug 0)
         dprint $"SERVER_NAME^$"REQUEST_URI - $"HTTP_USER_AGENT - $"REQUEST_METHOD - $"handler_body_main - $"master_template
 
+    
     template $headers $master_template | awk_buffer
     echo $res_tail
 }
