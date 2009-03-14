@@ -8,32 +8,15 @@ fn dirdir_init {
     if(! ~ $#enable_wiki 0 && check_user $wiki_editors_groups) {
         dirdir_file=$local_path.md
         dirdir_dir=$dirdir_file^'_werc/dirdir/'
-            
-        if(test -f $local_path.md) {
-            if(~ $#post_arg_dirdir_save 1 && ! ~ $"post_arg_edit_text '')
-                save_page
+ 
+        if(~ 1 $#post_arg_dirdir_edit $#post_arg_dirdir_preview)
+            handler_body_main=(tpl_handler `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl})
 
-            if not if(~ 1 $#post_arg_dirdir_edit $#post_arg_dirdir_preview)
-                handler_body_main=(tpl_handler \
-                    `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl})
-
-            if not if(! ~ $REQUEST_METHOD POST)
-                ll_add handlers_bar_left tpl_handler \
-                    apps/dirdir/sidebar_controls.tpl
-        }
-
-        if not if(~ 1 $#post_arg_dirdir_edit)
-            handler_body_main=(tpl_handler \
-                `{get_lib_file dirdir/edit.tpl apps/dirdir/edit.tpl})
-
-        if not if(~ 1 $#post_arg_dirdir_save) {
-            mkdir -p `{basename -d $local_path}
+        if not if(! ~ '' $"post_arg_dirdir_save $"post_arg_edit_text)
             save_page
-        }
-        if not if(~ $"handler_body_main  '')
-            ll_add handlers_bar_left tpl_handler \
-                apps/dirdir/sidebar_controls.tpl
 
+        if not if(~ $"handler_body_main  '' || {~ $REQUEST_METHOD GET && test -f $local_path.md})
+            ll_add handlers_bar_left tpl_handler apps/dirdir/sidebar_controls.tpl
     }
 }
 
