@@ -14,6 +14,7 @@ fn get_lib_file {
 fn template { awk -f bin/template.awk $* | rc $rcargs }
 
 # Auth code
+# TODO: check http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf
 allowed_user_chars='[a-zA-Z0-9_]'
 # Cookie format: WERC_USER: name:timestamp:hash(name.timestamp.password)
 # login_user can't be used from a template because it sets a cookie 
