@@ -43,10 +43,12 @@ fn wman_init {
 
     # Search
     ll_add handlers_body_head tpl_handler apps/wman/search.tpl
-    s=`{echo $post_arg_wman_search | sed 's/[^a-zA-Z0-9\-\.]+//g; s/\.+/./g; 1q'}
-    ifs='' { wman_search_results=`{wman_ls_pages $wman_man_path/*/*^$s^*} }
-    if(! ~ $"post_arg_go '' && ~ `{echo -n $wman_search_results|wc -l} 1)
-        post_redirect $wman_base_uri^`{echo $wman_search_results|awk -F/ '{print $(NF-1)"/"$NF}'}
+    if(! ~ $"post_arg_wman_search '') {
+        s=`{echo $post_arg_wman_search | sed 's/[^a-zA-Z0-9\-\.]+//g; s/\.+/./g; 1q'}
+        ifs='' { wman_search_results=`{wman_ls_pages $wman_man_path/*/*^$"s^*} }
+        if(! ~ $"post_arg_go '' && ~ `{echo -n $wman_search_results|wc -l} 1)
+            post_redirect $wman_base_uri^`{echo $wman_search_results|awk -F/ '{print $(NF-1)"/"$NF}'}
+    }
 
 }
 
