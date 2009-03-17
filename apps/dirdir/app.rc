@@ -40,6 +40,7 @@ fn dirdir_init {
 fn save_page {
     dirdir_verdir=$dirdir_dir/^`{date -n}^/
     mkdir -p $dirdir_verdir
+    umask 002
 
     # XXX Use a tmp file and  mv(1) to ensure updates are atomic?
     echo $logged_user > $dirdir_verdir/author
