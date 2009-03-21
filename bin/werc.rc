@@ -114,6 +114,7 @@ fn werc_exec_request {
     echo 'Content-Type: '^$http_content_type
     if(~ $REQUEST_METHOD HEAD)
         exit
+    echo # End of HTTP headers
 
     if(! ~ $#debug 0)
         dprint $"SERVER_NAME^$"REQUEST_URI - $"HTTP_USER_AGENT - $"REQUEST_METHOD - $"handler_body_main - $"master_template
