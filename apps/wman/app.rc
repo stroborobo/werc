@@ -38,7 +38,7 @@ fn wman_init {
         if not if(~ $req_path $wman_base_uri^*/)
            handler_body_main=(tpl_handler apps/wman/page_list.tpl)
         if not if(~ $p(2) [A-Z]* [0-9][A-Z]*) # Correct badly capitalized links
-            perm_redirect $wman_base_uri/^$p(1)^/^`{echo $p(2) |tr 'A-Z' 'a-z'}
+            perm_redirect $wman_base_uri^$p(1)^/^`{echo $p(2) |tr 'A-Z' 'a-z'}
     }
 
     # Search
