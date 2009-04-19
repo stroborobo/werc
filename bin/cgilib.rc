@@ -157,6 +157,13 @@ fn ll_add {
     $_l=$*(2-)
     $1=( $$1 $_l )
 }
+# Add to the head: dangerous if you shrink list by hand!
+fn ll_addh {
+    _l=$1^_^$#$1
+    $_l=$*(2-)
+    $1=( $_l $$1 )
+}
+
 
 NEW_LINE='
 '

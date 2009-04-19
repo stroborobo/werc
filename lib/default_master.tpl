@@ -1,4 +1,3 @@
-
 <div id="header">
     <div class="superHeader">
 % cat `{ get_lib_file top_bar.inc }

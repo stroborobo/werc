@@ -35,10 +35,10 @@ fn blagh_init {
 <link rel="alternate" type="application/rss+xml" title="RSS" href="'$"u'.rss" />'
         }
         if not if(~ $req_path $blagh_uri^index.atom)
-            blagh_setup_feed_handlers atom.tpl
+            blagh_setup_feed_handlers atom.tpl 'application/atom+xml'
 
         if not if(~ $req_path $blagh_uri^index.rss)
-            blagh_setup_feed_handlers rss20.tpl
+            blagh_setup_feed_handlers rss20.tpl 'text/xml; charset=utf-8'
 
         if not if(~ $req_path $blagh_uri^new_post && ! ~ $#editor_mode 0) {
             handler_body_main=( tpl_handler `{get_lib_file blagh/new_post.tpl apps/blagh/new_post.tpl} )
@@ -56,6 +56,7 @@ fn blagh_init {
 fn blagh_setup_feed_handlers {
     handler_body_main=NOT_USED_by_blagh_feeds
     res_tail=()
+    http_content_type=$2
     headers=()
     master_template=apps/blagh/$1 # Should we allow tempalte override?
 }

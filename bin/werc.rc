@@ -19,6 +19,7 @@ path=(. $PLAN9/bin ./bin /bin /usr/bin)
 
 headers=lib/headers.tpl
 res_tail='</body></html>'
+http_content_type='text/html'
 ll_add handlers_bar_left nav_tree
 werc_apps=( apps/* )
 werc_root=`{pwd}
@@ -88,20 +89,16 @@ fn werc_exec_request {
 
     if(~ $#perm_redir_to 1)
         perm_redirect $perm_redir_to
-    p=();
-    for(i in $perm_redir_patterns) {
-        if(~ $#p 0)
-            p=$i
-        if not {
-            # If target is absolute, require patern matches whole string
-            if(~ $i http://* https://)
-                p='^'$p 
-            t=`{ echo $req_path | sed 's!'$p'!'$i'!' }
+    for(l in $perm_redir_patterns) {
+        p=$$l
+        r=$p(1)
+        # If target is absolute, then patern must match whole string
+        if(~ $p(2) http://* https://)
+            r='^'$r 
+        t=`{ echo $req_path | sed 's!'^$r^'!'^$p(2)^'!' } # Malicious danger!
 
-            if(! ~ $"t '' && ! ~ $t $req_path)
-                perm_redirect $t
-            p=() 
-        } 
+        if(! ~ $"t '' $req_path)
+            perm_redirect $t
     }
 
     # Set Page title
@@ -112,9 +109,17 @@ fn werc_exec_request {
 
     setup_handlers
 
+    for(h in $extraHttpHeaders)
+        echo $h
+    echo 'Content-Type: '^$http_content_type
+    if(~ $REQUEST_METHOD HEAD)
+        exit
+    echo # End of HTTP headers
+
     if(! ~ $#debug 0)
         dprint $"SERVER_NAME^$"REQUEST_URI - $"HTTP_USER_AGENT - $"REQUEST_METHOD - $"handler_body_main - $"master_template
 
+    
     template $headers $master_template | awk_buffer
     echo $res_tail
 }

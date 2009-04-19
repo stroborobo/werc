@@ -3,7 +3,7 @@ fn conf_perm_redirect {
     if(~ $#* 1)
         perm_redir_to=$1
     if not
-        perm_redir_patterns=($1 $2 $perm_redir_patterns)
+        ll_addh perm_redir_patterns $1 $2
 }
 
 fn conf_hide_paths {
