@@ -117,11 +117,15 @@ fn setup_handlers {
     if not if(~ $req_path /pub/* && test -f .$req_path)
         static_file .$req_path
     # File not found
-    if not {
-        handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
-        echo 'Status: 404 Not Found'
-        dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
-    }
+    if not
+        setup_404_handler
+}
+
+# This function allows config files to deffine their own 404 handlers.
+fn setup_404_handler {
+    handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
+    echo 'Status: 404 Not Found'
+    dprint 'NOT FOUND: '$SERVER_NAME^$"REQUEST_URI^' - '^$"HTTP_REFERER^' - '^$"HTTP_USER_AGENT
 }
 
 fn run_handlers { for(h in $*) run_handler $$h }
