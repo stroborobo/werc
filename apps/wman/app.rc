@@ -20,8 +20,17 @@ fn wman_init {
         wman_cp='man'
         wman_pe=.^$"wman_cat
     }
-    if(! ~ $"wman_cat '')
+
+    if(! ~ $"wman_cat '') {
         wman_cat_path=$wman_man_path^/^$"wman_cp^$p(1)
+        if(! ~ $"wman_page '') {
+            wman_page_file=$wman_page^$"wman_pe
+            # Hack to handle 0intro files.
+            if(~ $wman_page intro && test -f $wman_cat_path^/0^$"wman_page_file)
+                 wman_page_file=0^$"wman_page_file
+            wman_page_file=$wman_cat_path^/^$"wman_page_file
+        }
+    }
 
     wman_cat_list=`{ls -F $wman_man_path/*/  \
         | sed -e $wman_junk_filter -e 's!.*/([^/]+)/[^/]+$!\1!; /[0-9]+/!d' \
@@ -34,7 +43,8 @@ fn wman_init {
     if not if(~ $req_path $wman_base_uri^*) {
         #^*/[a-z0-9]*[a-z]* $wman_base_uri^*/*[a-z]*[a-z0-9] $wman_base_uri^*/[a-z])
         if(echo $req_path | grep -s '^'^$wman_base_uri^'/*[0-9]+/[0-9a-z\-\+\.]+$')
-           handler_body_main=(tpl_handler apps/wman/man_page.tpl)
+           if(test -f $wman_page_file) # Check for 404
+               handler_body_main=(tpl_handler apps/wman/man_page.tpl)
         if not if(~ $req_path $wman_base_uri^*/)
            handler_body_main=(tpl_handler apps/wman/page_list.tpl)
         if not if(~ $p(2) [A-Z]* [0-9][A-Z]*) # Correct badly capitalized links
@@ -53,7 +63,7 @@ fn wman_init {
 }
 
 fn wman_get_section_desc { 
-    cat $wman_man_path/^$"wman_cp^$1/0intro* >[2]/dev/null| sed '1,2d; s!intro \\- introduction to !!; 3q;' 
+    cat $wman_man_path/^$"wman_cp^$1/0intro* >[2]/dev/null| sed '1,2d; s!intro \\- [Ii]ntroduction to !!; 3q;' 
 }
 
 fn wman_page_gen {
