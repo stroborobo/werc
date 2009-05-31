@@ -3,7 +3,7 @@ Setup werc with NGINX
 
 You probably will want to to use fcgiwrap, called from spawn-fcgi or similar.
 
-Here is an extremely basic nginx configuration, with this configuration static files will be handled by werc and not nginx, this is cleary dumb, but works:
+Here is an extremely basic nginx configuration, with this configuration static files will be handled by werc and not nginx, this is clearly dumb, but works:
 
         worker_processes  1;
 
@@ -93,4 +93,4 @@ Then you can use spawn-fcgi or similar to get wrapcgi going:
 Other Setups
 ------------
 
-More ellaborate setups with direct handling of static files, caching, and multiple fcgi/cgi handlers should be easy, if you have any please post them to the werc9 mailing list.
+More elaborate setups with direct handling of static files, caching, and multiple fcgi/cgi handlers should be easy, if you have any please post them to the werc9 mailing list.
