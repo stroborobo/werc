@@ -19,8 +19,10 @@ fn fltr_cache {
             a=$f
             f=/dev/null
         }
-        if not
+        if not {
             score=`{sha1sum $f || exit 1}
+            score=$score(1)
+        }
     }
     cachedir=/tmp/fltr_cache/$score
     mkdir -p $cachedir >[2]/dev/null

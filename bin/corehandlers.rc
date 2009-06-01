@@ -47,7 +47,7 @@ fn link_bar {
     echo '</ul>'
 }
 
-fn md_handler { $formatter < $1 }
+fn md_handler { $formatter $1 }
 
 fn tpl_handler { template $* }
 
