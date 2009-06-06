@@ -92,7 +92,7 @@ fn setup_handlers {
     if not if(test -f $local_path.html)
         handler_body_main=(html_handler $local_path.html)
     # Global tpl (eg sitemap.tpl), should take precedence over txt handler!
-    if not if(test -f lib^$req_path^.tpl)
+    if not if(test -f tpl^$req_path^.tpl)
         handler_body_main=(tpl_handler lib^$req_path^.tpl)
     if not if(test -f $local_path.txt)
         handler_body_main=(txt_handler $local_path.txt)
