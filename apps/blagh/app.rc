@@ -6,6 +6,7 @@ fn conf_enable_blog {
     conf_enable_app blagh
 }
 conf_blog_editors=blog-editors
+conf_max_posts_per_page=32
 
 fn blagh_init {
     if(~ $#blagh_dirs 0 && ~ $req_path */[bB]log/*) {
@@ -76,7 +77,7 @@ fn blagh_body {
 fn get_post_list {
     # /./->/|/ done to sort -t| and order by date
     # Note: $paths in blagh_dirs should not contain '/./' or '|'
-    ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n '/'^$forbidden_uri_chars^'/d; s,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed 's,/+\|/+,/,'
+    ls -F $*^/./[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]/ >[2]/dev/null | sed -n '/'^$forbidden_uri_chars^'/d; s,/\./,/|/,; /\/$/p' | sort -r '-t|' +1 | sed -e 's,/+\|/+,/,' -e $conf_max_posts_per_page^'q'
 }
 
 fn mkbpost {
