@@ -121,3 +121,7 @@ fn mkbpost {
     }
     status=$_status
 }
+
+fn strip_title_from_md_file {
+    sed '1N; /^.*\n===*$/N; /.*\n===*\n$/d'
+}

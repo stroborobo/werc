@@ -14,7 +14,7 @@ fn statpost {
     #mdate=`{/bin/date -Rd `{mtime $f|awk '{print $1}' }} # Not used because it is unreliable
     by=$stat(2)
     #ifs=() { summary=`{cat $f/index.md | crop_text 1024 ... | $formatter } }
-    ifs=() { summary=`{cat $f/index.md | ifs=$difs {$formatter} } }
+    ifs=() { summary=`{cat $f/index.md | strip_title_from_md_file | ifs=$difs {$formatter} } }
 }
 updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'} 
 %}
