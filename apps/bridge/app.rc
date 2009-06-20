@@ -73,7 +73,7 @@ fn mk_new_comment {
     if not if(check_user $groups_allowed_comments)
         u=$logged_user
     if not
-        _status='You are not a memeber of a group allowed to comment.'
+        _status='You are not a member of a group allowed to comment.'
 
     if(~ $#_status 0) {
         umask 002
