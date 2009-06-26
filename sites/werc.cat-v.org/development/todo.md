@@ -25,6 +25,7 @@ Plans and ideas for the future
 	* http://en.wikipedia.org/wiki/List_of_content_management_systems
 	* http://en.wikipedia.org/wiki/Comparison_of_wiki_software
 * Include txt2tags as builtin alternative to markdown.
+* Mathematic pseudo-CAPTCHA ala WP's 'Math Comment Spam Protection Plugin'.
 
 
 Future plans

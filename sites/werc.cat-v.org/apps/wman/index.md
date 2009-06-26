@@ -12,9 +12,13 @@ Configuration
 
 To display a collection of man pages in a desired path you can use the following config directive:
 
-    conf_wman_enable /usr/share/man
+    conf_enable_wman /usr/share/man
 
 This will allow you to browse the man pages under /usr/share/man.
+
+For man pages organized in the traditional unix structure `manN/foo.N` where N is the section number, set in your config file:
+
+    wman_unix_mode=1
 
 Demo
 ----
