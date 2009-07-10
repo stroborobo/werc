@@ -31,3 +31,4 @@ TODO
 * We don't handle compressed man pages, but this should be trivial to add.
 * Unix systems might use different macros for their man pages.
 * Search (using keywords? Google? grep?)
+* Inferno contains man pages named like 'foo-0intro', which are refered as foo-intro(X), should automatically add (or remove) the extra '0' (Examples: sys-intro(2) and draw-intro(2)).
