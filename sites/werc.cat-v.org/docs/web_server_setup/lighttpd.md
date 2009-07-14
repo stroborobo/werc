@@ -1,6 +1,10 @@
 Setup werc with lighttpd
 ========================
 
+You will need to enable to the following modules: `mod_cgi`, `mod_alias` and `mod_rewrite` (for non-minimal configurations).
+
+You can also find `mod_setenv` useful to change werc's environment ($PATH in perticular)
+
 Minimal setup
 -------------
 This is the most minimal setup, for a single domain, and lets werc handle static files.
