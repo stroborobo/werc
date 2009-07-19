@@ -22,6 +22,10 @@ updated = `{/bin/date --rfc-3339'=seconds' |sed 's/ /T/'}
 <feed xmlns="http://www.w3.org/2005/Atom"
     xmlns:thr="http://purl.org/syndication/thread/1.0">
 
+% if(! ~ $"blagh_pubsubdub_hub '') {
+%    echo '<link rel="hub" href="'$blagh_pubsubdub_hub'" />'
+% }
+
     <link rel="self" href="%($base_url^$req_path%)"/>
     <id>%($base_url^$req_path%)</id>
     <icon>/favicon.ico</icon>

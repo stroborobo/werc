@@ -119,6 +119,12 @@ fn mkbpost {
             echo 
             echo $bptext
         }> $ddir/$"n^$"bpid/index.md 
+
+        if(! ~ $"blagh_pubsubdub_hub '') {
+            # Experimental implementation of http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.1.html#anchor4
+            ifs='' { p=`{echo $req_url|sed 's/new_post$/index.atom/'|./bin/contrib/urlencode.awk }
+            hget -p 'hub.mode=publish&hub.url='^$p' $blagh_pubsubdub_hub
+        }
     }
     status=$_status
 }
