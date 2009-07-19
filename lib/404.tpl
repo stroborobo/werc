@@ -9,4 +9,4 @@
     src="http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
 
 <h4>Or take a look at the <a href="/sitemap">sitemap</a>.</h4>
-<hr />
+<hr>
