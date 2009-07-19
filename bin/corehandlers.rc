@@ -24,7 +24,7 @@ fn nav_tree {
 
         bname = $NF d
         path = $0 d
-        gsub("_", " ", bname)
+        gsub(/[\-_]/, " ", bname)
 
         if(index(ENVIRON["req_path"] "/", path) == 1)
             print "<li><a href=\"" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a></li>"

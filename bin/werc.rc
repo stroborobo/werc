@@ -70,7 +70,7 @@ fn werc_exec_request {
         perm_redirect $req_path^'/'
 
     if(! ~ $#args 0)
-        pageTitle=`{ echo $args|sed -e 's/([a-z])-([a-z])/\1 \2/g' -e 's/ / - /g' -e 's/_/ /g' }
+        ifs=$NEW_LINE { pageTitle=`{ echo $args|sed -e 's/ / - /g' -e 's/([a-z])-([a-z])/\1 \2/g' -e 's/_/ /g' } }
 
     cd $sitedir
     req_paths_list='/' # Note: req_paths_list doesn't include 'stnythetic' dirs.

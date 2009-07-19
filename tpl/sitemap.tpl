@@ -47,7 +47,7 @@ fn listDir {
             u=`{echo $i|sed 's!'$sitedir'!!; '$dirclean's!/index$!/!; '}
             if(! ~ $#desc 0 && ! ~ $desc '')
                 desc=' - '$"desc
-            n=`{echo /$u|sed 's/_/ /g; s,.*/([^/]+)/?$,\1,'}
+            n=`{echo /$u|sed 's/[\-_]/ /g; s,.*/([^/]+)/?$,\1,'}
             echo '<li><a href="'$base_url$u'">'^$"n^'</a>' $"desc '</li>' 
             echo $base_url^$u >> $tmpfile
             if(test -d $i)
