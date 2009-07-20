@@ -120,10 +120,11 @@ fn mkbpost {
             echo $bptext
         }> $ddir/$"n^$"bpid/index.md 
 
-        if(! ~ $"blagh_pubsubdub_hub '') {
-            # Experimental implementation of http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.1.html#anchor4
-            ifs='' { p=`{echo $req_url|sed 's/new_post$/index.atom/'|./bin/contrib/urlencode.awk }
-            hget -p 'hub.mode=publish&hub.url='^$p' $blagh_pubsubdub_hub
+        # Experimental support for http://pubsubhubbub.googlecode.com/
+        if(! ~ $"conf_blog_pubsubdub_hub '') {
+            ifs='' { p=`{echo $req_url|sed 's/new_post$/index.atom/'|url_encode } }
+            dprint hget -p 'hub.mode=publish&hub.url='^$"p $conf_blog_pubsubdub_hub
+            hget -d -h -p 'hub.mode=publish&hub.url='^$"p $conf_blog_pubsubdub_hub >[1=2]
         }
     }
     status=$_status
