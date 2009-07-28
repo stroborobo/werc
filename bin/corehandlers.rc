@@ -106,8 +106,13 @@ fn setup_handlers {
     if(! ~ $#handler_body_main 0)
         { } # We are done
     # Dir listing
-    if not if(~ $local_path */index)
+    if not if(~ $local_path */index) {
         handler_body_main=(dir_listing_handler $req_path)
+        if(test -f $sitedir$req_path'_header.md')
+            ll_add handlers_body_head md_handler $sitedir$req_path'_header.md'            
+        if(test -f $sitedir$req_path'_footer.md')
+            ll_add handlers_body_foot md_handler $sitedir$req_path'_footer.md'            
+    }
     # Canonize explicit .html urls, the web server might handle this first!
     if not if(~ $local_path *.html && test -f $local_path)
         perm_redirect `{ echo $req_path|sed 's/.html$//' }
