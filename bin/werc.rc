@@ -114,8 +114,6 @@ fn werc_exec_request {
             pageTitle=$t
     }
 
-    dprint X^$"pageTitle^X
-
     # XXX Is this never true? because we set pageTitle earlier based on url.
     if(~ $"pageTitle '') 
         pageTitle=$"siteTitle' '$"siteSubTitle
