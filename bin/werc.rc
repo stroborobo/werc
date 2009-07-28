@@ -46,6 +46,7 @@ fn werc_exec_request {
     req_path=`{echo -n $REQUEST_URI | sed 's/\?.*//; s!//+!/!g; s/%5[Ff]/_/g; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
     req_url=$base_url^$req_path
     local_path=$sitedir$req_path
+    local_file=''
     ifs='/' { args=`{echo -n $req_path} }
 
     # Preload post args for templates where cgi's stdin is not accessible
@@ -103,13 +104,23 @@ fn werc_exec_request {
             perm_redirect $t
     }
 
+    setup_handlers
+
+
     # Set Page title
-    if(~ $"pageTitle '')
+    if(! ~ $local_file '') {
+        t=`{get_file_title $local_file}
+        if(! ~ $"t '')
+            pageTitle=$t
+    }
+
+    dprint X^$"pageTitle^X
+
+    # XXX Is this never true? because we set pageTitle earlier based on url.
+    if(~ $"pageTitle '') 
         pageTitle=$"siteTitle' '$"siteSubTitle
     if not
         pageTitle=$"pageTitle' | '$"siteTitle' '$"siteSubTitle
-
-    setup_handlers
 
     for(h in $extraHttpHeaders)
         echo $h

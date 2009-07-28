@@ -85,17 +85,26 @@ fn notices_handler {
 
 fn setup_handlers {
 
-    if(test -f $local_path.md)
-        handler_body_main=(md_handler $local_path.md)
-    if not if(test -f $local_path.tpl)
-        handler_body_main=(tpl_handler $local_path.tpl)
-    if not if(test -f $local_path.html)
-        handler_body_main=(html_handler $local_path.html)
+    if(test -f $local_path.md) {
+        local_file=$local_path.md
+        handler_body_main=(md_handler $local_file)
+    }
+    if not if(test -f $local_path.tpl) {
+        local_file=$local_path.tpl
+        handler_body_main=(tpl_handler $local_file)
+    }
+    if not if(test -f $local_path.html) {
+        local_file=$local_path.html
+        handler_body_main=(html_handler $local_file)
+    }
     # Global tpl (eg sitemap.tpl), should take precedence over txt handler!
     if not if(test -f tpl^$req_path^.tpl)
+        # XXX Should we set $local_file for global .tpls?
         handler_body_main=(tpl_handler tpl^$req_path^.tpl)
-    if not if(test -f $local_path.txt)
-        handler_body_main=(txt_handler $local_path.txt)
+    if not if(test -f $local_path.txt) {
+        local_file=$local_path.txt
+        handler_body_main=(txt_handler $local_file)
+    }
 
     # XXX Should check that $enabled_apps exist in $werc_apps?
     # XXX Should split init of apps that provide main handler (eg., blog) and apps that don't (eg., comments)?
