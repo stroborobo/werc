@@ -1,4 +1,4 @@
-<hr />
+<hr>
 <h2>Comments</h2>
 
 % for(c in `{ls $comments_dir/}) {
@@ -6,8 +6,8 @@
         <div class="comment">
             <h5>By: <i>%(`{cat $c/user}%)</i></b> (%(`{cat $c/posted}%))
         </h5>
-%       cat $c/body | escape_html | sed 's,$,<br />,'
-        <hr /></div>
+%       cat $c/body | escape_html | sed 's,$,<br>,'
+        <hr></div>
 %    }
 % }
 
