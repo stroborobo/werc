@@ -98,12 +98,13 @@ fn get_md_title {
 }
 
 fn get_html_title {
-    # H1 is not reliable because htmlroff doesn't use it :(
-    #desc=`{cat $1 | sed 32q | grep '<[Hh]1>' | sed 's/<[Hh]1>(.*)(<\/[Hh]1>|$)/\1/;s/<[^>]*>//g;1q'}
-    # Pick the first line of body  instead
-    desc=`{sed -n '/<[Bb][Oo][Dd][Yy]/,/./s/(<[^>]*>|$)//gp' < $1}
-    if(~ $#desc 0)
-        desc=`{sed 's/<[^>]*>//g; 1q' < $1}
+    t=`{sed -n '32q; s/^.*<[Tt][Ii][Tt][Ll][Ee]> *([^<]+) *(<\/[Tt][Ii][Tt][Ll][Ee]>.*)?$/\1/p' < $1}
+
+    # As a backup we might want to pick the first 'non-tag' text in the file with:
+    if(~ $"t '')
+        t=`{sed -n -e 's/^(<[^>]+>)*([^<]+).*/\2/p; 32q' < $1 | sed 1q}
+
+    echo $t
 }
 
 fn get_file_title {
