@@ -1,7 +1,7 @@
 werc - a minimalist document management system
 ----------------------------------------------
 
-Werc is a content management system and web framework designed to be simple to
+Werc is a content management system and web (anti-)framework designed to be simple to
 use, simple to setup, simple to hack on, and not get on the way while allowing
 users easy customization.
 
@@ -18,9 +18,13 @@ Requirements:
 
 Instructions:
 
-Untar, configure httpd to use bin/werc.rc as a cgi-script, and create a
-directory for your web site under sites/ where you can start to add content
-right away.
+Untar werc at your desired location, configure httpd to use
+/path-to-your-werc-installation/bin/werc.rc as a cgi-script, it is recommended
+that you make wrec.rc handle all non-static files (this can be done by setting
+it up as your 404 handler) and setup your virtual hosts to handle static files
+by setting the document root for the domain to
+/path-to-werc-installation/sites/yourdomain.com/, and create a directory for
+your web site under sites/ where you can start adding content right away.
 
 If you will want to allow updates via the web interface (eg., for wiki or
 comments apps) make sure all files under sites/ are writable by the user your
@@ -29,6 +33,8 @@ sites/; chmod -R g+w sites/
 
 If your Plan 9 from User Space installation is located somewhere else than the
 standard /usr/local/plan9/ you will need to edit the first line of bin/werc.rc
+(Note that p9p is picky about where it is located, once you run ./INSTALL you
+should *not* move it to a different directory without running ./INSTALL again.)
 
 For general configuration options copy etc/initrc to initrc.local and customize
 it as needed. Site (and directory) specific options can be set in a
@@ -59,8 +65,9 @@ or use Freshmeat: http://freshmeat.net/projects/werc/
 Thanks
 ------
 
-Garbeam, Kris Maglione, sqweek, soul9, mycroftiv and many others for their
-ideas, patches, testing and other contributions.
+Garbeam, Kris Maglione, sqweek, soul9, mycroftiv, maht, yiyus and many others
+for their ideas, patches, testing and other contributions.
+
 
 License
 -------
