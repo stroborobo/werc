@@ -26,7 +26,11 @@ fn nav_tree {
         path = $0 d
         gsub(/[\-_]/, " ", bname)
 
-        if(index(ENVIRON["req_path"] "/", path) == 1)
+        # To avoid false matches add trailing / even for plain files to act as delimiter
+        pa = path
+        gsub(/[^\/]$/, "&/", pa) 
+
+        if(index(ENVIRON["req_path"] "/", pa) == 1)
             print "<li><a href=\"" path "\" class=\"thisPage\">&raquo;<i> " bname "</i></a></li>"
         else 
             print "<li><a href=\"" path "\">&rsaquo; " bname "</a></li>"
