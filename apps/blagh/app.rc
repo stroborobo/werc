@@ -124,7 +124,7 @@ fn mkbpost {
         if(! ~ $"conf_blog_pubsubdub_hub '') {
             ifs='' { p=`{echo $req_url|sed 's/new_post$/index.atom/'|url_encode } }
             dprint hget -p 'hub.mode=publish&hub.url='^$"p $conf_blog_pubsubdub_hub
-            hget -d -h -p 'hub.mode=publish&hub.url='^$"p $conf_blog_pubsubdub_hub >[1=2]
+            hget -d -h -p 'hub.mode=publish&hub.url='^$"p $conf_blog_pubsubdub_hub >[1=2] &
         }
     }
     status=$_status
