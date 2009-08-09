@@ -17,7 +17,7 @@ fn listDir {
     d=$1
     dirfilter=$saveddf
     if(test -f $d/_werc/config)
-        . ./$d/_werc/config
+        . $d/_werc/config
 
     if(~ $#perm_redir_to 0) {
         echo '<ul class="sitemap-list">'
