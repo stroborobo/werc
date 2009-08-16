@@ -5,7 +5,7 @@ Plans and ideas for the future
 * Canonize and redirect all requests, we already do this for things like missing or trailing /, should do the same for /. and /./, etc. Deleting trailing . and , should make pasted urls in emails work as links (**Mostly done in RC1**)
 * Blog:
 	* Comment threading.
-	* Some form of pagination (taking advantage of history browsing.)
+	* Some form of pagination (taking advantage of history browsing.) (**Partially done**)
 * Sitemaps:
 	* Index pages should be used for description of directories.
 	* Cache web sitemap generation. (**Done in RC0**)

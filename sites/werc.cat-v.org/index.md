@@ -1,14 +1,16 @@
-werc - A sane web framework
-=============================
+werc - A sane web anti-framework
+================================
 
-Werc is a minimalist web framework built on the Unix and Plan 9 *tool philosophy* of software design.
+Werc is a minimalist web anti-framework built following the Unix and Plan 9
+*tool philosophy* of software design.
 
-Werc avoids the pain of managing collections of websites and developing web applications.
+Werc avoids the pain of managing collections of websites and developing web
+applications.
 
 * Database free, uses files and directories instead.
-* Written using the rc shell, leveraging the standard Unix/Plan 9 command toolkit.
+* Written using [the rc shell](http://rc.cat-v.org), leveraging the standard Unix/Plan 9 command toolkit.
 * Minimize tedious work: eg., no need to ever write HTML, use markdown (or any other format) instead.
-* Very minimalist yet extensible codebase: highly functional core is 150 lines, with extra functionality in modular apps.
+* Very minimalist yet extensible codebase: highly functional core is 150 lines, with extra functionality in modular [apps](/apps/).
 
 
 Features
@@ -16,9 +18,9 @@ Features
 
 Here are some of the features provided by werc:
 
-* Good integration with pre-existing content, you can add HTML or plain text files and they will be seamlessly integrated with the site.
-* You can use your favorite tools (text editor, file manager, etc) to edit and manage data stored in werc.
-* Designed to manage any number of 'virtual' domains that share a common style, layout, etc from a single werc installation.
+* Good integration with pre-existing content, you can add HTML or plain text files and they will be seamlessly integrated with the rest of the site.
+* You can use your favorite tools (text editor, shell, file manager, etc) to edit, manipulate and manage data stored in werc.
+* Designed to manage any number of 'virtual' domains that share a common style and layout from a single werc installation.
 * Configuration and customization can be at at any level: global, per-domain-group, domain-wide, directory sub-tree, and single file.
 * Can trivially run multiple (customized) versions of werc side by side.
 * Very simple and flexible user management and permissions system.
@@ -38,24 +40,28 @@ is available (this includes Linux, *BSD, OS X and Solaris), and on Plan 9.
 Werc can use any HTTP server that can handle CGI, and has been tested with at
 least Apache, Lighttpd, Cherokee, nhttpd, Hiawatha, and others.
 
-Werc uses markdown by default (and the standard Perl markdown is included with the distribution), to format documents, but any other formatting
-system can be used.
+Werc uses markdown by default (and the standard Perl markdown is included with
+the distribution), to format documents, but any other formatting system can be
+used.
 
 
-Latest Source
--------------
+Source
+------
 
-To get a copy of the latest development code using mercurial, do:
+To get a copy of the latest stable code using mercurial, do:
 
 	hg clone http://gsoc.cat-v.org/hg/werc/
 
 You can also [browse the online repository](http://gsoc.cat-v.org/hg/werc/).
 
+The latest development branch is located at http://gsoc.cat-v.org/hg/werc-dev/
+
 
 Contact
 -------
 
-For questions, suggestions, bugrepports and contributing patches you can join the [werc9 mailinglist](http://groups.google.com/group/werc9).
+For questions, suggestions, bugrepports and contributing patches you can join
+the [werc9 mailinglist](http://groups.google.com/group/werc9).
 
 On irc, join [#werc](irc://irc.freenode.org/werc) on irc.freenode.org
 
@@ -69,7 +75,10 @@ Links
 License
 -------
 
-Public domain (by default includes markdown.pl which has a different license, but this can be replaced).
+Public domain, [because so called 'intellectual property' is an oxymoron](http://harmful.cat-v.org/economics/intellectual_property/).
+
+(By default includes markdown.pl which has a different license, but this can be
+replaced).
 
 Credits
 -------

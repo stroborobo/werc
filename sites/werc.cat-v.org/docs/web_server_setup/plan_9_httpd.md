@@ -40,6 +40,13 @@ incapable of internally remapping the root directory, so until a solution is
 found for this, you will have to keep your site in a sub-directory of the web
 server root.
 
+In your /lib/namespace.httpd you probably will want to add something along the
+following lines to bind the werc directory into the httpd's namespace:
+
+    bind -b /usr/glenda/src/werc/ /usr/web/
+    bind /usr/glenda/src/werc/bin/ /usr/web/magic/
+
+
 **Notes**: This is experimental and work in progress, there are a couple of issues
 with the werc code itself that might need fixing, in particular you will need
 to replace the '%($"extraHeaders%)' in lib/headers.tpl with '% echo
