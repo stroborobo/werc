@@ -68,7 +68,7 @@ fn wman_get_section_desc {
 
 fn wman_page_gen {
     #troff -manhtml $1| troff2html -t 'Plan 9 from User Space'
-    nroff -man $1 \
+    troff -N -man $1 \
     | escape_html \
     | sed 's!([\.\-a-zA-Z0-9]+)\(('^`{echo $wman_cat_list|tr ' ' '|'}^')\)!<a href="../\2/\1">&</a>!g' \
     | awk '/^$/ {if(n != 1) print; n=1; next} /./ {n=0; print}'
