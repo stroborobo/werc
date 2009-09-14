@@ -1,7 +1,11 @@
     <div class="left">
       <a href="http://gsoc.cat-v.org">gsoc</a> |
-      <a href="http://doc.cat-v.org">doc archive</a> |
-      <a href="http://repo.cat-v.org">software repo</a> |
+      <a href="http://doc.cat-v.org">docs</a> |
+      <a href="http://repo.cat-v.org">repo</a> |
+      <a href="http://sam.cat-v.org">sam</a> |
+      <a href="http://man.cat-v.org">man</a> |
+      <a href="http://acme.cat-v.org">acme</a> |
+      <a href="http://glenda.cat-v.org">Glenda</a> |
       <a href="http://ninetimes.cat-v.org">9times</a> |
       <a href="http://harmful.cat-v.org">harmful</a> |
       <a href="http://9p.cat-v.org/">9P</a> |
