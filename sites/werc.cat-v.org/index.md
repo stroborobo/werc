@@ -76,13 +76,17 @@ Links
 * [werc project at freshmeat](http://freshmeat.net/projects/werc/) - You can get new release notifications there.
 * [werc project at ohloh](https://www.ohloh.net/p/werc/)
 
+
 License
 -------
 
-Public domain, [because so called 'intellectual property' is an oxymoron](http://harmful.cat-v.org/economics/intellectual_property/).
+Public domain, [because so called 'intellectual property' is an
+oxymoron](http://harmful.cat-v.org/economics/intellectual_property/).
 
-(By default includes markdown.pl which has a different license, but this can be
-replaced).
+Alternatively if your prefer it or your country's brain dead copyright law
+doesn't recognize the public domain werc is made available under the terms of
+the MIT and ISC licenses.
+
 
 Credits
 -------
