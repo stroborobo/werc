@@ -6,7 +6,12 @@ fn conf_enable_wiki {
 
 fn dirdir_init {
     if(! ~ $#enable_wiki 0 && check_user $wiki_editors_groups) {
-        dirdir_file=$local_path.md
+        lp=$local_path
+        # werc.rc doesn't append /index when $local_path doesn't exit
+        # maybe it should, but for now we can fix it up here.
+        if(~ $lp */) 
+            lp=$lp^'index'
+        dirdir_file=$lp.md
         dirdir_dir=$dirdir_file^'_werc/dirdir/'
  
         if(~ 1 $#post_arg_dirdir_edit $#post_arg_dirdir_preview)
