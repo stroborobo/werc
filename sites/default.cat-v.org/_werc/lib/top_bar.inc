@@ -1,5 +1,5 @@
     <div class="left">
-      <a href="http://gsoc.cat-v.org">gsoc</a> |
+      <a href="http://quotes.cat-v.org">quotes</a> |
       <a href="http://doc.cat-v.org">docs</a> |
       <a href="http://repo.cat-v.org">repo</a> |
       <a href="http://sam.cat-v.org">sam</a> |
