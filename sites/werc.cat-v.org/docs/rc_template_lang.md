@@ -11,6 +11,11 @@ Basic syntax:
 
 That is basically it!
 
+For further documentation on rc see:
+
+* [The rc(1) man page for Plan 9](http://man.cat-v.org/plan_9/1/rc).
+* [The rc shell paper by Tom Duff](http://rc.cat-v.org).
+
 
 Examples
 --------
