@@ -37,6 +37,10 @@ server with CGI support.
 Werc runs on any Unix-like system where [Plan 9 from User Space](http://plan9.us)
 is available (this includes Linux, *BSD, OS X and Solaris), and on Plan 9.
 
+If you use Debian you can install the `9base` package that will provide all the
+required commands (but at the moment you need to install the version in *sid*,
+older versions in stable lack some of the required programs)
+
 Werc can use any HTTP server that can handle CGI, and has been tested with at
 least Apache, Lighttpd, Cherokee, nhttpd, Hiawatha, and others.
 
@@ -72,13 +76,17 @@ Links
 * [werc project at freshmeat](http://freshmeat.net/projects/werc/) - You can get new release notifications there.
 * [werc project at ohloh](https://www.ohloh.net/p/werc/)
 
+
 License
 -------
 
-Public domain, [because so called 'intellectual property' is an oxymoron](http://harmful.cat-v.org/economics/intellectual_property/).
+Public domain, [because so called 'intellectual property' is an
+oxymoron](http://harmful.cat-v.org/economics/intellectual_property/).
 
-(By default includes markdown.pl which has a different license, but this can be
-replaced).
+Alternatively if your prefer it or your country's brain dead copyright law
+doesn't recognize the public domain werc is made available under the terms of
+the MIT and ISC licenses.
+
 
 Credits
 -------
