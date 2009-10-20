@@ -5,6 +5,9 @@ fn conf_enable_comments {
         allow_new_user_comments=yes
         shift
     }
+    if not if(~ $1 -a) {
+        bridge_anon_comments=yes 
+    }
     enable_comments=yes
     groups_allowed_comments=$*
     conf_enable_app bridge
@@ -66,6 +69,12 @@ fn mk_new_comment {
             }
             if not
                 _status=$status
+        }
+        if not if(! ~ $#bridge_anon_comments 0) {
+            if(~ $"post_arg_ima_robot 'not')
+                u='Glenda' # Anonymous
+            if not
+                _status='You are a robot!'
         }
         if not
             _status='You need to log in to comment.'

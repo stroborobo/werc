@@ -6,7 +6,8 @@
     <br>
     <input type="submit" name="bridge_post" value="Post a comment">
 
-% if(~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0) {
+% if(~ $#logged_user 0) {
+%   if(~ $#allow_new_user_comments 1) {
     <label>New user name:
         <input type="text" name="comment_user" value="%($"post_arg_comment_user%)">
     </label>
@@ -21,5 +22,14 @@
     <div style="font-size: 70%">
     Enter your desired user name/password and after your comment has been reviewed by an admin it will be posted and your account will be enabled. If you are already registered please <a href="/_users/login" rel="nofollow">login</a> before posting.
     </div>
+%   }
+%   if not if(~ $#bridge_anon_comments 1) {
+    <label>Are you a robot? 
+        <select>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+        </select>
+    </label>
+%   }
 % }
 </form>
