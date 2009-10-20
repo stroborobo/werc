@@ -24,10 +24,12 @@
     </div>
 %   }
 %   if not if(~ $#bridge_anon_comments 1) {
-    <label>Are you a robot? 
-        <select>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+    <label>Is <a href="http://glenda.cat-v.org">Glenda a cute bunny</a>?
+        <select name='ima_robot'>
+        <option value="yes">No</option>
+        <option value="not">Yes</option>
+        <option value="foobar">I hate bunnies!</option>
+        <option value="robot">I'm a robot!</option>
         </select>
     </label>
 %   }

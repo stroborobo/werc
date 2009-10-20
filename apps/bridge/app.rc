@@ -20,7 +20,7 @@ fn bridge_init {
         if(~ $REQUEST_METHOD GET && test -d $comments_dir)
             ll_add handlers_body_foot template apps/bridge/comments_list.tpl
 
-        if(check_user $groups_allowed_comments || {~ $#logged_user 0 && ! ~ $#allow_new_user_comments 0}) {
+        if(check_user $groups_allowed_comments || {~ $#logged_user 0 && ~ 1 $#allow_new_user_comments $#bridge_anon_comments}) {
 
             if(~ $#post_arg_bridge_post 1) {
                 ll_add handlers_body_foot template apps/bridge/foot.tpl
