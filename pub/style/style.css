@@ -121,7 +121,7 @@ body {
 }
 
 li ul {
-  padding-left: 1.0em !important;
+  padding-left: 0.6em !important;
 }
 
 #side-bar li {
@@ -134,11 +134,11 @@ li ul {
   background-color: transparent;
   text-decoration: none;
   margin: 0;
-  padding: 0.35em 1ex 0.35em 2mm;
+  padding: 0.25em 1ex 0.25em 2mm;
   display: block;
   text-transform: capitalize;
   font-weight: bold!important;
-  font-size: 104%;
+  font-size: 102%;
   border-left: white solid 0.2em;
 }
 
@@ -163,7 +163,6 @@ li ul {
 }
 
 #side-bar .sideBarText a {
-  text-decoration: underline;
   margin: 0;
   padding: 0;
   display: inline;
@@ -206,11 +205,11 @@ li ul {
 #main-copy a {
   color: rgb(0,102,204);
   background-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 #main-copy a:hover {
-  text-decoration: none;
+  color:  rgb(100,135,220);
 }
 
 #main-copy h1, #main-copy h2 {
