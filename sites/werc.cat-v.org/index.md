@@ -67,7 +67,7 @@ Contact
 For questions, suggestions, bugrepports and contributing patches you can join
 the [werc9 mailinglist](http://groups.google.com/group/werc9).
 
-On irc, join [#werc](irc://irc.freenode.org/werc) on irc.freenode.org
+On irc, join [#cat-v](irc://irc.freenode.org/cat-v) on irc.freenode.org
 
 
 Links
