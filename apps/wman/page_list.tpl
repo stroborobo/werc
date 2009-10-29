@@ -5,7 +5,7 @@
 %{
 wman_ls_pages $wman_cat_path \
     | awk -F/ '{ print "<li><a href=\""$(NF)"\">"$(NF)"</a></li>" }
-    NR%28 == 0 { print "</ul><ul style=\"float: left\">" }'
+    NR%20 == 0 { print "</ul><ul style=\"float: left\">" }'
 %}
 </ul>
 
