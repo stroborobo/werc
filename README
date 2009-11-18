@@ -36,8 +36,8 @@ standard /usr/local/plan9/ you will need to edit the first line of bin/werc.rc
 (Note that p9p is picky about where it is located, once you run ./INSTALL you
 should *not* move it to a different directory without running ./INSTALL again.)
 
-For general configuration options copy etc/initrc to initrc.local and customize
-it as needed. Site (and directory) specific options can be set in a
+For general configuration options copy etc/initrc to etc/initrc.local and
+customize it as needed. Site (and directory) specific options can be set in a
 sites/example.com/_werc/config file inside the site's directory. To customize
 templates and included files you can store your own version of the files in
 lib/ under sites/example.com/_werc/lib
