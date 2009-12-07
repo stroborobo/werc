@@ -29,6 +29,8 @@ fn wman_init {
             if(~ $wman_page intro && test -f $wman_cat_path^/0^$"wman_page_file)
                  wman_page_file=0^$"wman_page_file
             wman_page_file=$wman_cat_path^/^$"wman_page_file
+            x=`{echo $"req_path|sed 's%.*/([^/]+)/'$"wman_cat'/'^$"wman_page^'%\1%; s%_% %g'}
+            pageTitle=$wman_page' page from Section '$wman_cat' of the '^$"x' manual'
         }
     }
 
