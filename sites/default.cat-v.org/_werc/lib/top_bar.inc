@@ -2,6 +2,7 @@
       <a href="http://quotes.cat-v.org">quotes</a> |
       <a href="http://doc.cat-v.org">docs</a> |
       <a href="http://repo.cat-v.org">repo</a> |
+      <a href="http://go-lang.cat-v.org">golang</a> |
       <a href="http://sam.cat-v.org">sam</a> |
       <a href="http://man.cat-v.org">man</a> |
       <a href="http://acme.cat-v.org">acme</a> |
