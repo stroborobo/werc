@@ -17,7 +17,7 @@ Possible alternative names: Blag, Blah, Bragg.
 Posting
 -------
 
-New pots can be created in at least two different ways: using the web interface (if you have logged in and your user or groups are in `$conf_blog_editors`) or from the command line using the script at bin/aux/bpst.rc, as you can see from the source of that very simple script, it is trivial to create new posts by simply using mkdir and echo.
+New pots can be created in at least two different ways: using the web interface (if you have logged in and your user or groups are in `$conf_blog_editors`) or from the command line using the script at `bin/aux/bpst.rc`.  This script will, optionally, take a file as an argument using the `-f` switch.  It will open that file in your `$EDITOR` or create a new temporary file if the `-f` switch is omitted.  When you have finished editing the file, the script will call `ispell` (so you may want to install that as well) to check for spelling errors.  Once that has completed a new directory structure will be created in your blog's root directory as a hidden folder named after the current year (as detected by `date`).  You can inspect this directory structure for continuity and `mv` it to unhide it when you are satisfied.  You are encouraged to read the source of that very simple script, and you shall see that it is trivial to create new posts by simply using `mkdir` and `echo`.
 
 Configuration options
 ---------------------
@@ -40,9 +40,19 @@ Examples:
 
 This is optional and by default set to the 'blog-editors' group.
 
+### `conf_max_lines_per_post=`*[integer]*
+
+This option may be added using the patch linked bellow.  It defaults to `6` which **should** only include the page heading and the first two paragraphs of each post on the main blogroll(?) page.  This is far from complete, but works for me.  See it in action at <http://blog.senet.us>
+
+[blagh-91a4597480a7-conf\_max\_lines\_per\_post.diff](http://senet.us/blagh-91a4597480a7-conf_max_lines_per_post.diff) (1.2K) (20100114)
+
+**Author**: J Thigpen (cdarwin) <darwin@senet.us>
+
 See also:
 
 * To edit blog posts you can use the functionality provided by [the dirdir app](../dirdir/).
 * Commenting can be handled by [the bridge app](../bridge/).
+
+
 
 

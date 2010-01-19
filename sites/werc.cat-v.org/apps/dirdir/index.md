@@ -1,7 +1,7 @@
 DirDir - A directory-oriented WikiWiki
 ======================================
 
-DirDir is the next generation [diri wiki](http://repo.cat-v.org/diri/), now implemented on top of wercand
+DirDir is the next generation [diri wiki](http://repo.cat-v.org/diri/), now implemented on top of werc and
 taking advantage of its user, site management frameworks and other
 infrastructure.  
 
