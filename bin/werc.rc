@@ -117,8 +117,8 @@ fn werc_exec_request {
     # XXX Is this never true? because we set pageTitle earlier based on url.
     if(~ $"pageTitle '') 
         pageTitle=$"siteTitle' '$"siteSubTitle
-    if not
-        pageTitle=$"pageTitle' | '$"siteTitle' '$"siteSubTitle
+#    if not
+#        pageTitle=$"pageTitle' | '$"siteTitle' '$"siteSubTitle
 
     for(h in $extraHttpHeaders)
         echo $h
