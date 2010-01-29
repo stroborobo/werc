@@ -1,8 +1,15 @@
 Werc Configuration Options
 ==========================
 
+You can also find a description of some basic config options in the `etc/initrc` file itself.
 
-Titles and metadata
+General Setup Options
+--------------------
+
+* `formatter` - Command to use for document formatting (usually some form of markdown), should be able to take input both from file names passed as arguments or from stdin if no file names are provided. By default: `formatter=(fltr_cache markdown.pl)`
+
+
+Titles and Metadata
 -------------------
 
 Variables:
@@ -17,7 +24,7 @@ Variables:
     * extraHeaders  - Raw extra html headers, the content of this var will be inserted inside the `<head>` tag..
 
 
-Sidebar and navigation
+Sidebar and Navigation
 ----------------------
 
 Variables:
@@ -28,7 +35,7 @@ Functions:
 
 * `conf_hide_paths [path_patterns ...]` - Hide the given patterns from navigation menu, sitemap and dir listing (do *not* depend on this for security!).
 
-Http control
+HTTP Control
 ------------
 
 Variables:
