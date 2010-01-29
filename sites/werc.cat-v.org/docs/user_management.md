@@ -22,7 +22,7 @@ Example
 To create a user called [glenda](http://glenda.cat-v.org) that is a member of the group `rabbits` you can do:
 
 	% mkdir etc/users/glenda/
-	% echo carrot > etc/user/glenda/password
+	% echo carrot > etc/users/glenda/password
 	% mkdir -p etc/users/rabbits
 	% echo glenda >> etc/users/rabbits/members
 
