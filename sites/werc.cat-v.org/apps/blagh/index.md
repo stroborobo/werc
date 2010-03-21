@@ -42,7 +42,7 @@ This is optional and by default set to the 'blog-editors' group.
 
 ### `conf_max_lines_per_post=`*[integer]*
 
-This option may be added using the patch linked bellow.  It defaults to `6` which **should** only include the page heading and the first two paragraphs of each post on the main blogroll(?) page.  This is far from complete, but works for me.  See it in action at <http://blog.senet.us>
+This option may be added using the patch linked bellow.  It defaults to `7` which **should** only include the page heading and the first two paragraphs of each post on the main blogroll(?) page.  This makes many assumptions that should be noted.  It just removes everything from `conf_max_lines_per_post` to the end of the file.  Traditionally, line 1 is the H1 title and line 2 is the line of = required to tell mardown of it's importance.  This then assumes that each paragraph is on a single line, which is not enforced by markdown.  See it in action at <http://blog.senet.us>
 
 [blagh-91a4597480a7-conf\_max\_lines\_per\_post.diff](http://senet.us/blagh-91a4597480a7-conf_max_lines_per_post.diff) (1.2K) (20100114)
 
@@ -52,6 +52,7 @@ See also:
 
 * To edit blog posts you can use the functionality provided by [the dirdir app](../dirdir/).
 * Commenting can be handled by [the bridge app](../bridge/).
+
 
 
 
