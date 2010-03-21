@@ -13,7 +13,7 @@ Plans and ideas for the future
 	* Need to find a way to rig the order of items in the sidebar.
 	* Right sidebar.
 	* Make it easier to disable all sidebars and headers/footers, eg., for full screen mode.
-	* More testing and optimizations for movile browsers, eg., http://www.operamini.com/demo/ Left sidebar had some minor issues in cellphones at some poitn.
+	* More testing and optimizations for mobile browsers, eg., http://www.operamini.com/demo/ Left sidebar had some minor issues in cellphones at some point.
 * Better page titles (include whole path hierarchy?)
 * Allow utf-8 characters in path elements (need to make sure this is safe, and not sure how useful it will be)
 * General code:
@@ -22,8 +22,8 @@ Plans and ideas for the future
 	* Document better the 'API' for sub-apps, both a set of environment vars apps can rely on (and in some cases set) and functions they can call (WIP).
 * Better generation of descriptive HTML META tags, eg.,: {META name="description" content="This is the Google Summer of Code blog for Plan9 and Inferno projects."} {META name="keywords" content="google, summer of code, inferno, plan9, programming"}
 * Should add werc to certain wikipedia lists:
-	* http://en.wikipedia.org/wiki/List_of_content_management_systems
-	* http://en.wikipedia.org/wiki/Comparison_of_wiki_software
+	* `http://en.wikipedia.org/wiki/List_of_content_management_systems`
+	* `http://en.wikipedia.org/wiki/Comparison_of_wiki_software`
 * Include txt2tags as builtin alternative to markdown.
 * Mathematic pseudo-CAPTCHA ala WP's 'Math Comment Spam Protection Plugin'.
 
