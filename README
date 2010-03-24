@@ -20,7 +20,7 @@ Instructions:
 
 Untar werc at your desired location, configure httpd to use
 /path-to-your-werc-installation/bin/werc.rc as a cgi-script, it is recommended
-that you make wrec.rc handle all non-static files (this can be done by setting
+that you make werc.rc handle all non-static files (this can be done by setting
 it up as your 404 handler) and setup your virtual hosts to handle static files
 by setting the document root for the domain to
 /path-to-werc-installation/sites/yourdomain.com/, and create a directory for
