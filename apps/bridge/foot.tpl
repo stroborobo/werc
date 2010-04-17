@@ -20,7 +20,7 @@
         <input type="password" name="comment_passwd2" value="">
     </label>
     <div style="font-size: 70%">
-    Enter your desired user name/password and after your comment has been reviewed by an admin it will be posted and your account will be enabled. If you are already registered please <a href="/_users/login" rel="nofollow">login</a> before posting.
+    Enter your desired user name/password and after your comment has been reviewed by an admin it will be posted and your account will be enabled. If you are already registered please <a href="/_users/login">login</a> before posting.
     </div>
 %   }
 %   if not if(~ $#bridge_anon_comments 1) {
