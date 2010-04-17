@@ -70,7 +70,9 @@ fn blagh_body {
     if (! ~ $"blogTitle '')
         echo '<h1>'$"blogTitle'</h1>'
 
-    echo '<div style="text-align:right">(<a href="index.rss">RSS Feed</a>|<a href="index.atom">Atom Feed</a>)</div>'
+    # Direct links to feeds are disabled because they are not very useful, add clutter and might waste pagerank.
+    # An user can add this on their own using handlers_body_head anyway.
+    #echo '<div style="text-align:right">(<a href="index.rss">RSS Feed</a>|<a href="index.atom">Atom Feed</a>)</div>'
 
     { # XXX Not sure why this fixes issues with blog setup, probably bug in fltr_cache!
     for(p in `{get_post_list $blagh_root^$blagh_dirs}) {
