@@ -54,7 +54,7 @@ Source
 
 To get a copy of the latest stable code using mercurial, do:
 
-	hg clone http://gsoc.cat-v.org/hg/werc/
+	hg clone http://hg.cat-v.org/werc/
 
 You can also [browse the online repository](http://gsoc.cat-v.org/hg/werc/).
 
