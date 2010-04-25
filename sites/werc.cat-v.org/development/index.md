@@ -13,7 +13,7 @@ Releases with an even 'dot-number' (eg., 1.2.x) are stable releases, only receiv
 Major non-backwards compatible changes are only made in major release numbers (eg., 2.0).
 
 
-But reports, feature requests, bug fixes and other patches are all very welcome, just send them to the [werc9 mailing list](http://groups.google.com/group/werc9).
+Bug reports, feature requests, bug fixes and other patches are all very welcome, just send them to the [werc9](http://groups.google.com/group/werc9) mailing list.
 
 
 See Also
