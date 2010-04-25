@@ -13,7 +13,7 @@ Installation
 
 Requirements:
 
-* Plan 9 from User Space - http://plan9.us
+* Plan 9 from User Space: http://plan9.us - Or 9base-5 or later: http://tools.suckless.org/9base
 * An http server that can handle CGIs
 
 Instructions:
