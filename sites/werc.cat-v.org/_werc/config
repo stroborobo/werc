@@ -4,4 +4,4 @@ siteSubTitle='Bringing minimalism and sanity to the web'
 conf_enable_comments
 conf_enable_wiki
 
-ll_add handlers_body_head echo '<div style="text-align:right"><script type="text/javascript" src="http://www.reddit.com/r/programming/button.js?t=1"></script></div>'
+#ll_add handlers_body_head echo '<div style="text-align:right"><script type="text/javascript" src="http://www.reddit.com/r/programming/button.js?t=1"></script></div>'
