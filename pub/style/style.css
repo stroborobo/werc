@@ -3,7 +3,7 @@
 body {
   color: black;
   background-color: white;
-  font-family: Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;
+  font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 84%;  /* Enables font size scaling in MSIE */
   margin: 0;
   padding: 0;
