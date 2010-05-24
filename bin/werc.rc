@@ -96,7 +96,7 @@ fn werc_exec_request {
         p=$$l
         r=$p(1)
         # If target is absolute, then patern must match whole string
-        if(~ $p(2) http://* https://)
+        if(~ $p(2) http://* https://*)
             r='^'$r 
         t=`{ echo $req_path | sed 's!'^$r^'!'^$p(2)^'!' } # Malicious danger!
 
