@@ -1,6 +1,6 @@
 fn hello_init {
     if(~ $req_path /hello) {
-        app_body_handler = 'hello_body'
+        handler_body_main='hello_body'
         pageTitle='Hi title!'
     }
 }
