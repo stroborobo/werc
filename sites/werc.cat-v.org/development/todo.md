@@ -1,5 +1,12 @@
-Plans and ideas for the future
+Plans and Ideas for the Future
 ==============================
+
+This page lists various assorted ideas and features that have been proposed at
+some point or another, nothing (except fixing the listed bugs) is assured to be
+implemented, many things here might turn out to be bad ideas.
+
+Features
+--------
 
 * Review ideas from: http://www.w3.org/TR/chips/ and http://www.w3.org/Provider/Style/URI and see if we can do better.
 * Canonize and redirect all requests, we already do this for things like missing or trailing /, should do the same for /. and /./, etc. Deleting trailing . and , should make pasted urls in emails work as links (**Mostly done in RC1**)
@@ -12,13 +19,14 @@ Plans and ideas for the future
 * Layout improvements:
 	* Need to find a way to rig the order of items in the sidebar.
 	* Right sidebar.
+    * Top+left/right nav vars (breadcrumbs at the top, current dir listing on the side)
 	* Make it easier to disable all sidebars and headers/footers, eg., for full screen mode.
 	* More testing and optimizations for mobile browsers, eg., http://www.operamini.com/demo/ Left sidebar had some minor issues in cellphones at some point.
-* Better page titles (include whole path hierarchy?)
+* Better page titles (include whole path hierarchy?) (**Partially done, is it good enough now?**)
 * Allow utf-8 characters in path elements (need to make sure this is safe, and not sure how useful it will be)
 * General code:
-	* Write a regression test suite
-	* Replace all references to non p9p/p9 programs (done?)
+	* Write a regression test suite. (*Started*)
+	* Replace all references to non p9p/p9 programs (*Done?*)
 	* Document better the 'API' for sub-apps, both a set of environment vars apps can rely on (and in some cases set) and functions they can call (WIP).
 * Better generation of descriptive HTML META tags, eg.,: {META name="description" content="This is the Google Summer of Code blog for Plan9 and Inferno projects."} {META name="keywords" content="google, summer of code, inferno, plan9, programming"}
 * Should add werc to certain wikipedia lists:
@@ -28,13 +36,13 @@ Plans and ideas for the future
 * Mathematic pseudo-CAPTCHA ala WP's 'Math Comment Spam Protection Plugin'.
 
 
-Future plans
-------------
+Future Plansi and Blue Sky
+--------------------------
 
-* Wanted apps:
+* Wanted [apps](/apps/):
 	* Tagging, eg., append to _werc/tags
 	* Related links sidebar generation.
-	* Bug/issue tracking app.
+	* [Bug/issue tracking app](/apps/gregor/).
 	* Hg/git repository browser.
 	* Implement AtomPub.
 
@@ -42,7 +50,7 @@ Future plans
 * A way to wrap external cgi applications (eg., existing hg/git browser)
 * A way to generate static sites (ie., use werc as an offline  templating system)
 * [9P](http://9p.cat-v.org) interface.
-* New (simplified) markdown implementation, ideally in C or awk (maybe smu/libsmu by gottox?):
+* New (simplified) markdown implementation, ideally in C or awk (maybe smu/libsmu by gottox?), yiyus great md2html.awk is a great start!
   * Simplified
   * Tables
   * Images
@@ -50,8 +58,17 @@ Future plans
   * No inline html
 
 
-Known bugs
+Known Bugs
 ----------
+
+* It seems that certain chars are not propely encoded in cookies, possibly broken chars: :&%[+ Fix should go in cgilib.rc^set_cookie (Have to figure out the proper way to scape cookie strings first)
+* If a dir under apps/ doesn't contain an app.rc file, werc fails to start. A possible fix would be to replace $werc_apps default with `apps/*/app.rc` instead of `apps/*/`, this would be backwards incompatible, but I doubt anyone uses that option.
+* Links in Blagh feeds become confused if markdown 'references' are used, markdown references suck, but I guess we need to address this somehow... 
+* Somewhat similarly to the abouve, relative urls in imgs, links, etc. can easily break when used in Blagh posts, so it is not all markdown's fault.
+
+
+Fixed or WFM Bugs
+-----------------
 
 * Sitemap can handle $dirfilter inconsistently from other places (**fixed**).
 * Finding directories that are inaccessible (-rx) can generate an infinite loop (**Works for me? Fixed with new menu code?**)
