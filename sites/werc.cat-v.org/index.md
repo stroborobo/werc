@@ -1,7 +1,7 @@
 werc - A sane web anti-framework
 ================================
 
-Werc is a minimalist web anti-framework built following the Unix and Plan 9
+Werc is a minimalist web anti-framework built following the [Unix](http://doc.cat-v.org/unix/) and [Plan 9](http://plan9.cat-v.org)
 *tool philosophy* of software design.
 
 Werc avoids the pain of managing collections of websites and developing web

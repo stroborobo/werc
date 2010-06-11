@@ -13,7 +13,7 @@ That is basically it!
 
 For further documentation on rc see:
 
-* [The rc(1) man page for Plan 9](http://man.cat-v.org/plan_9/1/rc).
+* [The rc(1) man page from Plan 9](http://man.cat-v.org/plan_9/1/rc).
 * [The rc shell paper by Tom Duff](http://rc.cat-v.org).
 
 
@@ -27,8 +27,18 @@ Loops
     %   echo '<li>'$i'</li>'
     % }
     </uL>
- 
-Is equivalent to: 
+
+Can also be writen as:
+
+    <ul>
+    %{
+    for(i in a b c) {
+       echo '<li>'$i'</li>'
+    }
+    %}
+    </uL>
+
+and is equivalent to: 
 
     <ul>
     % for(i in a b c) {
@@ -36,7 +46,7 @@ Is equivalent to:
     % }
     </uL>
 
-and results in this output:
+All three code examples result in this output:
 
     <ul>
     <li>a</li>
