@@ -144,7 +144,7 @@ fn setup_handlers {
         setup_404_handler
 }
 
-# This function allows config files to deffine their own 404 handlers.
+# This function allows config files to define their own 404 handlers.
 fn setup_404_handler {
     handler_body_main=(tpl_handler `{get_lib_file 404.tpl})
     echo 'Status: 404 Not Found'
