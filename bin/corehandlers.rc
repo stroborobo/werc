@@ -75,9 +75,9 @@ fn dir_listing_handler {
     d=`{basename -d $1}
     if(~ $#d 0)
         d='/'
-    echo $d|sed 's,.*//,,g; s,/$,,; s,/, / ,g; s,.*,<h1 class="dir-list-head">&</h1> <ul class="dir-list">,'
+    echo $d|sed 's,.*//,,g; s,/$,,; s,/, / ,g; s/[\-_]/ /g; s,.*,<h1 class="dir-list-head">&</h1> <ul class="dir-list">,'
     # Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
-    ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean' s,.*/([^/]+/?)$,<li><a href="\1">\1</a></li>,'
+    ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean | awk '{match($0, "/[^/]*/?$"); l=substr($0, RSTART+1, RLENGTH-1);n=l; gsub(/[\-_]/, " ", n); print "<li><a href=\""l"\">"n"</a></li>"; }'
     echo '</ul>'
 }
 
