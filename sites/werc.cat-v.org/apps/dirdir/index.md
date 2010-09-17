@@ -34,6 +34,13 @@ Status
 Mostly usable, all basic features already implemented in the latest werc source
 tree. 
 
+
+TODO
+----
+
+* Do some markdown preprocessing, for example: `[[Foo Bar]]` -> `[Foo Bar](foo-bar)`
+
+
 About the name
 --------------
 
