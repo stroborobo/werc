@@ -1,8 +1,9 @@
 Site Customization
 ==================
 
-To change any of the default templates and include files simply copy them
-from /lib/ to your site's _werc/lib/ and edit at will.
+To change any of the default templates or include files found in /lib/ simply copy them from /lib/ to your site's _werc/lib/ and edit at will.
+
+To change any of the templates found in /tpl/ (e.g. sitemap.tpl), copy the file to your site's root (e.g. /sites/foo.bar.com/sitemap.tpl) and then edit.
 
 File Types
 ----------
@@ -48,3 +49,5 @@ See also
 --------
 
 * [CSS style sheets customization](css_style).
+
+
