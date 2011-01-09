@@ -1,4 +1,5 @@
 fn conf_enable_wman {
+    wman_tmac=an
     wman_base_uri=$conf_wd
     wman_man_path=$*
     if(~ $#wman_man_path 0)
@@ -6,7 +7,7 @@ fn conf_enable_wman {
     conf_enable_app wman
 }
 
-wman_junk_filter='/(\/(INDEX|\.cvsignore)|\.9p|\.html)$/d; s!/man([0-9]+/[^/]+)$!/\1!; '
+wman_junk_filter='/(\/(INDEX|\.cvsignore|_.*)|\.9p|\.html)$/d; s!/man([0-9]+/[^/]+)$!/\1!; '
 fn wman_ls_pages {
     ls $* \
         | sed $dirfilter^$wman_junk_filter^' s/\.([0-9]|9p)$//; s!/0intro$!/intro!' \
@@ -70,8 +71,19 @@ fn wman_get_section_desc {
 
 fn wman_page_gen {
     #troff -manhtml $1| troff2html -t 'Plan 9 from User Space'
-    troff -N -man $1 \
-    | escape_html \
+    # Using GNU col here to remove nroffs garbage (eg., from .ft B); p9p has no col(1) :(
+    troff -N -m$wman_tmac $1 | wman_out_filter
+}
+
+fn wman_out_filter {
+    wman_default_out_filter
+}
+
+fn wman_default_out_filter {
+    escape_html \
     | sed 's!([\.\-a-zA-Z0-9]+)\(('^`{echo $wman_cat_list|tr ' ' '|'}^')\)!<a href="../\2/\1">&</a>!g' \
     | awk '/^$/ {if(n != 1) print; n=1; next} /./ {n=0; print}'
+
 }
+
+
