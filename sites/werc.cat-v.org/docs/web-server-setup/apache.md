@@ -35,7 +35,7 @@ This lets apache handle static files.
         ServerName test.cat-v.org
         AddHandler cgi-script .rc
 
-        <Directory /var/wwww/werc/bin>
+        <Directory /var/www/werc/bin>
             Options ExecCGI
         </Directory>
         <IfModule mod_dir.c>
@@ -89,4 +89,5 @@ Apache 1.3.x: advanced configuration
         ErrorDocument 404 /werc.rc
 
     </VirtualHost>
+
 
