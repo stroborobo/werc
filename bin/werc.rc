@@ -42,7 +42,7 @@ fn werc_exec_request {
 
     # Note: $REQUEST_URI is not officially in CGI 1.1, but seems to be de-facto
     # Note: We only urldecode %5F->'_' because some sites (stackoverflow.com?) urlencode it in their links,
-    # perhaps we should completel urldecode the whole url.
+    # perhaps we should completely urldecode the whole url.
     req_path=`{echo -n $REQUEST_URI | sed 's/\?.*//; s!//+!/!g; s/%5[Ff]/_/g; s/'^$forbidden_uri_chars^'//g; s/\.\.*/./g; 1q'}
     req_url=$base_url^$req_path
     local_path=$sitedir$req_path
