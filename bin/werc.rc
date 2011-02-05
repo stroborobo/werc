@@ -135,4 +135,4 @@ fn werc_exec_request {
     echo $res_tail
 }
 
-werc_exec_request
+werc_exec_request # >[2]/tmp/wercdebug.log
