@@ -52,9 +52,17 @@ Access Control and Permissions
 
 The permissions system is very flexible, for example to only allow access to members of the group 'editors' you can do something like:
 
-    if(! check_user editors)
-        perm_redirect /_users/login
+    switch ($req_path) {
+    case /_users/login
+    case /pub/*
+    case /robots.txt
+    case *
+        if(! check_user editors)
+                perm_redirect /_users/login
+    }
+
 
 To automatically redirect users without permission to the login page if they are not members of the group 'editors'.
 
 See also [the documentation on user and group management](user_management).
+

@@ -60,6 +60,7 @@ Future Plansi and Blue Sky
 Similar frameworks to be investigated and mined for good ideas to steal:
 
   * TinyTim: http://www.reddit.com/r/programming/duplicates/dbaee/
+  * nanoblogger: http://nanoblogger.sourceforge.net/
 
 
 Known Bugs
@@ -69,6 +70,11 @@ Known Bugs
 * If a dir under apps/ doesn't contain an app.rc file, werc fails to start. A possible fix would be to replace $werc_apps default with `apps/*/app.rc` instead of `apps/*/`, this would be backwards incompatible, but I doubt anyone uses that option.
 * Links in Blagh feeds become confused if markdown 'references' are used, markdown references suck, but I guess we need to address this somehow... 
 * Somewhat similarly to the abouve, relative urls in imgs, links, etc. can easily break when used in Blagh posts, so it is not all markdown's fault.
+* .md files of the following form, without a new line after the last = seem to cause problems in some setups:
+
+    Foo Bar
+    =======
+
 
 
 Fixed or WFM Bugs

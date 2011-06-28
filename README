@@ -13,8 +13,14 @@ Installation
 
 Requirements:
 
-* Plan 9 from User Space: http://plan9.us - Or 9base-5 or later: http://tools.suckless.org/9base
 * An http server that can handle CGIs
+* Plan 9 from User Space: http://plan9.us - Or 9base-5 or later: http://tools.suckless.org/9base
+
+Note: Werc by default expects the Plan 9 tools to be installed under
+/usr/local/plan9/bin/, if you have installed them elsewhere you will need to
+edit the #! line in bin/werc.rc and customize the $plan9port variable in your
+etc/initrc.local.
+
 
 Instructions:
 
