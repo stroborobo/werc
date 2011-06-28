@@ -33,10 +33,13 @@ Features
 	* `http://en.wikipedia.org/wiki/List_of_content_management_systems`
 	* `http://en.wikipedia.org/wiki/Comparison_of_wiki_software`
 * Include txt2tags as builtin alternative to markdown.
-* Mathematic pseudo-CAPTCHA ala WP's 'Math Comment Spam Protection Plugin'.
+* Spam protection:
+    * Mathematic pseudo-CAPTCHA ala WP's 'Math Comment Spam Protection Plugin'.
+    * kfx (via cinap) suggests you just put a hidden text input box (or textarea?), "Dont write in this input box: [ ..... ]", if the bots fill it out ignore the post
 
 
-Future Plansi and Blue Sky
+
+Future Plans and Blue Sky
 --------------------------
 
 * Wanted [apps](/apps/):
