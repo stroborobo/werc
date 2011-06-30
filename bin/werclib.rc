@@ -102,7 +102,7 @@ fn get_html_title {
 
     # As a backup we might want to pick the first 'non-tag' text in the file with:
     if(~ $"t '')
-        t=`{sed -n -e 's/^(<[^>]+>)*([^<]+).*/\2/p; 32q' < $1 | sed 1q}
+        t=`{sed -n -e 's/^[ 	]*(<[^>]+>)*([^<]+).*/\2/p; 32q' < $1 | sed 1q}
 
     echo $t
 }
