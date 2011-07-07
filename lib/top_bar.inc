@@ -1,16 +1,14 @@
-    <div class="left">
-      <a href="http://gsoc.cat-v.org">gsoc</a> |
-      <a href="http://doc.cat-v.org">doc archive</a> |
-      <a href="http://repo.cat-v.org">software repo</a> |
-      <a href="http://ninetimes.cat-v.org">ninetimes</a> |
-      <a href="http://harmful.cat-v.org">harmful</a> |
-      <a href="http://9p.cat-v.org/">9P</a> |
-      <a href="http://cat-v.org">cat-v.org</a>
-    </div>
+<div class="left">
+	<a href="http://kbct.de">kbct.de</a>
+	<a href="http://blog.kbct.de">blog</a>
+	<a href="http://media.kbct.de">media</a>
+	<a href="http://bonzai.kbct.de">bonzai</a>
+	<a>|</a>
+	<a href="http://twitter.com/Knorkebrot">twitter</a>
+	<a href="http://www.lastfm.de/user/Killerkasper">lastfm</a>
+</div>
 
-    <div class="right">
-      <span class="doNotDisplay">Related sites:</span>
-      | <a href="http://cat-v.org/update_log">site updates</a>
-      | <a href="/sitemap">site map</a>
-    </div>
-
+<div class="right">
+	<a href="http://kbct.de/impressum">impressum</a>
+	<a href="/sitemap">site map</a>
+</div>

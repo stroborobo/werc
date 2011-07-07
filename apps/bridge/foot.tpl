@@ -8,6 +8,15 @@
 
 % if(~ $#logged_user 0) {
 %   if(~ $#allow_new_user_comments 1) {
+    <div style="font-size: 70%">
+	    Enter your desired user name/password and after your comment has
+	    been reviewed by an admin it will be posted and your account will
+	    be enabled.
+	    <br>
+	    If you are already registered please
+	    <a href="/_users/login">login</a> before posting.
+    </div>
+    <div>
     <label>New user name:
         <input type="text" name="comment_user" value="%($"post_arg_comment_user%)">
     </label>
@@ -19,8 +28,6 @@
     <label>Repeat password:
         <input type="password" name="comment_passwd2" value="">
     </label>
-    <div style="font-size: 70%">
-    Enter your desired user name/password and after your comment has been reviewed by an admin it will be posted and your account will be enabled. If you are already registered please <a href="/_users/login">login</a> before posting.
     </div>
 %   }
 %   if not if(~ $#bridge_anon_comments 1) {

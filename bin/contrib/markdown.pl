@@ -983,7 +983,7 @@ sub _DoCodeSpans {
  			$c =~ s/^[ \t]*//g; # leading whitespace
  			$c =~ s/[ \t]*$//g; # trailing whitespace
  			$c = _EncodeCode($c);
-			"<code>$c</code>";
+			"<code style=\"display:inline;\">$c</code>";
 		@egsx;
 
 	return $text;

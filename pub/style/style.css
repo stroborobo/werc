@@ -1,19 +1,26 @@
-/* Default werc style */
+/* default kbct.de stylesheet */
 
 body {
   color: black;
-  background-color: white;
   font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 84%;  /* Enables font size scaling in MSIE */
   margin: 0;
   padding: 0;
+  background: #999 url(background.png) repeat-x scroll 0px 0px;
 }
 
+/* Wrapper around all content */
+#container {
+  background-color	: #fff;
+  max-width		: 980px;
+  margin		: auto;
+  margin-top		: 13px;
+}
 
 /* # Header # */
 .superHeader {
   color: white;
-  background-color: rgb(100,135,220);
+  background-color: #404040;
   height: 1.6em;
 }
 
@@ -23,27 +30,37 @@ body {
   color: white;
   background-color: transparent;
   font-size: 91%;
-  margin: 0;
-  padding: 0 0.5ex 0 0.25ex;
+  margin: 0 7px;
+  /*padding: 0 0.5ex 0 0.25ex;*/
 }
 
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 .superHeader div {
-  position: absolute;
+  position: relative;
   top: 0.40ex;
 }
 
-.superHeader .left { left: 0.4em; }
-.superHeader .right { right: 0.4em; }
+.superHeader .left {
+	left: 0.4em;
+	float: left;
+}
+
+.superHeader .right {
+	right: 0.4em;
+	float: right;
+}
 
 .midHeader {
-  color: rgb(39,78,144);
-  background-color: rgb(140,170,230);
-  background-color: #ff6d06;
-  border: solid 0 black;
-  border-width: 2px 0;
+  /* Helles Grau
+   * background-color: #C0C0C0;*/
+  /* Braun */
+  background-color: #AB6D32;
+  /*
+  border: solid #404040;
+  border-width: 2px 0 0 0;
+  */
 }
 
 .headerTitle {
@@ -52,6 +69,7 @@ a:hover { text-decoration: underline; }
   font-weight: normal;
   margin: 0 0 0 4mm;
   padding: 0.25ex 0;
+  text-align: center;
 }
 #headerSubTitle {
   font-size: 50%;
@@ -106,7 +124,7 @@ a:hover { text-decoration: underline; }
   list-style-type: none;
   list-style-position: outside;
   margin: 0;
-  padding: 0 0 0.3em 0;
+  padding: 5px 0;
 }
 
 li ul {
@@ -119,7 +137,7 @@ li ul {
 }
 
 #side-bar a {
-  color: rgb(0,102,204);
+  color: #AB6D32;
   background-color: transparent;
   margin: 0;
   padding: 0.25em 1ex 0.25em 2mm;
@@ -138,7 +156,7 @@ li ul {
 
 #side-bar a:hover {
   color: white;
-  background-color: rgb(100,135,220);
+  background-color: #AB6D32;
   border-left: black solid 0.2em;
   text-decoration: none;
 }
@@ -186,31 +204,35 @@ li ul {
 }
 
 #main-copy a {
-  color: rgb(0,102,204);
+  color: #AB6D32;
   background-color: transparent;
 }
 
 #main-copy a:hover {
-  color:  rgb(100,135,220);
+  color:  #909090;
+}
+
+#main-copy h1 a:hover, #main-copy h2 a:hover {
+  color: #AB6D32;
 }
 
 #main-copy h1, #main-copy h2 {
-  color: rgb(0,102,204);
+  color: #AB6D32;
   background-color: transparent;
   font-size: 145.5%;
   font-weight: bold;
   margin: 2em 0 0 0;
   padding: 0.5ex 0 0.5ex 0.6ex;
-  border-bottom: 2px solid rgb(0,102,204);
+  border-bottom: 2px solid #AB6D32;
 }
 
 #main-copy h2 {
   font-size: 115.5%;
-  border-bottom: 1px solid rgb(0,102,204);
+  border-bottom: 1px solid #AB6D32;
 }
 
 #main-copy .topOfPage {
-  color: rgb(0,102,204);
+  color: #AB6D32;
   background-color: transparent;
   font-size: 91%;
   font-weight: bold;
@@ -240,7 +262,7 @@ dd {
 /* # Footer # */
 #footer {
   color: white;
-  background-color: rgb(100,135,220);
+  background-color: #505050;
   padding: 1em;
   clear: both;
 }
@@ -291,13 +313,15 @@ acronym, .titleTip {
 }
 
 pre {
+  overflow-x: auto;
   margin-left: 2em; 
   font-size: 1.2em;
 }
 
 blockquote {
-  border-left: 1px solid blue;
+  border-left: 1px solid #505050;
   font-style: italic;
+  margin: 1em 20px;
 }
 
 .smallCaps {
@@ -329,6 +353,14 @@ ul.sitemap-list a {
   text-transform: capitalize;
 }
 
+code {
+	display: block;
+	overflow-x: auto;
+	padding-left: 5px;
+	background-color: #F3F3F3;
+}
+
+/* Navigation */
 .navi:after {
   clear: both;
   color: transparent;
