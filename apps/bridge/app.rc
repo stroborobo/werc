@@ -66,6 +66,7 @@ fn mk_new_comment {
                 dir=$comments_dir^'_pending'
                 # XXX: This doesn't work because we then do a redirect. 
                 notify_notes='Saved comment and registration info, they will be enabled when approved by an admin.'
+		new_user=true
             }
             if not
                 _status=$status
@@ -79,25 +80,48 @@ fn mk_new_comment {
         if not
             _status='You need to log in to comment.'
     }
-    if not if(check_user $groups_allowed_comments)
+    if not if(check_user $groups_allowed_comments) {
         u=$logged_user
+	new_user=false
+    }
     if not
         _status='You are not a member of a group allowed to comment.'
 
     if(~ $#_status 0) {
         umask 002
+	if ($new_user)
+		_status='Could not post comment, this user may not be approved yet.'
 
         dir=$dir'/'`{date -n} # FIXME Obvious race
         mkdir -m 775 -p $dir &&
             echo $u > $dir/user &&
             echo $current_date_time > $dir/posted &&
             echo $post_arg_comment_text > $dir/body
+	#	chown -R :kbct_blog $dir > /tmp/chown
         _s=$status
         if(! ~ $"_s '') {
            dprint 'ERROR XXX: Could not create comment: ' $_s 
             _status='Could not post comment due internal error, sorry.'
         }
+	# build and send notification mail
+	if not {
+		mail='/tmp/werc_bridge_mail'^$pid
+		cat /usr/local/werc/apps/bridge/mail_header.tpl > $mail
+		if ($new_user)
+			echo 'New comment by NEW user: '^$post_arg_comment_user >> $mail
+		if not
+			echo 'New comment by user: '^$logged_user >> $mail
+		echo 'Artikel: '^$base_url^$req_path >> $mail
+		echo 'Time: '^$current_date_time >> $mail
+		echo '' >> $mail
+		#post_arg_comment_text=echo $post_arg_comment_text | sed 's/^\.$/|./'
+		echo $"post_arg_comment_text >> $mail
+		cat /usr/local/werc/apps/bridge/mail_footer.tpl >> $mail
+		{sed 's/^\.$/. /' $mail; echo '.'} | /usr/sbin/sendmail -t
+		rm $mail
+	}
     }
+
     notify_errors=$_status
     status=$_status
 }
