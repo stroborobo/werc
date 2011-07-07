@@ -328,3 +328,17 @@ h1.dir-list-head, ul.dir-list {
 ul.sitemap-list a {
   text-transform: capitalize;
 }
+
+.navi:after {
+  clear: both;
+  color: transparent;
+  content: '.';
+}
+
+a#skip_forward {
+  float: left;
+}
+
+a#skip_back {
+  float: right;
+}
