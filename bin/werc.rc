@@ -37,6 +37,26 @@ fn werc_exec_request {
     site=$SERVER_NAME
     base_url=http://$site
     sitedir=$sitesdir/$site
+
+    # source conf at the beginning, so $masterSite
+    # is set for get_lib_file()
+    cd $sitedir
+    req_paths_list='/' # Note: req_paths_list doesn't include 'stnythetic' dirs.
+    conf_wd='/' # Used in config files to know where we are in the document tree.
+    if(test -f _werc/config)
+        . _werc/config
+    for(i in $args) {
+        conf_wd=$conf_wd^$i
+        req_paths_list=($req_paths_list $conf_wd)
+        if(test -d $i) {
+            conf_wd=$conf_wd'/'
+            cd $i
+            if(test -f _werc/config)
+                . _werc/config
+        }
+    }
+    cd $werc_root
+
     master_template=`{get_lib_file default_master.tpl}
     current_date_time=`{date}
 
