@@ -32,7 +32,7 @@ if(~ $#file 0 || ! test -f $file) {
 }
 
 $EDITOR $file
-ispell $file
+#ispell $file
 rm $file.bak >[2]/dev/null
 
 fn mkbpost {
